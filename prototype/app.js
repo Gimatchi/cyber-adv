@@ -464,7 +464,7 @@ function render() {
 }
 
 async function start() {
-  const response = await fetch('/case001.json');
+  const response = await fetch('./case001.json');
   if (!response.ok) throw new Error('シナリオデータを読み込めませんでした');
   scenario = await response.json();
   state = readSavedState();

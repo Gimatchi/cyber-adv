@@ -1,0 +1,138 @@
+{
+  "id": "case001",
+  "title": "SNS乗っ取り",
+  "characters": [
+    {
+      "id": "ayaka",
+      "name": "藤崎 彩花",
+      "role": "被害者",
+      "portrait": "FA",
+      "description": "SNSアカウントを乗っ取られた被害者。黒田恒一の恋人。",
+      "action": {
+        "id": "action_interview_ayaka",
+        "label": "話をする",
+        "eventId": "event_interview_ayaka"
+      }
+    },
+    {
+      "id": "koichi",
+      "name": "黒田 恒一",
+      "role": "被害関係者",
+      "portrait": "KK",
+      "description": "藤崎彩花の恋人。二人の私的な写真や内容も公開された。"
+    },
+    {
+      "id": "takumi",
+      "name": "相沢 拓海",
+      "role": "関係者",
+      "portrait": "AT",
+      "description": "黒田恒一の知人。"
+    },
+    {
+      "id": "riko",
+      "name": "和泉 理子",
+      "role": "参考人",
+      "portrait": "IR",
+      "description": "藤崎彩花の友人。"
+    },
+    {
+      "id": "jinnai",
+      "name": "陣内 誠一郎",
+      "role": "警部・上司",
+      "portrait": "SJ",
+      "description": "差押えや令状請求の目的・根拠について、上司として助言する。"
+    },
+    {
+      "id": "asano",
+      "name": "麻野 優子",
+      "role": "巡査・同僚",
+      "portrait": "YA",
+      "description": "サイバーの基礎知識や段階的なヒントを担当する。"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_ayaka_phone",
+      "name": "藤崎彩花のスマートフォン",
+      "portrait": "PH",
+      "description": "聞き込みで預かったスマートフォン。保存されたメールや閲覧履歴を調べられる。",
+      "investigationOptions": [
+        {
+          "id": "saved_email",
+          "label": "保存されたメールを確認する",
+          "result": "SNSのログイン画面を模したフィッシングサイトが使われたことが判明した。",
+          "eventId": "event_examine_phone"
+        },
+        {
+          "id": "browser_history",
+          "label": "閲覧履歴を確認する",
+          "result": "この試作では、閲覧履歴から新たに得られる判明事項は設定されていない。"
+        }
+      ]
+    },
+    {
+      "id": "ev_suspicious_email",
+      "name": "不審なメール",
+      "portrait": "EM",
+      "description": "SNS運営を装ってログインを促すメール。"
+    },
+    {
+      "id": "ev_sns_log",
+      "name": "SNSアクセスログ",
+      "portrait": "LOG",
+      "description": "アカウントへのログインと投稿の記録。"
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact_phishing_site",
+      "name": "フィッシングサイトが使われた",
+      "description": "SNSのログイン画面を模したサイトが認証情報の窃取に使われた。"
+    },
+    {
+      "id": "fact_tor_access",
+      "name": "Tor出口IPからログインしている",
+      "description": "通常の利用場所とは異なるTor出口IPから、アカウントへのログインが成功している。"
+    }
+  ],
+  "logs": [
+    {
+      "id": "log_sns_access",
+      "name": "SNSアクセスログ",
+      "description": "アカウントへのログイン記録。",
+      "rows": [
+        {
+          "id": "row_tor_login",
+          "time": "17:20:37",
+          "text": "198.51.100.90  ログイン成功",
+          "important": true,
+          "eventId": "event_inspect_tor_login"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "event_interview_ayaka",
+      "trigger": { "type": "action", "target": "action_interview_ayaka" },
+      "effects": [
+        { "type": "add", "target": "evidence.ev_ayaka_phone" }
+      ]
+    },
+    {
+      "id": "event_examine_phone",
+      "trigger": { "type": "evidence", "target": "ev_ayaka_phone" },
+      "effects": [
+        { "type": "add", "target": "facts.fact_phishing_site" }
+      ]
+    },
+    {
+      "id": "event_inspect_tor_login",
+      "trigger": { "type": "logRow", "target": "row_tor_login" },
+      "effects": [
+        { "type": "add", "target": "facts.fact_tor_access" }
+      ]
+    }
+  ]
+}
+

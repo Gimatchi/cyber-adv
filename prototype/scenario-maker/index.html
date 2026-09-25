@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101b29">
+    <title>シナリオメーカー | CYBER CASE FILES</title>
+    <link rel="stylesheet" href="./maker.css">
+    <script type="module" src="./maker.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="wordmark" href="../" aria-label="捜査画面へ戻る"><span class="wordmark-icon">C</span><span>CYBER CASE FILES</span></a>
+      <div class="heading"><span class="eyebrow">AUTHORING TOOL / PROTOTYPE</span><h1>シナリオメーカー</h1></div>
+      <div class="top-actions">
+        <label class="button secondary" for="file-input">JSONを読み込む</label>
+        <input id="file-input" type="file" accept="application/json,.json" hidden>
+        <button id="download-button" class="button primary" type="button">JSONを書き出す</button>
+      </div>
+    </header>
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="case-card">
+          <span class="eyebrow">CASE</span>
+          <label>事件ID<input id="case-id" autocomplete="off"></label>
+          <label>事件名<input id="case-title" autocomplete="off"></label>
+          <label>種類別の共通背景（JSON）<textarea id="case-defaults" spellcheck="false">{}</textarea></label>
+        </section>
+        <div class="section-head"><div><span class="eyebrow">CONTENTS</span><h2>編集する項目</h2></div><span id="item-count" class="count">0</span></div>
+        <div id="collection-tabs" class="collection-tabs"></div>
+        <div class="list-head"><span id="collection-title">人物</span><button id="add-button" class="icon-button" type="button" aria-label="項目を追加">＋</button></div>
+        <div id="item-list" class="item-list"></div>
+      </aside>
+      <section class="editor-panel">
+        <div class="panel-heading"><div><span class="eyebrow">EDITOR</span><h2 id="editor-title">項目を選択してください</h2></div><button id="delete-button" class="button danger" type="button" hidden>この項目を削除</button></div>
+        <div id="editor-fields" class="editor-fields"><div class="empty">左の一覧から項目を選ぶか、新しい項目を追加してください。</div></div>
+        <section class="validation" aria-live="polite"><div class="section-head"><div><span class="eyebrow">CHECKS</span><h2>データ検証</h2></div><button id="validate-button" class="button secondary" type="button">再検証</button></div><ul id="validation-list"></ul></section>
+      </section>
+      <aside class="preview-panel"><div class="panel-heading"><div><span class="eyebrow">EXPORT PREVIEW</span><h2>JSONプレビュー</h2></div><button id="copy-button" class="button secondary" type="button">コピー</button></div><pre id="json-preview"></pre><p class="note">ダウンロードしたファイルを <code>prototype/case001.json</code> に置くと、現行の試作で読み込めます。会話・捜査アクション・ヒントはデータとして編集・出力できますが、現行試作ではゲーム進行に使われません。種別ごとのJSON分割にも未対応です。</p><p id="save-state" class="save-state">このブラウザに自動保存します</p></aside>
+    </main>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
+

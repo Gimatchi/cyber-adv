@@ -257,40 +257,36 @@ GMがCondition未達のActionを強制Unlockすると、
 ```json
 {
   "id": "conv_ayaka_first",
-  "start": "node_001",
-  "completionEvent": "event_ayaka_first_interview",
-  "nodes": {
-    "node_001": {
-      "speaker": "ayaka",
-      "image": "characters/ayaka_normal.png",
+  "title": "彩花への聞き込み",
+  "startNodeId": "node_001",
+  "completionEventId": "event_ayaka_first_interview",
+  "nodes": [
+    {
+      "id": "node_001",
+      "speakerId": "ayaka",
       "text": "SNSのアカウントに入れなくなってしまって……。",
-      "next": "node_002"
+      "nextNodeId": "node_002"
     },
-    "node_002": {
-      "speaker": "player",
+    {
+      "id": "node_002",
+      "speakerId": "player",
       "text": "何か、その前に変わったことはありませんでしたか？",
       "choices": [
-        {
-          "text": "メールについて聞く",
-          "next": "node_003"
-        },
-        {
-          "text": "SNSについて聞く",
-          "next": "node_004"
-        }
+        { "text": "メールについて聞く", "nextNodeId": "node_003" },
+        { "text": "SNSについて聞く", "nextNodeId": "node_004" }
       ]
     }
-  }
+  ]
 }
 ```
 
 エンジンは、
 
-- speaker
-- image
+- speakerId
+- portrait
 - text
 - choices
-- next
+- nextNodeId
 
 を解釈して表示する。
 
@@ -325,7 +321,7 @@ GMがCondition未達のActionを強制Unlockすると、
 ```json
 {
   "id": "event_ayaka_first_interview",
-  "trigger": { "type": "conversation", "target": "conv_ayaka_first" },
+  "trigger": { "type": "conversation", "targetId": "conv_ayaka_first" },
   "effects": [
     {
       "type": "add",
@@ -433,7 +429,7 @@ Event完了時に、
       "operator": "exists"
     }
   ],
-  "completionEvent": "event_investigate_ayaka_smartphone"
+  "completionEventId": "event_investigate_ayaka_smartphone"
 }
 ```
 
@@ -889,31 +885,20 @@ BrightNetへの照会
 
 # 29. データ構造
 
-事件ごとのデータを分離する。
+事件ごとの正規データは1つのJSONファイルにまとめ、人物・会話などを配列で保持する。シナリオメーカーからフォームで編集する。詳細な項目定義は[`data-design.md`](data-design.md)を正とする。
 
 ```text
 scenario/
 ├─ case001/
 │  ├─ case.json
-│  ├─ characters.json
-│  ├─ conversations.json
-│  ├─ evidence.json
-│  ├─ logs.json
-│  ├─ facts.json
-│  ├─ actions.json
-│  ├─ events.json
-│  └─ hints.json
+│  └─ assets/
+│     ├─ characters/
+│     ├─ backgrounds/
+│     └─ evidence/
 │
 ├─ case002/
 │  ├─ case.json
-│  ├─ characters.json
-│  ├─ conversations.json
-│  ├─ evidence.json
-│  ├─ logs.json
-│  ├─ facts.json
-│  ├─ actions.json
-│  ├─ events.json
-│  └─ hints.json
+│  └─ assets/
 │
 └─ ...
 ```

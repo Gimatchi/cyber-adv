@@ -95,25 +95,14 @@ Stateを評価
 scenario/
 ├─ case001/
 │  ├─ case.json
-│  ├─ characters.json
-│  ├─ conversations.json
-│  ├─ evidence.json
-│  ├─ logs.json
-│  ├─ facts.json
-│  ├─ actions.json
-│  ├─ events.json
-│  └─ hints.json
+│  └─ assets/
+│     ├─ characters/
+│     ├─ backgrounds/
+│     └─ evidence/
 └─ ...
-
-assets/
-└─ case001/
-   ├─ characters/
-   ├─ backgrounds/
-   ├─ evidence/
-   └─ ...
 ```
 
-人物の立ち絵・表情差分は事件別の`assets/case001/characters/`に置き、`characters.json`または会話ノードから参照する。人物ごとの性格や動機による分岐はシナリオデータで定義し、エンジンへ個別実装しない。作者向けの秘密設定はクライアントへ配信するシナリオデータに含めない。
+事件の正規データは`scenario/<caseId>/case.json`の1ファイルにまとめ、人物・会話・証拠等を配列で保持する。作者はシナリオメーカーのフォームで編集する。人物の立ち絵・表情差分は同じ事件ディレクトリの`assets/characters/`に置き、データから参照する。形式の詳細は[`data-design.md`](data-design.md)に従う。人物ごとの性格や動機による分岐はシナリオデータで定義し、エンジンへ個別実装しない。作者向けの秘密設定はクライアントへ配信するシナリオデータに含めない。
 
 ## 7. UI
 

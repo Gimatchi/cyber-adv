@@ -94,12 +94,12 @@ EffectはEventだけが保持し実行する。`add`、`remove`、`set`、`compl
 
 ## 6. Event
 
-Eventはゲーム内で発生する処理単位。会話・Action・ログ行・ヒント段階の`completionEvent`とEventの`trigger`は同じ対象を指し、シナリオ読込時に対応関係を検証する。
+Eventはゲーム内で発生する処理単位。会話・Action・証拠調査項目・ログ行・ヒント段階の`completionEventId`とEventの`trigger`は同じ対象を指し、シナリオ読込時に対応関係を検証する。保存形式の詳細と起動元の対応表は[`data-design.md`](data-design.md)を正とする。
 
 ```json
 {
   "id": "event_ayaka_first_interview",
-  "trigger": { "type": "conversation", "target": "conv_ayaka_first" },
+  "trigger": { "type": "conversation", "targetId": "conv_ayaka_first" },
   "effects": [
     {
       "type": "add",
@@ -137,19 +137,20 @@ UI更新
 {
   "id": "conv_ayaka_first",
   "start": "node_001",
-  "completionEvent": "event_ayaka_first_interview",
-  "nodes": {
-    "node_001": {
-      "speaker": "ayaka",
-      "image": "characters/ayaka_normal.png",
+  "completionEventId": "event_ayaka_first_interview",
+  "nodes": [
+    {
+      "id": "node_001",
+      "speakerId": "ayaka",
+      "portrait": "assets/characters/ayaka_normal.png",
       "text": "SNSのアカウントに入れなくなってしまって……。",
-      "next": "node_002"
+      "nextNodeId": "node_002"
     }
-  }
+  ]
 }
 ```
 
-エンジンはspeaker、image、text、choices、next等を解釈する。人物IDと立ち絵・表情画像の対応はシナリオデータで定義し、表情差分の切り替えも共通の画像参照機能で表示する。人物ごとの性格・動機・台詞をエンジンへ埋め込まない。会話内容をTypeScriptへ直接記述しない。
+エンジンはspeakerId、portrait、text、choices、nextNodeId等を解釈する。ノードはIDを持つ配列として保存する。人物IDと立ち絵・表情画像の対応はシナリオデータで定義し、表情差分の切り替えも共通の画像参照機能で表示する。人物ごとの性格・動機・台詞をエンジンへ埋め込まない。会話内容をTypeScriptへ直接記述しない。
 
 ## 8. 証拠・判明事項
 
@@ -192,11 +193,11 @@ Effect
       "operator": "exists"
     }
   ],
-  "completionEvent": "event_investigate_ayaka_smartphone"
+  "completionEventId": "event_investigate_ayaka_smartphone"
 }
 ```
 
-会話やActionはEffectを持たず、完了時にEvent IDを1つ参照する。EventがEffectを実行する唯一の単位である。ログ行調査とヒント段階の提示も同じ方式でEventを起動する。プレイヤーごとの`usedHints`には提示済みの段階IDを保存する。
+会話やActionはEffectを持たず、完了時にEvent IDを1つ参照する。証拠調査項目・ログ行・ヒント段階も同様にEventを関連付ける。EventがEffectを実行する唯一の単位である。プレイヤーごとの`usedHints`には提示済みの段階IDを保存する。会話付きActionは会話完了時のEventからActionを完了し、別のAction完了Eventを重ねて起動しない。
 
 ## 11. 利用可能状態
 

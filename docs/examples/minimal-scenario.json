@@ -1,33 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "case001",
-  "title": "SNS乗っ取り",
+  "id": "case_minimal",
+  "title": "最小サンプル：不審なログイン",
   "defaults": {
-    "background": "assets/backgrounds/default-investigation.png",
-    "characterIcon": "assets/icons/ayaka.png"
+    "background": "assets/backgrounds/investigation-room.png",
+    "characterIcon": "assets/ui/default-character.png",
+    "evidenceIcon": "assets/ui/default-evidence.png"
   },
   "characters": [
     {
-      "id": "ayaka",
-      "name": "藤崎彩花",
-      "role": "被害者",
-      "icon": "assets/icons/ayaka.png",
-      "background": "assets/backgrounds/ayaka-selection.png",
-      "description": "SNSアカウントを乗っ取られた被害者。"
+      "id": "mika",
+      "name": "佐藤 美香",
+      "role": "相談者",
+      "icon": "assets/characters/mika/normal.png",
+      "background": "assets/backgrounds/mika-room.png",
+      "description": "SNSアカウントに異常が起きた相談者。"
     }
   ],
   "conversations": [
     {
       "id": "conv_mika_first",
-      "title": "彩花への聞き込み",
+      "title": "美香への聞き込み",
       "background": "assets/backgrounds/interview-room.png",
       "startNodeId": "conv_mika_first_001",
       "completionEventId": "event_conv_mika_first",
       "nodes": [
         {
           "id": "conv_mika_first_001",
-          "speakerId": "ayaka",
-          "icon": "assets/icons/ayaka.png",
+          "speakerId": "mika",
+          "icon": "assets/characters/mika/worried.png",
           "text": "アカウントに入れなくなってしまって……。\n昨日までは普通に使えていました。",
           "nextNodeId": "conv_mika_first_002"
         },
@@ -48,15 +49,15 @@
         },
         {
           "id": "conv_mika_first_003",
-          "speakerId": "ayaka",
-          "icon": "assets/icons/ayaka.png",
+          "speakerId": "mika",
+          "icon": "assets/characters/mika/normal.png",
           "text": "スマートフォンをお預けします。\n中を確認してもらえますか？"
         }
       ]
     },
     {
       "id": "conv_mika_followup",
-      "title": "彩花への追加確認",
+      "title": "美香への追加確認",
       "requires": {
         "type": "fact",
         "targetId": "fact_unknown_login",
@@ -66,7 +67,7 @@
       "nodes": [
         {
           "id": "conv_mika_followup_001",
-          "speakerId": "ayaka",
+          "speakerId": "mika",
           "text": "その時間は、私はログインしていません。"
         }
       ]
@@ -108,7 +109,8 @@
   "evidence": [
     {
       "id": "ev_mika_phone",
-      "name": "彩花のスマートフォン",
+      "name": "美香のスマートフォン",
+      "icon": "assets/evidence/smartphone.png",
       "background": "assets/backgrounds/evidence-desk.png",
       "description": "保存されたメールとSNSアクセスログを調べられる。",
       "investigations": [
@@ -125,7 +127,7 @@
     {
       "id": "log_mika_access",
       "name": "SNSアクセスログ",
-      "background": "assets/backgrounds/default-investigation.png",
+      "background": "assets/backgrounds/log-analysis-room.png",
       "description": "美香のアカウントへのアクセス記録。",
       "rows": [
         {

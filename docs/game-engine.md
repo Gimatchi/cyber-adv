@@ -25,7 +25,6 @@ State → Condition / GM判定 → Event → Effect → State
 - Effect実行
 - State更新
 - Event処理
-- 捜査アクション
 - セーブ
 - GM操作
 - ヒント
@@ -42,10 +41,9 @@ State → Condition / GM判定 → Event → Effect → State
   "evidence": [],
   "logs": [],
   "facts": [],
-  "startedConversations": [],
-  "startedActions": [],
   "completedConversations": [],
-  "completedActions": [],
+  "completedInvestigations": [],
+  "completedLogRows": [],
   "completedEvents": [],
   "usedHints": [],
   "cleared": false
@@ -61,7 +59,7 @@ State → Condition / GM判定 → Event → Effect → State
 ```json
 {
   "type": "evidence",
-  "target": "ev_ayaka_smartphone",
+  "targetId": "ev_ayaka_smartphone",
   "operator": "exists"
 }
 ```
@@ -71,7 +69,7 @@ State → Condition / GM判定 → Event → Effect → State
 ```json
 {
   "type": "fact",
-  "target": "fact_phishing_site",
+  "targetId": "fact_phishing_site",
   "operator": "exists"
 }
 ```
@@ -80,21 +78,19 @@ Conditionは単一条件、`and`、`or`、`not`をサポートする。複合条
 
 ## 5. Effect
 
-想定する基本処理：
+基本Effect：
 
 ```text
 add
 remove
 set
-complete
-start
 ```
 
-EffectはEventだけが保持し実行する。`add`、`remove`、`set`、`complete`、`start`の意味と再実行規則は「ConditionとEffectの確定仕様」に従う。事件001専用Effectは作らない。
+EffectはEventだけが保持し実行する。起動元の会話・調査の完了記録とEventの完了記録はエンジンが保存する。`add`、`remove`、`set`の意味と再実行規則は「ConditionとEffectの確定仕様」に従う。事件001専用Effectは作らない。
 
 ## 6. Event
 
-Eventはゲーム内で発生する処理単位。会話・Action・証拠調査項目・ログ行・ヒント段階の`completionEventId`とEventの`trigger`は同じ対象を指し、シナリオ読込時に対応関係を検証する。保存形式の詳細と起動元の対応表は[`data-design.md`](data-design.md)を正とする。
+Eventはゲーム内で発生する処理単位。会話・証拠調査項目・ログ行・ヒント段階の`completionEventId`とEventの`trigger`は同じ対象を指し、シナリオ読込時に対応関係を検証する。保存形式の詳細と起動元の対応表は[`data-design.md`](data-design.md)を正とする。
 
 ```json
 {
@@ -116,7 +112,7 @@ Eventはゲーム内で発生する処理単位。会話・Action・証拠調査
 基本フロー：
 
 ```text
-会話 / Action
+会話 / 証拠調査 / ログ行調査
  ↓
 完了時に参照先Eventを起動
  ↓
@@ -136,13 +132,13 @@ UI更新
 ```json
 {
   "id": "conv_ayaka_first",
-  "start": "node_001",
+  "startNodeId": "node_001",
   "completionEventId": "event_ayaka_first_interview",
   "nodes": [
     {
       "id": "node_001",
       "speakerId": "ayaka",
-      "portrait": "assets/characters/ayaka_normal.png",
+      "icon": "assets/characters/ayaka_normal.png",
       "text": "SNSのアカウントに入れなくなってしまって……。",
       "nextNodeId": "node_002"
     }
@@ -150,7 +146,9 @@ UI更新
 }
 ```
 
-エンジンはspeakerId、portrait、text、choices、nextNodeId等を解釈する。ノードはIDを持つ配列として保存する。人物IDと立ち絵・表情画像の対応はシナリオデータで定義し、表情差分の切り替えも共通の画像参照機能で表示する。人物ごとの性格・動機・台詞をエンジンへ埋め込まない。会話内容をTypeScriptへ直接記述しない。
+エンジンはspeakerId、icon、background、text、choices、nextNodeId、requires、routes等を解釈する。ノードはIDを持つ配列として保存する。会話・ノード・選択肢の`requires`をサーバー側で評価し、条件を満たすものだけを表示する。各発言の`icon`があればその表情を表示し、省略時は人物の既定アイコン、事件共通アイコン、内蔵アイコンの順に使う。会話中の背景はノード、会話、事件共通、内蔵背景の順で選ぶ。人物・証拠品・ログの選択画面では、その項目の背景、事件共通、内蔵背景の順で選ぶ。セリフ、説明文、ログ行は改行を保持して表示する。人物ごとの性格・動機・台詞をエンジンへ埋め込まない。会話内容をTypeScriptへ直接記述しない。
+
+`routes`だけを持つ空ノードは表示せず、配列順に条件を評価して最初に成立した`nextNodeId`または`nextConversationId`へ自動遷移する。条件なしのrouteは最後のフォールバックにする。別会話へ遷移する場合は、現在の会話を完了してから対象会話を開始する。ルートが1つも成立せずフォールバックもない場合はシナリオ検証エラーとする。
 
 ## 8. 証拠・判明事項
 
@@ -180,24 +178,9 @@ Effect
 
 メールヘッダも同じログ調査方式で扱う。
 
-## 10. 捜査Action
+## 10. 利用可能な会話
 
-```json
-{
-  "id": "action_investigate_ayaka_smartphone",
-  "name": "彩花のスマートフォンを調べる",
-  "requires": [
-    {
-      "type": "evidence",
-      "target": "ev_ayaka_smartphone",
-      "operator": "exists"
-    }
-  ],
-  "completionEventId": "event_investigate_ayaka_smartphone"
-}
-```
-
-会話やActionはEffectを持たず、完了時にEvent IDを1つ参照する。証拠調査項目・ログ行・ヒント段階も同様にEventを関連付ける。EventがEffectを実行する唯一の単位である。プレイヤーごとの`usedHints`には提示済みの段階IDを保存する。会話付きActionは会話完了時のEventからActionを完了し、別のAction完了Eventを重ねて起動しない。
+聞き込み、事業者への照会、警部への相談、追及はすべて会話として表現する。会話の`requires`を評価して利用可能かを決め、会話終了時にEventを起動する。証拠調査項目・ログ行・ヒント段階も同様にEventを関連付ける。EventがEffectを実行する唯一の単位である。プレイヤーごとの`usedHints`には提示済みの段階IDを保存する。
 
 ## 11. 利用可能状態
 
@@ -211,19 +194,19 @@ GMState
 利用可能 / 不可
 ```
 
-有効なGM制御セッション中は、判定順を`globalPause`による一時停止 → 個別Lock → 個別Unlock → Conditionとする。GM制御セッションがないときは一時停止と上書きを適用せず、Conditionだけで判定する。GM制御セッションの終了時に一時停止と全上書きを解除する。GM Unlockでも認証、対象IDの妥当性、未完了Eventの検証は省略しない。
+有効なGM制御セッション中は、判定順を`globalPause`による一時停止 → 個別Lock → Conditionとする。GM制御セッションがないときは一時停止とLockを適用せず、Conditionだけで判定する。Conditionが偽なら要素を表示せず、Conditionが真でLock中なら南京錠を表示する。GM制御セッションの終了時に一時停止と全Lockを解除する。
 
 ## 12. UI表示
 
 ### 「!」
-新しい会話、証拠調査、ログ、捜査Action、麻野巡査へのヒント依頼、警部への相談などが利用可能な場合に表示する。
+新しい会話、証拠調査、ログ、麻野巡査へのヒント依頼などが利用可能な場合に表示する。
 
 ### 南京錠
-Condition未達、GM Lock、全体一時停止のいずれかで実行できない場合に表示する。GM UnlockでCondition未達を許可した場合は南京錠を外す。サーバー側で毎回実行可否を検証する。
+Condition未達の要素は表示しない。Conditionを満たしているがGM Lockまたは全体一時停止中の要素には南京錠を表示する。サーバー側で毎回実行可否を検証する。
 
 ## 13. GM
 
-GMStateは事件全体で共有し、`currentStage`と全体アナウンスを保持する。有効なGM制御セッションとは、roleが`gm`の認証済みサーバーセッションがログアウトまたは失効していない状態を指す。その間だけ`globalPause`とプレイヤー別Action上書きを有効にする。セッション終了時はこれらの一時制御を解除する。個別上書き値は`lock` / `unlock` / `none`で、認証済みGMだけが変更できる。GM制御セッションが存在しない間、全PlayerはConditionに従って各自のペースで進行できる。
+GMStateは事件全体で共有し、`currentStage`と全体アナウンスを保持する。有効なGM制御セッションとは、roleが`gm`の認証済みサーバーセッションがログアウトまたは失効していない状態を指す。その間だけ`globalPause`とプレイヤー別の会話・証拠調査・ログ行調査・ヒントLockを有効にする。セッション終了時はこれらの一時制御を解除する。個別Lockは認証済みGMだけが変更できる。GM制御セッションが存在しない間、全PlayerはConditionに従って各自のペースで進行できる。
 
 警部は差押えや令状請求の目的・根拠について、誤った判断を正しい方向へ導く。麻野巡査はサイバー知識の説明と段階的なヒントを担当する。エンジンは両者の役割を人物固有のコードにせず、シナリオデータの会話・ヒントとして扱う。
 
@@ -250,7 +233,7 @@ GMStateは事件全体で共有し、`currentStage`と全体アナウンスを�
 11. 証拠
 12. 判明事項
 13. 簡単なログ
-14. 条件によるAction解禁
+14. 条件による会話解禁
 15. サーバー保存
 
 その後にCase 001をシナリオデータとして載せる。
@@ -268,7 +251,7 @@ GMStateは事件全体で共有し、`currentStage`と全体アナウンスを�
 
 ## 17. ConditionとEffectの確定仕様
 
-Conditionの葉は安定IDを持つ。`evidence`、`log`、`fact`は`operator: "exists"`だけを使い、`conversation`、`action`、`event`は`operator: "completed"`だけを使う。複合条件は次のJSON形に固定する：
+Conditionの葉は安定IDを持つ。`evidence`、`log`、`fact`は`operator: "exists"`だけを使い、`conversation`、`investigation`、`logRow`、`event`は`operator: "completed"`だけを使う。複合条件は次のJSON形に固定する：
 
 ```json
 { "type": "and", "conditions": [ CONDITION, CONDITION ] }
@@ -276,15 +259,13 @@ Conditionの葉は安定IDを持つ。`evidence`、`log`、`fact`は`operator: "
 { "type": "not", "condition": CONDITION }
 ```
 
-`and` / `or`の`conditions`配列は1件以上とし、`not`は`condition`を1件だけ否定する。Actionの`requires`が省略された場合は無条件（true）、配列の場合は全条件のANDとして評価する。最大ネスト深度は16とし、葉の不明なtype、operator、存在しない参照、深度超過はシナリオ読込時にエラーにする。
+`and` / `or`の`conditions`配列は1件以上とし、`not`は`condition`を1件だけ否定する。会話の`requires`が省略された場合は無条件（true）とする。最大ネスト深度は16とし、葉の不明なtype、operator、存在しない参照、深度超過はシナリオ読込時にエラーにする。
 
 Effectは次のとおりで、Event内の配列順に実行する。
 
 - `add`: `{ "type": "add", "target": "evidence.ev_id" }`の形。`evidence`、`logs`、`facts`、`usedHints`集合へ追加する。既存IDなら何もしない。
 - `remove`: `{ "type": "remove", "target": "evidence.ev_id" }`の形。同じ4集合から削除する。未登録でも何もしない。
 - `set`: `{ "type": "set", "target": "cleared", "value": true }`の形。PlayerStateの`cleared`だけをboolean値に置換する。任意パスの書換えやGMState変更は許さない。
-- `complete`: `{ "type": "complete", "target": "action.action_id" }`の形。会話、Action、Eventの対象を対応する完了集合へ追加する。完了済みなら何もしない。Event自身の完了は実行トランザクションが必ず記録する。
-- `start`: `{ "type": "start", "target": "conversation.conv_id" }`の形。会話またはActionを対応する開始集合へ追加する。既に開始・完了済みなら重複登録しない。
 
-状態に存在しない参照先、型不一致、禁止フィールドへの`set`はEvent全体を失敗させ、変更をすべてロールバックする。Eventはプレイヤーごとに一度だけ実行し、成功時に同じDBトランザクション内で`(playerId, eventId)`の一意な完了記録を保存する。二重要求は保存済み結果を返し、Effectsを再適用しない。失敗時の再試行はトランザクション全体を再実行する。
+状態に存在しない参照先、型不一致、禁止フィールドへの`set`はEvent全体を失敗させ、変更をすべてロールバックする。Eventはプレイヤーごとに一度だけ実行し、成功時に起動元の完了記録と`(playerId, eventId)`の一意な完了記録を同じDBトランザクション内で保存する。二重要求は保存済み結果を返し、Effectsを再適用しない。失敗時の再試行はトランザクション全体を再実行する。
 

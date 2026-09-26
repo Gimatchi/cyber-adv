@@ -135,7 +135,6 @@ UI上では以下を区別する。
 - ログ
 - ログ行
 - 判明事項
-- 捜査アクション
 - イベント
 - 条件
 - 処理
@@ -176,16 +175,17 @@ UI上では以下を区別する。
 ```
 
 ### 左
-人物一覧。
+人物一覧。人物を選択したときは人物データの背景を表示し、未設定なら事件既定の背景を使う。
 
 ### 中央
-キャラクター、会話、証拠画像、ログ、調査画面などを表示。
+キャラクター、会話、証拠画像、ログ、調査画面などを表示する。証拠品・ログを選択したときは、それぞれのデータに背景が設定されていれば表示し、なければ事件既定の背景を使う。
+背景はノード、会話、事件の順に設定を使い、すべて未設定ならエンジンの既定背景を表示する。人物の表情アイコンはノードで指定でき、省略時は人物の既定アイコンを表示する。
 
 ### 右
 証拠、ログ、判明事項などを表示。
 
 ### 下部
-会話、説明、選択肢、捜査アクションなどを表示。
+会話、説明、選択肢などを表示。
 
 ---
 
@@ -204,7 +204,7 @@ UI上では以下を区別する。
 
 ### 南京錠
 
-現在は条件を満たしていない、またはGMがロックしているため利用できないことを表す。
+Conditionを満たしているが、GMがロックしているため利用できないことを表す。Condition未達の会話や選択肢は表示しない。
 
 選択すると、
 
@@ -218,7 +218,7 @@ UI上では以下を区別する。
 
 ## 10. GMによる進行制御
 
-ゲーム上のConditionとは別に、有効なGM制御セッション中はGMが全体を停止し、個別ActionをLockまたは強制Unlockできる。GM制御セッションがない場合はGMによる強制抑止・強制解放を行わず、各参加者はConditionに従ってそれぞれのペースで進行する。
+ゲーム上のConditionとは別に、有効なGM制御セッション中はGMが全体を停止し、Conditionを満たしている個別の会話・証拠調査・ログ行調査・ヒントをLockできる。GM制御セッションがない場合はGMによる強制抑止を行わず、各参加者はConditionに従ってそれぞれのペースで進行する。Condition未達の要素をGM操作で表示対象にすることはできない。
 
 ```text
 条件上は実行可能
@@ -228,16 +228,6 @@ GMロック中
 南京錠
 ```
 
-GMがCondition未達のActionを強制Unlockすると、
-
-```text
-南京錠
-  ↓
-!
-```
-
-となる。
-
 参加者が想定より速く進んだ場合でも、次の展開を一時停止できる。
 
 警部に相談した場合には、
@@ -246,7 +236,7 @@ GMがCondition未達のActionを強制Unlockすると、
 
 などの形で次に何をすべきか案内できる。
 
-南京錠は「今はできない」を表し、警部は「なぜできないか・何をすべきか」を説明する役割とする。
+南京錠は「条件は満たしているが、GMが一時的に止めている」ことを表し、警部は「なぜできないか・何をすべきか」を説明する役割とする。
 
 ---
 
@@ -264,6 +254,7 @@ GMがCondition未達のActionを強制Unlockすると、
     {
       "id": "node_001",
       "speakerId": "ayaka",
+      "icon": "assets/characters/ayaka/worried.png",
       "text": "SNSのアカウントに入れなくなってしまって……。",
       "nextNodeId": "node_002"
     },
@@ -272,7 +263,11 @@ GMがCondition未達のActionを強制Unlockすると、
       "speakerId": "player",
       "text": "何か、その前に変わったことはありませんでしたか？",
       "choices": [
-        { "text": "メールについて聞く", "nextNodeId": "node_003" },
+        {
+          "text": "メールについて聞く",
+          "requires": { "type": "fact", "targetId": "fact_received_email", "operator": "exists" },
+          "nextNodeId": "node_003"
+        },
         { "text": "SNSについて聞く", "nextNodeId": "node_004" }
       ]
     }
@@ -283,12 +278,17 @@ GMがCondition未達のActionを強制Unlockすると、
 エンジンは、
 
 - speakerId
-- portrait
+- icon
+- background
 - text
 - choices
 - nextNodeId
+- requires
+- routes
 
 を解釈して表示する。
+
+会話、ノード、選択肢は`requires`で条件を持てる。条件を満たさない会話は一覧に表示せず、条件を満たさない選択肢は選択肢一覧に表示しない。`routes`だけを持つ空ノードは表示せず、条件を順番に判定して最初に成立したノードまたは会話へ自動的に進む。これにより、判明事項の有無に応じて会話の内容を切り替えられる。
 
 ---
 
@@ -354,10 +354,9 @@ Event完了時に、
 {
   "evidence": [],
   "facts": [],
-  "startedConversations": [],
-  "startedActions": [],
   "completedConversations": [],
-  "completedActions": [],
+  "completedInvestigations": [],
+  "completedLogRows": [],
   "completedEvents": []
 }
 ```
@@ -375,7 +374,6 @@ Event完了時に、
   "completedConversations": [
     "conv_ayaka_first"
   ],
-  "completedActions": [],
   "completedEvents": [
     "event_ayaka_first_interview"
   ]
@@ -395,7 +393,7 @@ Event完了時に、
 ```json
 {
   "type": "evidence",
-  "target": "ev_ayaka_smartphone",
+  "targetId": "ev_ayaka_smartphone",
   "operator": "exists"
 }
 ```
@@ -407,7 +405,7 @@ Event完了時に、
 ```json
 {
   "type": "fact",
-  "target": "fact_phishing_site",
+  "targetId": "fact_phishing_site",
   "operator": "exists"
 }
 ```
@@ -416,36 +414,9 @@ Event完了時に、
 
 ---
 
-## 16. 捜査アクション
+## 16. 利用可能な会話
 
-```json
-{
-  "id": "action_investigate_ayaka_smartphone",
-  "name": "彩花のスマートフォンを調べる",
-  "requires": [
-    {
-      "type": "evidence",
-      "target": "ev_ayaka_smartphone",
-      "operator": "exists"
-    }
-  ],
-  "completionEventId": "event_investigate_ayaka_smartphone"
-}
-```
-
-エンジン側では、
-
-```text
-条件確認
-↓
-OKなら実行
-↓
-完了時に参照するEventを起動
-↓
-状態更新
-```
-
-だけを行う。
+聞き込み、事業者への照会、警部への相談、追及はすべて会話として扱う。会話の`requires`で利用条件を定義し、会話終了時のEventで証拠・ログ・判明事項を追加する。証拠やログを調べる操作は、それぞれの調査項目・重要行が直接Eventを起動する。
 
 ---
 
@@ -459,18 +430,16 @@ OKなら実行
 add
 remove
 set
-complete
-start
 ```
 
-GM UnlockはEffectではなくGMStateのAction上書きとして保存する。通常の利用可能状態はConditionから計算する。
+GM LockはEffectではなくGMStateの操作Lockとして保存する。通常の利用可能状態はConditionから計算する。
 
 例えば、
 
 ```json
 {
   "type": "add",
-  "target": "evidence.ayaka_mail"
+  "target": "evidence.ev_ayaka_mail"
 }
 ```
 
@@ -479,7 +448,7 @@ GM UnlockはEffectではなくGMStateのAction上書きとして保存する。�
 ```json
 {
   "type": "add",
-  "target": "fact.phishing_site"
+  "target": "facts.fact_phishing_site"
 }
 ```
 
@@ -903,22 +872,6 @@ scenario/
 └─ ...
 ```
 
-素材：
-
-```text
-assets/
-├─ case001/
-│  ├─ characters/
-│  ├─ backgrounds/
-│  ├─ evidence/
-│  └─ ...
-│
-├─ case002/
-│  └─ ...
-```
-
----
-
 # 30. 素材制作型の開発
 
 Case 002以降では、
@@ -1019,7 +972,7 @@ characters/
 - 取得済み証拠
 - 判明事項
 - 完了イベント
-- 捜査アクション
+- 会話・証拠調査・ログ行調査の完了状態
 - GMロック
 - クリア状態
 
@@ -1043,7 +996,8 @@ characters/
   "logs": [],
   "facts": [],
   "completedConversations": [],
-  "completedActions": [],
+  "completedInvestigations": [],
+  "completedLogRows": [],
   "completedEvents": [],
   "usedHints": [],
   "cleared": false
@@ -1063,19 +1017,19 @@ characters/
   "globalPause": false,
   "currentStage": "stage_03",
   "announcements": [],
-  "actionOverrides": [
-    { "playerId": "player_001", "actionId": "action_inquiry_nexhost", "value": "lock" }
+  "interactionLocks": [
+    { "playerId": "player_001", "type": "conversation", "targetId": "conv_nexhost_inquiry" }
   ]
 }
 ```
 
-ただし、個別アクションの利用可能状態は、
+ただし、個別操作の利用可能状態は、
 
 ```text
-globalPause → 個別GM Lock → 個別GM Unlock → Condition
+globalPause → Condition → 個別GM Lock
 ```
 
-GM制御セッションがない場合は`globalPause`とAction上書きを適用せず、Conditionだけで判定する。有効なGM制御セッション中は上記の順で判定する。全体停止中は全Player操作を拒否する。LockはCondition成立後でも拒否し、UnlockはCondition未達でも許可する。LockがUnlockより優先する。GM制御セッション終了時は一時停止とすべての個別上書きを解除し、次のGMセッションへ持ち越さない。どのGM上書きも認証、対象ID確認、Event未完了確認を迂回しない。GMStateの個別上書き値は`lock` / `unlock` / `none`。
+GM制御セッションがない場合は`globalPause`と操作Lockを適用せず、Conditionだけで判定する。有効なGM制御セッション中は上記の順で判定する。全体停止中は全Player操作を拒否する。Condition未達の要素は表示せず、Condition成立後にLockがあれば南京錠を表示して拒否する。GM制御セッション終了時は一時停止とすべての個別Lockを解除し、次のGMセッションへ持ち越さない。どのGM Lockも認証、対象ID確認、Event未完了確認を迂回しない。
 
 ---
 
@@ -1189,21 +1143,19 @@ UI更新
         ↓
 5. ログ・ログ行調査を作る
         ↓
-6. 捜査アクションを作る
+6. 条件による会話の利用可能判定を作る
         ↓
-7. 条件による利用可能判定を作る
+7. セーブ機能を作る
         ↓
-8. セーブ機能を作る
+8. GM機能を作る
         ↓
-9. GM機能を作る
+9. Case 001のシナリオデータを作る
         ↓
-10. Case 001のシナリオデータを作る
+10. 素材を入れる
         ↓
-11. 素材を入れる
+11. 実際に通しプレイ
         ↓
-12. 実際に通しプレイ
-        ↓
-13. 必要ならシナリオエディタを作る
+12. 必要ならシナリオエディタを作る
 ```
 
 ---
@@ -1227,7 +1179,7 @@ Event
 
 の4つ。
 
-会話、証拠、ログ、捜査アクションなどは、それぞれUIや用途の違うデータであり、内部では共通構造を利用する。
+会話、証拠、ログなどは、それぞれUIや用途の違うデータであり、内部では共通構造を利用する。
 
 この設計により、今回のSNS乗っ取り事件を完成させた後も、同じゲームエンジンを使って別のサイバー犯罪事件を追加できるようにする。
 
@@ -1237,27 +1189,26 @@ Event
 
 ## 状態の分離
 
-PlayerStateはプレイヤーごとに1つ持ち、証拠、ログ、判明事項、会話・Action・Eventの開始・完了、ヒント利用、クリア状態を保存する。事件全体で1つのGMStateは`currentStage`と全体アナウンスを保存する。有効なGM制御セッション中だけ`globalPause`と個別Player / Action上書きを保持し、セッション終了時に解除する。個別上書きは`lock` / `unlock` / `none`で、PlayerStateにはGM制御を複製しない。
+PlayerStateはプレイヤーごとに1つ持ち、証拠、ログ、判明事項、会話・証拠調査・ログ行調査・Eventの完了、ヒント利用、クリア状態を保存する。事件全体で1つのGMStateは`currentStage`と全体アナウンスを保存する。有効なGM制御セッション中だけ`globalPause`と個別Player / 操作Lockを保持し、セッション終了時に解除する。PlayerStateにはGM制御を複製しない。
 
 ## 利用可能判定
 
 サーバーは各操作で次の順に判定する：
 
 1. 認証と対象Playerを検証する。Playerは自分のPlayerStateのみ操作でき、GM操作はroleが`gm`のセッションのみ実行できる。
-2. 有効なGM制御セッションがなければ、GM上書きを適用せずConditionを評価する。
+2. 有効なGM制御セッションがなければ、GM Lockを適用せずConditionを評価する。
 3. セッションが有効で`globalPause`中なら、GM以外の操作を拒否する。
-4. 個別Action上書きが`lock`なら拒否する。
-5. 上書きが`unlock`ならCondition未達でも許可する。
-6. 上書きが`none`または未設定ならConditionを評価する。
-7. Action / Event参照の存在とEvent未完了を確認して処理する。
+4. 個別操作Lockがあれば拒否する。
+5. Lockがなければ操作を許可する。
+6. 操作 / Event参照の存在とEvent未完了を確認して処理する。
 
-GM制御セッション終了時に`globalPause`とAction上書きを解除するため、GM不在時に以前の強制抑止・強制解放は残らない。GM制御セッションの有効性、Lock / Unlock / Conditionの判定はサーバー側で行い、クライアント表示は結果を示す。
+GM制御セッション終了時に`globalPause`と操作Lockを解除するため、GM不在時に以前の強制抑止は残らない。GM制御セッションの有効性、Lock / Conditionの判定はサーバー側で行い、クライアント表示は結果を示す。
 
 ## EventとEffect
 
-会話、捜査Action、ログ行、ヒント段階は完了時にEvent IDを1つ参照し、Effectを直接保持しない。Eventは起動元を`trigger`で指定し、状態変更は`effects`配列だけに記述する。Eventはプレイヤーごとに一度だけ実行する。Effectsと完了Event IDは同一トランザクションで保存し、失敗時は全体をロールバックする。重複要求では保存済みの成功結果を返し、再実行しない。
+会話、証拠調査項目、ログ行、ヒント段階は完了時にEvent IDを1つ参照し、Effectを直接保持しない。Eventは起動元を`trigger`で指定し、状態変更は`effects`配列だけに記述する。Eventはプレイヤーごとに一度だけ実行する。Effects、起動元の完了状態、完了Event IDは同一トランザクションで保存し、失敗時は全体をロールバックする。重複要求では保存済みの成功結果を返し、再実行しない。
 
-Conditionは存在・完了を判定する単一条件に加えて`and`、`or`、`not`を持つ。複合Conditionは空にせず、`not`の子は1つとする。Effectは`add`（集合への重複しない追加）、`remove`（未登録でも成功する削除）、`set`（許可されたスカラー値の置換）、`complete`（進行対象の完了化）、`start`（会話またはActionの開始）とする。各操作は冪等にし、任意フィールドの変更やGMState変更はEffectから行わない。詳細なデータ形はゲームエンジン仕様とシナリオ・データ設計書に従う。
+Conditionは存在・完了を判定する単一条件に加えて`and`、`or`、`not`を持つ。複合Conditionは空にせず、`not`の子は1つとする。Effectは`add`（集合への重複しない追加）、`remove`（未登録でも成功する削除）、`set`（許可されたスカラー値の置換）とする。各操作は冪等にし、任意フィールドの変更やGMState変更はEffectから行わない。詳細なデータ形はゲームエンジン仕様とシナリオ・データ設計書に従う。
 
 ## 認証と保存
 

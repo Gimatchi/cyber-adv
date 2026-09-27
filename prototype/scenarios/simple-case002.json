@@ -5,7 +5,7 @@
   "defaults": {
     "background": "assets/backgrounds/default-investigation.png",
     "characterIcon": "assets/icons/ayaka.png",
-    "evidenceIcon": "assets/icons/ayaka.png"
+    "evidenceIcon": "assets/icons/evidence.png"
   },
   "characters": [
     {

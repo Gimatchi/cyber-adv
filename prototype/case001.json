@@ -14,6 +14,22 @@
       "icon": "assets/icons/ayaka.png",
       "background": "assets/backgrounds/ayaka-selection.png",
       "description": "SNSアカウントを乗っ取られた被害者。"
+    },
+    {
+      "id": "kuroda",
+      "name": "黒田恒一",
+      "role": "被害関係者",
+      "icon": "assets/icons/ayaka.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "彩花の恋人。公開された情報による被害も受けている。"
+    },
+    {
+      "id": "riko",
+      "name": "和泉理子",
+      "role": "参考人",
+      "icon": "assets/icons/ayaka.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "彩花の友人。3人の関係について知っている。"
     }
   ],
   "conversations": [
@@ -103,6 +119,71 @@
           "text": "まずはアクセスログを確認します。"
         }
       ]
+    },
+    {
+      "id": "conv_kuroda_context",
+      "title": "黒田への聞き込み",
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_suspicious_email",
+        "operator": "exists"
+      },
+      "startNodeId": "conv_kuroda_001",
+      "nodes": [
+        {
+          "id": "conv_kuroda_001",
+          "speakerId": "kuroda",
+          "text": "彩花から、見覚えのないメールが届いたと聞いています。\n私にも同じような内容が送られてきました。",
+          "nextNodeId": "conv_kuroda_002"
+        },
+        {
+          "id": "conv_kuroda_002",
+          "speakerId": "player",
+          "text": "相沢拓海という人物に心当たりはありますか？",
+          "choices": [
+            {
+              "text": "大学時代の関係を聞く",
+              "nextNodeId": "conv_kuroda_003"
+            },
+            {
+              "text": "被害の内容を確認する",
+              "nextNodeId": "conv_kuroda_003"
+            }
+          ]
+        },
+        {
+          "id": "conv_kuroda_003",
+          "speakerId": "kuroda",
+          "text": "大学時代の知人です。彩花に好意を持っていたようですが、詳しくは分かりません。"
+        }
+      ]
+    },
+    {
+      "id": "conv_riko_reference",
+      "title": "和泉への聞き込み",
+      "requires": {
+        "type": "and",
+        "conditions": [
+          {
+            "type": "fact",
+            "targetId": "fact_suspicious_email",
+            "operator": "exists"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_unknown_login",
+            "operator": "exists"
+          }
+        ]
+      },
+      "startNodeId": "conv_riko_001",
+      "nodes": [
+        {
+          "id": "conv_riko_001",
+          "speakerId": "riko",
+          "text": "相沢くんは、彩花のことをずっと気にしていました。\n黒田さんとの関係を知ってから、様子が変わったと思います。"
+        }
+      ]
     }
   ],
   "evidence": [
@@ -117,6 +198,26 @@
           "label": "保存されたメールを確認する",
           "description": "受信メールを確認する。",
           "completionEventId": "event_inspect_mika_phone_mail"
+        },
+        {
+          "id": "inspect_mika_phone_history",
+          "label": "閲覧履歴を確認する",
+          "description": "不審なリンク先を開いた履歴が残っている。",
+          "completionEventId": "event_inspect_mika_phone_history"
+        }
+      ]
+    },
+    {
+      "id": "ev_suspicious_email",
+      "name": "不審なメール",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "SNS運営を装ったメール。本文と送信元を確認できる。",
+      "investigations": [
+        {
+          "id": "inspect_email_sender",
+          "label": "送信元を確認する",
+          "description": "送信元アカウントは偽名で登録されている。",
+          "completionEventId": "event_inspect_email_sender"
         }
       ]
     }
@@ -126,14 +227,61 @@
       "id": "log_mika_access",
       "name": "SNSアクセスログ",
       "background": "assets/backgrounds/default-investigation.png",
-      "description": "美香のアカウントへのアクセス記録。",
+      "description": "彩花のアカウントへのアクセス記録。",
       "rows": [
+        {
+          "id": "row_normal_activity",
+          "time": "20:58:11",
+          "text": "203.0.113.12  通常ログイン",
+          "important": false
+        },
+        {
+          "id": "row_password_change",
+          "time": "21:02:44",
+          "text": "192.0.2.10  パスワード変更",
+          "important": false
+        },
         {
           "id": "row_unknown_login",
           "time": "21:14:08",
           "text": "198.51.100.25  ログイン成功",
           "important": true,
-          "completionEventId": "event_inspect_unknown_login"
+          "completionEventId": "event_inspect_unknown_login",
+          "result": "通常とは異なる接続元からのログインを確認した。"
+        },
+        {
+          "id": "row_failed_login",
+          "time": "21:14:02",
+          "text": "198.51.100.25  ログイン失敗\nreason=invalid_password",
+          "important": true,
+          "result": "この行からは、捜査に役立つ情報は何も得られなかった。"
+        },
+        {
+          "id": "row_session_token",
+          "time": "21:14:09",
+          "text": "session_id=7f3a9c\nuser=ayaka.fujisaki\nstatus=created",
+          "important": true,
+          "result": "この行からは、捜査に役立つ情報は何も得られなかった。"
+        },
+        {
+          "id": "row_tor_exit",
+          "time": "21:20:37",
+          "text": "198.51.100.90  投稿処理\nroute=anonymous-relay",
+          "important": true,
+          "completionEventId": "event_inspect_tor_exit",
+          "result": "匿名中継を経由した投稿処理を確認した。"
+        },
+        {
+          "id": "row_logout",
+          "time": "21:25:45",
+          "text": "198.51.100.90  ログアウト",
+          "important": false
+        },
+        {
+          "id": "row_maintenance",
+          "time": "22:00:00",
+          "text": "system  scheduled maintenance",
+          "important": false
         }
       ]
     }
@@ -150,6 +298,18 @@
       "name": "通常と異なる接続元からログインしている",
       "description": "普段とは異なる接続元からログインが成功している。",
       "sortOrder": 20
+    },
+    {
+      "id": "fact_email_sender_unknown",
+      "name": "メール送信元が不明である",
+      "description": "メールの送信元は通常の運営アカウントと一致しない。",
+      "sortOrder": 30
+    },
+    {
+      "id": "fact_tor_access",
+      "name": "匿名中継経由の投稿がある",
+      "description": "匿名中継を経由して投稿処理が行われていた。",
+      "sortOrder": 30
     }
   ],
   "events": [
@@ -179,6 +339,10 @@
       "effects": [
         {
           "type": "add",
+          "target": "evidence.ev_suspicious_email"
+        },
+        {
+          "type": "add",
           "target": "logs.log_mika_access"
         }
       ]
@@ -193,6 +357,45 @@
         {
           "type": "add",
           "target": "facts.fact_unknown_login"
+        }
+      ]
+    },
+    {
+      "id": "event_inspect_mika_phone_history",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_mika_phone_history"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_suspicious_email"
+        }
+      ]
+    },
+    {
+      "id": "event_inspect_email_sender",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_email_sender"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_email_sender_unknown"
+        }
+      ]
+    },
+    {
+      "id": "event_inspect_tor_exit",
+      "trigger": {
+        "type": "logRow",
+        "targetId": "row_tor_exit"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tor_access"
         }
       ]
     }

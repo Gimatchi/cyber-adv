@@ -71,6 +71,8 @@ scenario/
 
 画像フィールドは画像ファイルへの相対パス文字列とする。背景は`defaults.background`を事件の既定背景、会話の`background`を会話全体の背景、ノードの`background`をそのノードだけの背景として設定できる。会話中の背景は「ノード → 会話 → 事件既定 → エンジン内蔵背景」の順に選ぶ。人物・証拠品・ログを個別に選択した画面では、その項目の`background`、事件既定、エンジン内蔵背景の順に選ぶ。人物アイコンは「ノード → 人物 → `defaults.characterIcon` → エンジン内蔵アイコン」、証拠アイコンは「証拠 → `defaults.evidenceIcon` → エンジン内蔵アイコン」の順に選ぶ。プレイヤーとナレーターには人物アイコンを表示しない。
 
+資料タブを選択した直後のメインペインは、資料未選択状態として扱う。証拠品・ログ・Factの種別ごとに既定アイコンと事件既定背景を表示し、資料を選ぶよう案内する。この表示はPlayerStateを変更しない。ログの`background`はログ選択画面に使うが、ログ行を解析している画面ではログ専用の背景を表示せず、ログ表示領域を等幅フォントで表示する。 ログ解析中はセリフペインを表示し、人物・証拠品・判明事項・タブの選択時はセリフペインを閉じる。
+
 ### 人物 `characters[]`
 
 ```json
@@ -181,7 +183,7 @@ scenario/
 }
 ```
 
-ログの`id`、`name`は必須。`background`、`description`は任意。ログを選択した画面では`background`を背景として使い、省略時は事件既定の背景を使う。各行は`id`、`text`を必須とし、`time`は任意。`important`はプレイヤーが調査できる行なら`true`とし、省略時は`false`。重要行のEventは`completionEventId`で指定する。通常行はEventを持たない。メール本文とヘッダも特別処理を作らず、必要な内容を通常のログ行として記述する。
+ログの`id`、`name`は必須。`background`、`description`は任意。ログを選択した画面では`background`を背景として使い、省略時は事件既定の背景を使う。各行は`id`、`text`を必須とし、`time`は任意。`important`はプレイヤーが調査できる行なら`true`とし、省略時は`false`。正解行・不正解行の両方を調査可能にできる。正解行のEventは`completionEventId`で指定し、不正解行では省略する。`result`を指定した行は調査直後に結果文をセリフペインへ表示する。調査した行はPlayerStateの`completedLogRows`へ追加し、再表示時には通常「？」を付けない。正解行（`completionEventId`がある行）はPlayerStateの`discoveredLogRows`にも追加し、結果を示す「✓」と「結果を見る」を表示して、何度でも結果を振り返れるようにする。不正解行は結果を表示した後に再選択できない。メール本文とヘッダも特別処理を作らず、改行を含む通常のログ行として記述する。
 
 ### 判明事項 `facts[]`
 
@@ -286,6 +288,7 @@ Event triggerは完了した起動元を表す。エンジンは起動元の完�
   "completedConversations": [],
   "completedInvestigations": [],
   "completedLogRows": [],
+  "discoveredLogRows": [],
   "completedEvents": [],
   "usedHints": [],
   "cleared": false
@@ -342,6 +345,9 @@ Conversation: conv_ayaka_first
 
 ## 8. 未確定事項と変更管理
 
-この形式では、会話選択肢ごとのCondition、任意のフラグ、数値変数、複数言語対応、素材バリアントは初版に含めない。必要になった場合は、既存データとの互換性とエンジンへの影響を確認し、`schemaVersion`を更新してから追加する。初版のCondition / Effectで表現できない仕様を作者が自由記述で補わない。
+この形式では、会話・ノード・選択肢・ルートのConditionと、Conditionの`and` / `or` / `not`を初版に含める。任意のフラグ、数値変数、複数言語対応、素材バリアントは初版に含めない。必要になった場合は、既存データとの互換性とエンジンへの影響を確認し、`schemaVersion`を更新してから追加する。初版のCondition / Effectで表現できない仕様を作者が自由記述で補わない。
 
-現行の`prototype/case001.json`とシナリオメーカー試作版は、本書確定形式より前のデータ形式である。新形式を読み書きするメーカー・エンジンを実装する際に、旧形式からの移行処理またはCase 001の変換を行う。旧形式を暗黙に新形式として扱わない。
+旧形式の`prototype/case001.json`と旧シナリオメーカー試作版は、本書確定形式より前のデータ形式である。現在の`prototype/case001.json`は`schemaVersion: 1`の新形式を使用する。旧形式を読み込む場合は、移行処理またはCase 001の変換を明示的に行い、旧形式を暗黙に新形式として扱わない。
+
+
+

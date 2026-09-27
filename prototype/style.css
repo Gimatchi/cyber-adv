@@ -144,3 +144,16 @@ button { font: inherit; }
 }
 
 .avatar img,.portrait img{width:100%;height:100%;object-fit:cover;display:block}.detail-view{background-repeat:no-repeat;background-position:center;background-size:cover;border-radius:8px;padding-left:22px;padding-right:22px}.detail-view .detail-card,.detail-view .detail-topline{max-width:900px}
+
+.dialogue-pane{margin-top:18px;padding:18px 20px;border:1px solid rgba(88,199,178,.24);border-radius:10px;background:linear-gradient(145deg,rgba(18,39,47,.96),rgba(12,25,35,.96));box-shadow:0 10px 30px rgba(0,0,0,.18)}.dialogue-label{color:#7faaa4;font:10px 'Noto Sans Mono','Noto Sans JP';letter-spacing:.1em}.dialogue-speaker-row{display:flex;align-items:center;gap:11px;margin-top:10px}.dialogue-icon{width:42px;height:42px;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(88,199,178,.35);border-radius:50%;color:#a9e6dc;background:#19363b}.dialogue-icon img{width:100%;height:100%;object-fit:cover}.dialogue-speaker-row h2{margin:3px 0 0;color:#eef5f7;font-size:16px}.dialogue-speaker{color:#83cdbf;font-size:11px}.dialogue-text{min-height:48px;margin:16px 0 13px;color:#d9e5e8;font-size:14px;line-height:1.9;white-space:pre-line}.dialogue-choices{display:grid;gap:7px}.dialogue-choices .action-button{width:100%;margin:0;text-align:left}.dialogue-pane>.reset-button{margin-top:12px;margin-left:0}.dialogue-pane[hidden]{display:none}
+
+
+.dialogue-choices{margin-top:10px;padding:12px 0;display:grid;gap:8px}.dialogue-choices[hidden]{display:none}.dialogue-pane .dialogue-choices{display:none}.dialogue-pane .dialogue-text.is-typing{opacity:.9}.dialogue-pane .action-button{margin-top:0}
+
+.collection-placeholder{font:24px 'Share Tech Mono','Noto Sans Mono','Noto Sans JP',monospace;letter-spacing:.06em}.log-view{font-family:'Share Tech Mono','Noto Sans Mono','Noto Sans JP',monospace}.log-view .detail-description,.log-view h2{font-family:'Noto Sans JP',sans-serif}
+.log-view{max-height:360px;overflow-y:auto;padding-right:6px}
+.log-title{margin:4px 0 8px;font-size:14px}
+.log-row{min-height:0;padding:6px 8px;line-height:1.35}
+.log-row .question-flag{width:17px;height:17px}
+.log-row.is-discovered{border-color:rgba(88,199,178,.35);background:rgba(88,199,178,.07)}
+.question-flag.is-discovered{border-color:rgba(88,199,178,.45);color:#8fe0ce;background:rgba(88,199,178,.1)}

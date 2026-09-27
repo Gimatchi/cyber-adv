@@ -36,7 +36,7 @@
         <div id="editor-fields" class="editor-fields"><div class="empty">左の一覧から項目を選ぶか、新しい項目を追加してください。</div></div>
         <section class="validation" aria-live="polite"><div class="section-head"><div><span class="eyebrow">CHECKS</span><h2>データ検証</h2></div><button id="validate-button" class="button secondary" type="button">再検証</button></div><ul id="validation-list"></ul></section>
       </section>
-      <aside class="preview-panel"><div class="panel-heading"><div><span class="eyebrow">EXPORT PREVIEW</span><h2>JSONプレビュー</h2></div><button id="copy-button" class="button secondary" type="button">コピー</button></div><pre id="json-preview"></pre><p class="note">新しい事件データ形式（schemaVersion 1）を編集します。本文・説明・選択肢・ログ行は複数行で入力できます。条件はフォームで設定し、会話ノードの選択肢と自動分岐もここで追加できます。</p><p id="save-state" class="save-state">このブラウザに自動保存します</p></aside>
+      <aside class="preview-panel"><div class="panel-heading"><div><span class="eyebrow">EXPORT PREVIEW</span><h2>JSONプレビュー</h2></div><button id="copy-button" class="button secondary" type="button">コピー</button></div><pre id="json-preview"></pre><p class="note">最新の事件データ形式（schemaVersion 1）を編集します。会話は人物ごとに追加します。本文・説明・選択肢・ログ行は複数行で入力でき、条件・Event起動元・Effect対象は選択式で設定できます。</p><p id="save-state" class="save-state">このブラウザに自動保存します</p></aside>
     </main>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </body>

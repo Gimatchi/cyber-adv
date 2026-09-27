@@ -1,10 +1,11 @@
 {
   "schemaVersion": 1,
   "id": "case001",
-  "title": "SNS乗っ取り",
+  "title": "事件001 SNS乗っ取り",
   "defaults": {
     "background": "assets/backgrounds/default-investigation.png",
-    "characterIcon": "assets/icons/ayaka.png"
+    "characterIcon": "assets/icons/ayaka.png",
+    "evidenceIcon": "assets/icons/ayaka.png"
   },
   "characters": [
     {
@@ -21,7 +22,11 @@
       "role": "被害関係者",
       "icon": "assets/icons/ayaka.png",
       "background": "assets/backgrounds/default-investigation.png",
-      "description": "彩花の恋人。公開された情報による被害も受けている。"
+      "description": "彩花の恋人。公開された情報による被害も受けている。",
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_suspicious_email"
+      }
     },
     {
       "id": "riko",
@@ -29,181 +34,389 @@
       "role": "参考人",
       "icon": "assets/icons/ayaka.png",
       "background": "assets/backgrounds/default-investigation.png",
-      "description": "彩花の友人。3人の関係について知っている。"
+      "description": "彩花と黒田、相沢の関係を知る友人。",
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_unknown_login"
+      }
+    },
+    {
+      "id": "jinai",
+      "name": "陣内警部",
+      "role": "上司",
+      "icon": "assets/icons/ayaka.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "捜査方針と必要な手続きを確認する上司。"
+    },
+    {
+      "id": "aizawa",
+      "name": "相沢拓海",
+      "role": "参考人",
+      "icon": "assets/icons/ayaka.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "彩花と大学時代に面識がある人物。",
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_brightnet_subscriber"
+      }
+    },
+    {
+      "id": "asano",
+      "name": "麻野巡査",
+      "role": "捜査員",
+      "icon": "assets/icons/ayaka.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "事件の記録整理を担当する捜査員。",
+      "requires": null
     }
   ],
   "conversations": [
     {
-      "id": "conv_mika_first",
-      "title": "彩花への聞き込み",
-      "background": "assets/backgrounds/interview-room.png",
-      "startNodeId": "conv_mika_first_001",
-      "completionEventId": "event_conv_mika_first",
+      "id": "conv_ayaka_first",
+      "title": "彩花への初回聞き込み",
+      "startNodeId": "ayaka_first_001",
+      "completionEventId": "event_ayaka_first",
       "nodes": [
         {
-          "id": "conv_mika_first_001",
+          "id": "ayaka_first_001",
           "speakerId": "ayaka",
-          "icon": "assets/icons/ayaka.png",
-          "text": "アカウントに入れなくなってしまって……。\n昨日までは普通に使えていました。",
-          "nextNodeId": "conv_mika_first_002"
+          "text": "アカウントに入れなくなってしまって……。昨日までは普通に使えていました。",
+          "nextNodeId": "ayaka_first_002"
         },
         {
-          "id": "conv_mika_first_002",
+          "id": "ayaka_first_002",
           "speakerId": "player",
-          "text": "何か、直前に変わったことはありましたか？",
+          "text": "アカウントに入れなくなる前に、何か変わったことはありましたか？",
           "choices": [
             {
               "text": "メールについて聞く",
-              "nextNodeId": "conv_mika_first_003"
+              "nextNodeId": "ayaka_first_003"
             },
             {
               "text": "利用状況について聞く",
-              "nextNodeId": "conv_mika_first_003"
+              "nextNodeId": "ayaka_first_003"
             }
           ]
         },
         {
-          "id": "conv_mika_first_003",
+          "id": "ayaka_first_003",
           "speakerId": "ayaka",
-          "icon": "assets/icons/ayaka.png",
-          "text": "スマートフォンをお預けします。\n中を確認してもらえますか？"
+          "text": "SNSの運営からのようなメールが来ました。アカウントの確認が必要だと書いてあって、リンクを開いたと思います。",
+          "nextNodeId": "ayaka_first_004"
+        },
+        {
+          "id": "ayaka_first_004",
+          "speakerId": "player",
+          "text": "端末に記録が残っているか確認します。スマートフォンを預けてもらえますか？",
+          "nextNodeId": "ayaka_first_005"
+        },
+        {
+          "id": "ayaka_first_005",
+          "speakerId": "ayaka",
+          "text": "お願いします。何が起きたのか、知りたいです。"
         }
       ]
     },
     {
-      "id": "conv_mika_followup",
-      "title": "彩花への追加確認",
+      "id": "conv_ayaka_followup",
+      "title": "彩花への再確認",
       "requires": {
-        "type": "fact",
-        "targetId": "fact_unknown_login",
-        "operator": "exists"
+        "type": "and",
+        "conditions": [
+          {
+            "type": "fact",
+            "targetId": "fact_unknown_login"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_mailia_response"
+          }
+        ]
       },
-      "startNodeId": "conv_mika_followup_001",
+      "startNodeId": "ayaka_followup_001",
       "nodes": [
         {
-          "id": "conv_mika_followup_001",
+          "id": "ayaka_followup_001",
+          "speakerId": "player",
+          "text": "メールを受け取った時刻と、不審なログインの記録を確認しました。メールの後にリンクを開き、その後にログインが起きています。",
+          "nextNodeId": "ayaka_followup_002"
+        },
+        {
+          "id": "ayaka_followup_002",
           "speakerId": "ayaka",
-          "text": "その時間は、私はログインしていません。"
+          "text": "やっぱり、あのメールが原因だったんですね……。",
+          "nextNodeId": "ayaka_followup_003"
+        },
+        {
+          "id": "ayaka_followup_003",
+          "speakerId": "player",
+          "text": "原因を確定するため、記録を一つずつ確認します。あなたのせいだと決めつけることはありません。"
         }
       ]
     },
     {
-      "id": "conv_mika_route",
-      "title": "判明事項による案内",
-      "startNodeId": "conv_mika_route_001",
-      "nodes": [
-        {
-          "id": "conv_mika_route_001",
-          "routes": [
-            {
-              "requires": {
-                "type": "fact",
-                "targetId": "fact_unknown_login",
-                "operator": "exists"
-              },
-              "nextNodeId": "conv_mika_route_known"
-            },
-            {
-              "nextNodeId": "conv_mika_route_unknown"
-            }
-          ]
-        },
-        {
-          "id": "conv_mika_route_known",
-          "speakerId": "narrator",
-          "text": "不審な接続元が判明しています。追加確認へ進みます。"
-        },
-        {
-          "id": "conv_mika_route_unknown",
-          "speakerId": "narrator",
-          "text": "まずはアクセスログを確認します。"
-        }
-      ]
-    },
-    {
-      "id": "conv_kuroda_context",
+      "id": "conv_kuroda",
       "title": "黒田への聞き込み",
       "requires": {
         "type": "fact",
-        "targetId": "fact_suspicious_email",
-        "operator": "exists"
+        "targetId": "fact_suspicious_email"
       },
-      "startNodeId": "conv_kuroda_001",
+      "startNodeId": "kuroda_001",
       "nodes": [
         {
-          "id": "conv_kuroda_001",
+          "id": "kuroda_001",
           "speakerId": "kuroda",
-          "text": "彩花から、見覚えのないメールが届いたと聞いています。\n私にも同じような内容が送られてきました。",
-          "nextNodeId": "conv_kuroda_002"
+          "text": "彩花から、見覚えのないメールが届いたと聞いています。僕にも同じような内容が送られてきました。",
+          "nextNodeId": "kuroda_002"
         },
         {
-          "id": "conv_kuroda_002",
+          "id": "kuroda_002",
           "speakerId": "player",
-          "text": "相沢拓海という人物に心当たりはありますか？",
+          "text": "相沢拓海さんという人物に心当たりはありますか？",
           "choices": [
             {
               "text": "大学時代の関係を聞く",
-              "nextNodeId": "conv_kuroda_003"
+              "nextNodeId": "kuroda_003"
             },
             {
               "text": "被害の内容を確認する",
-              "nextNodeId": "conv_kuroda_003"
+              "nextNodeId": "kuroda_003"
             }
           ]
         },
         {
-          "id": "conv_kuroda_003",
+          "id": "kuroda_003",
           "speakerId": "kuroda",
-          "text": "大学時代の知人です。彩花に好意を持っていたようですが、詳しくは分かりません。"
+          "text": "大学時代の知人です。彩花に好意を持っていたようですが、今の段階で犯人と決めつける材料はありません。"
         }
       ]
     },
     {
-      "id": "conv_riko_reference",
+      "id": "conv_riko",
       "title": "和泉への聞き込み",
       "requires": {
         "type": "and",
         "conditions": [
           {
             "type": "fact",
-            "targetId": "fact_suspicious_email",
-            "operator": "exists"
+            "targetId": "fact_suspicious_email"
           },
           {
             "type": "fact",
-            "targetId": "fact_unknown_login",
-            "operator": "exists"
+            "targetId": "fact_unknown_login"
           }
         ]
       },
-      "startNodeId": "conv_riko_001",
+      "startNodeId": "riko_001",
       "nodes": [
         {
-          "id": "conv_riko_001",
+          "id": "riko_001",
           "speakerId": "riko",
-          "text": "相沢くんは、彩花のことをずっと気にしていました。\n黒田さんとの関係を知ってから、様子が変わったと思います。"
+          "text": "相沢くんは、彩花のことをずっと気にしていました。黒田さんとの関係を知ってから、様子が変わったと思います。",
+          "nextNodeId": "riko_002"
+        },
+        {
+          "id": "riko_002",
+          "speakerId": "player",
+          "text": "相沢さんが犯人だと考えていますか？",
+          "choices": [
+            {
+              "text": "断定せず、知っている事実を聞く",
+              "nextNodeId": "riko_003"
+            },
+            {
+              "text": "相沢さんを疑っていると伝える",
+              "nextNodeId": "riko_003"
+            }
+          ]
+        },
+        {
+          "id": "riko_003",
+          "speakerId": "riko",
+          "text": "疑うことと決めつけることは違います。大学の頃、彩花に何度も二人で会おうとしていました。"
+        }
+      ]
+    },
+    {
+      "id": "conv_jinai_search",
+      "title": "捜索の相談",
+      "requires": {
+        "type": "and",
+        "conditions": [
+          {
+            "type": "fact",
+            "targetId": "fact_brightnet_subscriber"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_mailia_response"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_nexhost_access"
+          }
+        ]
+      },
+      "startNodeId": "jinai_001",
+      "completionEventId": "event_jinai_search",
+      "nodes": [
+        {
+          "id": "jinai_001",
+          "speakerId": "jinai",
+          "text": "相沢の回線からフィッシングサイトへのアクセスがあり、メールの記録もある。だが、契約者情報だけで本人の犯行と決めるな。",
+          "nextNodeId": "jinai_002"
+        },
+        {
+          "id": "jinai_002",
+          "speakerId": "player",
+          "text": "端末にサイトの操作やメール送信の記録が残っているか確認したいと考えています。対象と目的を整理して手続きを進めます。",
+          "nextNodeId": "jinai_003"
+        },
+        {
+          "id": "jinai_003",
+          "speakerId": "jinai",
+          "text": "筋は見えている。必要な手続きを踏み、本人の端末と関係資料を確認しろ。崩れない捜査をするんだ。"
+        }
+      ]
+    },
+    {
+      "id": "conv_aizawa_first",
+      "title": "相沢への初回接触",
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_brightnet_subscriber"
+      },
+      "startNodeId": "aizawa_first_001",
+      "completionEventId": "event_aizawa_first",
+      "nodes": [
+        {
+          "id": "aizawa_first_001",
+          "speakerId": "aizawa",
+          "text": "黒田先輩から聞きました。大変なことになったみたいですね。彩花さん、気の毒に。",
+          "nextNodeId": "aizawa_first_002"
+        },
+        {
+          "id": "aizawa_first_002",
+          "speakerId": "player",
+          "text": "事件当日の行動について確認させてください。",
+          "nextNodeId": "aizawa_first_003"
+        },
+        {
+          "id": "aizawa_first_003",
+          "speakerId": "aizawa",
+          "text": "仕事をしていました。フリーランスなので、家で作業することも多いです。早く犯人が見つかるといいですね。"
+        }
+      ]
+    },
+    {
+      "id": "conv_aizawa_final",
+      "title": "最終追及",
+      "requires": {
+        "type": "and",
+        "conditions": [
+          {
+            "type": "fact",
+            "targetId": "fact_site_history"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_mail_sent"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_credentials_note"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_motive_note"
+          }
+        ]
+      },
+      "startNodeId": "aizawa_final_001",
+      "completionEventId": "event_case_clear",
+      "nodes": [
+        {
+          "id": "aizawa_final_001",
+          "speakerId": "player",
+          "text": "確認したいことがあります。まず、事件に使われたフィッシングサイトの閲覧履歴について説明してください。",
+          "nextNodeId": "aizawa_final_002"
+        },
+        {
+          "id": "aizawa_final_002",
+          "speakerId": "aizawa",
+          "text": "仕事でいろいろなサイトを見ます。それだけでは、僕が作ったとは言えません。",
+          "nextNodeId": "aizawa_final_003"
+        },
+        {
+          "id": "aizawa_final_003",
+          "speakerId": "player",
+          "text": "では、彩花さんへ送ったメールの記録はどうですか？",
+          "nextNodeId": "aizawa_final_004"
+        },
+        {
+          "id": "aizawa_final_004",
+          "speakerId": "aizawa",
+          "text": "誰かが僕のアカウントを使ったんじゃないですか。",
+          "nextNodeId": "aizawa_final_005"
+        },
+        {
+          "id": "aizawa_final_005",
+          "speakerId": "player",
+          "text": "彩花さんのIDとパスワードが、あなたの端末にありました。さらに、犯行の計画メモもあります。",
+          "nextNodeId": "aizawa_final_006"
+        },
+        {
+          "id": "aizawa_final_006",
+          "speakerId": "aizawa",
+          "text": "黒田先輩は、何でも持っていた。彩花さんまで。僕を見てほしかったんです。……はい。僕がやりました。"
+        }
+      ]
+    },
+    {
+      "id": "conv_jinai_intro",
+      "title": "陣内警部への相談",
+      "startNodeId": "jinai_intro_001",
+      "completionEventId": "event_jinai_intro",
+      "nodes": [
+        {
+          "id": "jinai_intro_001",
+          "speakerId": "jinai",
+          "text": "まずは藤崎さんへの聞き取りを進めろ。本人から、起きたことと端末に残っている資料を確認するんだ。"
+        }
+      ]
+    },
+    {
+      "id": "conv_asano_intro",
+      "title": "麻野巡査からの案内",
+      "startNodeId": "asano_intro_001",
+      "completionEventId": "event_asano_intro",
+      "nodes": [
+        {
+          "id": "asano_intro_001",
+          "speakerId": "asano",
+          "text": "藤崎さんの端末を確認できれば、メールやアクセス記録を整理できます。まずは藤崎さんへ聞き取りをお願いします。"
         }
       ]
     }
   ],
   "evidence": [
     {
-      "id": "ev_mika_phone",
+      "id": "ev_ayaka_phone",
       "name": "彩花のスマートフォン",
-      "background": "assets/backgrounds/evidence-desk.png",
-      "description": "保存されたメールとSNSアクセスログを調べられる。",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "保存されたメールと閲覧履歴を確認できる。",
       "investigations": [
         {
-          "id": "inspect_mika_phone_mail",
+          "id": "inspect_phone_mail",
           "label": "保存されたメールを確認する",
-          "description": "受信メールを確認する。",
-          "completionEventId": "event_inspect_mika_phone_mail"
+          "description": "SNS運営を装ったメールが残っている。本文のリンクは正規サイトとは異なる。",
+          "completionEventId": "event_phone_mail"
         },
         {
-          "id": "inspect_mika_phone_history",
+          "id": "inspect_phone_history",
           "label": "閲覧履歴を確認する",
-          "description": "不審なリンク先を開いた履歴が残っている。",
-          "completionEventId": "event_inspect_mika_phone_history"
+          "description": "メール受信後、フィッシングサイトを開いた履歴が残っている。",
+          "completionEventId": "event_phone_history"
         }
       ]
     },
@@ -214,17 +427,91 @@
       "description": "SNS運営を装ったメール。本文と送信元を確認できる。",
       "investigations": [
         {
-          "id": "inspect_email_sender",
-          "label": "送信元を確認する",
-          "description": "送信元アカウントは偽名で登録されている。",
-          "completionEventId": "event_inspect_email_sender"
+          "id": "inspect_email_header",
+          "label": "メールヘッダを確認する",
+          "description": "表示名と実際の送信元が一致していない。送信元アカウントの記録を事業者へ照会する。",
+          "completionEventId": "event_email_header"
+        }
+      ]
+    },
+    {
+      "id": "ev_mailia_response",
+      "name": "Mailia回答書",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "メール送信元アカウントに関する事業者回答。",
+      "investigations": [
+        {
+          "id": "inspect_mailia_records",
+          "label": "回答書を確認する",
+          "description": "偽名で登録されたアカウントと、フィッシングサイトに関係する記録が確認できる。",
+          "completionEventId": "event_mailia_records"
+        }
+      ]
+    },
+    {
+      "id": "ev_nexhost_response",
+      "name": "NexHostアクセス記録",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "フィッシングサイトへのアクセス記録。",
+      "investigations": [
+        {
+          "id": "inspect_nexhost_access",
+          "label": "アクセス元を確認する",
+          "description": "サイトの確認・操作と考えられるアクセス元IPと時刻が記録されている。回線事業者への照会が必要になる。",
+          "completionEventId": "event_nexhost_access"
+        }
+      ]
+    },
+    {
+      "id": "ev_brightnet_response",
+      "name": "BrightNet契約者回答",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "対象時刻の回線契約者に関する回答。契約者情報だけでは犯行の証明にならない。",
+      "investigations": [
+        {
+          "id": "inspect_brightnet_subscriber",
+          "label": "契約者情報を確認する",
+          "description": "対象時刻の契約者は相沢拓海だった。端末などの追加資料で裏付ける必要がある。",
+          "completionEventId": "event_brightnet_subscriber"
+        }
+      ]
+    },
+    {
+      "id": "ev_aizawa_phone",
+      "name": "相沢の押収端末",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "必要な手続きを経て押収した端末。事件に関係する複数の記録を確認できる。",
+      "investigations": [
+        {
+          "id": "inspect_site_history",
+          "label": "フィッシングサイトの閲覧履歴を確認する",
+          "description": "事件に使われたサイトを相沢の端末から確認していた記録がある。",
+          "completionEventId": "event_site_history"
+        },
+        {
+          "id": "inspect_mail_sent",
+          "label": "メール送信履歴を確認する",
+          "description": "彩花へ送られたメールの送信履歴が残っている。Mailiaの回答とつながる。",
+          "completionEventId": "event_mail_sent"
+        },
+        {
+          "id": "inspect_credentials_note",
+          "label": "認証情報のメモを確認する",
+          "description": "彩花のSNS IDとパスワードを書いたメモが見つかった。",
+          "completionEventId": "event_credentials_note"
+        },
+        {
+          "id": "inspect_motive_note",
+          "label": "計画メモを確認する",
+          "description": "彩花を黒田から引き離し、自分を認めさせようとした動機が記されている。",
+          "completionEventId": "event_motive_note"
         }
       ]
     }
   ],
   "logs": [
     {
-      "id": "log_mika_access",
+      "id": "log_sns_access",
       "name": "SNSアクセスログ",
       "background": "assets/backgrounds/default-investigation.png",
       "description": "彩花のアカウントへのアクセス記録。",
@@ -236,18 +523,10 @@
           "important": false
         },
         {
-          "id": "row_password_change",
-          "time": "21:02:44",
-          "text": "192.0.2.10  パスワード変更",
+          "id": "row_email_link",
+          "time": "21:03:17",
+          "text": "203.0.113.12  外部リンクアクセス",
           "important": false
-        },
-        {
-          "id": "row_unknown_login",
-          "time": "21:14:08",
-          "text": "198.51.100.25  ログイン成功",
-          "important": true,
-          "completionEventId": "event_inspect_unknown_login",
-          "result": "通常とは異なる接続元からのログインを確認した。"
         },
         {
           "id": "row_failed_login",
@@ -255,6 +534,14 @@
           "text": "198.51.100.25  ログイン失敗\nreason=invalid_password",
           "important": true,
           "result": "この行からは、捜査に役立つ情報は何も得られなかった。"
+        },
+        {
+          "id": "row_unknown_login",
+          "time": "21:14:08",
+          "text": "198.51.100.25  ログイン成功",
+          "important": true,
+          "completionEventId": "event_unknown_login",
+          "result": "普段とは異なる接続元からログインが成功している。"
         },
         {
           "id": "row_session_token",
@@ -268,7 +555,7 @@
           "time": "21:20:37",
           "text": "198.51.100.90  投稿処理\nroute=anonymous-relay",
           "important": true,
-          "completionEventId": "event_inspect_tor_exit",
+          "completionEventId": "event_tor_exit",
           "result": "匿名中継を経由した投稿処理を確認した。"
         },
         {
@@ -290,39 +577,93 @@
     {
       "id": "fact_suspicious_email",
       "name": "不審なメールを受信していた",
-      "description": "SNS運営を装ったメールが届いていた。",
+      "description": "SNS運営を装ったメールが届き、リンクが開かれていた。",
       "sortOrder": 10
+    },
+    {
+      "id": "fact_phishing_site",
+      "name": "フィッシングサイトが使われた",
+      "description": "正規サイトとは異なるログイン画面で認証情報が入力された。",
+      "sortOrder": 20
     },
     {
       "id": "fact_unknown_login",
       "name": "通常と異なる接続元からログインしている",
       "description": "普段とは異なる接続元からログインが成功している。",
-      "sortOrder": 20
-    },
-    {
-      "id": "fact_email_sender_unknown",
-      "name": "メール送信元が不明である",
-      "description": "メールの送信元は通常の運営アカウントと一致しない。",
       "sortOrder": 30
     },
     {
       "id": "fact_tor_access",
       "name": "匿名中継経由の投稿がある",
       "description": "匿名中継を経由して投稿処理が行われていた。",
-      "sortOrder": 30
+      "sortOrder": 40
+    },
+    {
+      "id": "fact_email_header",
+      "name": "メールの送信元が表示名と異なる",
+      "description": "表示名だけでは実際の送信元を特定できない。",
+      "sortOrder": 50
+    },
+    {
+      "id": "fact_mailia_response",
+      "name": "Mailiaの回答で送信元記録が判明した",
+      "description": "偽名で登録された送信元アカウントと関連記録が確認できた。",
+      "sortOrder": 60
+    },
+    {
+      "id": "fact_nexhost_access",
+      "name": "フィッシングサイトのアクセス元が判明した",
+      "description": "サイトの確認・操作と考えられるアクセス元IPと時刻が分かった。",
+      "sortOrder": 70
+    },
+    {
+      "id": "fact_brightnet_subscriber",
+      "name": "アクセス元回線の契約者が判明した",
+      "description": "対象時刻の回線契約者は相沢拓海だった。ただし契約者だけでは犯行を証明できない。",
+      "sortOrder": 80
+    },
+    {
+      "id": "fact_site_history",
+      "name": "相沢端末にサイト閲覧履歴がある",
+      "description": "事件に使われたフィッシングサイトを相沢の端末から確認していた。",
+      "sortOrder": 90
+    },
+    {
+      "id": "fact_mail_sent",
+      "name": "相沢端末にメール送信履歴がある",
+      "description": "彩花へ送られたメールの送信履歴がMailiaの回答とつながった。",
+      "sortOrder": 100
+    },
+    {
+      "id": "fact_credentials_note",
+      "name": "彩花の認証情報メモがある",
+      "description": "相沢の端末から彩花のSNS IDとパスワードのメモが見つかった。",
+      "sortOrder": 110
+    },
+    {
+      "id": "fact_motive_note",
+      "name": "犯行の動機を記した計画メモがある",
+      "description": "彩花を黒田から引き離し、自分を認めさせようとした動機が記されている。",
+      "sortOrder": 120
+    },
+    {
+      "id": "fact_confession",
+      "name": "相沢が犯行を認めた",
+      "description": "証拠を示した最終追及で、相沢がアカウント乗っ取りを実行したと認めた。",
+      "sortOrder": 130
     }
   ],
   "events": [
     {
-      "id": "event_conv_mika_first",
+      "id": "event_ayaka_first",
       "trigger": {
         "type": "conversation",
-        "targetId": "conv_mika_first"
+        "targetId": "conv_ayaka_first"
       },
       "effects": [
         {
           "type": "add",
-          "target": "evidence.ev_mika_phone"
+          "target": "evidence.ev_ayaka_phone"
         },
         {
           "type": "add",
@@ -331,10 +672,10 @@
       ]
     },
     {
-      "id": "event_inspect_mika_phone_mail",
+      "id": "event_phone_mail",
       "trigger": {
         "type": "investigation",
-        "targetId": "inspect_mika_phone_mail"
+        "targetId": "inspect_phone_mail"
       },
       "effects": [
         {
@@ -343,12 +684,25 @@
         },
         {
           "type": "add",
-          "target": "logs.log_mika_access"
+          "target": "logs.log_sns_access"
         }
       ]
     },
     {
-      "id": "event_inspect_unknown_login",
+      "id": "event_phone_history",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_phone_history"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_phishing_site"
+        }
+      ]
+    },
+    {
+      "id": "event_unknown_login",
       "trigger": {
         "type": "logRow",
         "targetId": "row_unknown_login"
@@ -361,33 +715,7 @@
       ]
     },
     {
-      "id": "event_inspect_mika_phone_history",
-      "trigger": {
-        "type": "investigation",
-        "targetId": "inspect_mika_phone_history"
-      },
-      "effects": [
-        {
-          "type": "add",
-          "target": "facts.fact_suspicious_email"
-        }
-      ]
-    },
-    {
-      "id": "event_inspect_email_sender",
-      "trigger": {
-        "type": "investigation",
-        "targetId": "inspect_email_sender"
-      },
-      "effects": [
-        {
-          "type": "add",
-          "target": "facts.fact_email_sender_unknown"
-        }
-      ]
-    },
-    {
-      "id": "event_inspect_tor_exit",
+      "id": "event_tor_exit",
       "trigger": {
         "type": "logRow",
         "targetId": "row_tor_exit"
@@ -398,6 +726,176 @@
           "target": "facts.fact_tor_access"
         }
       ]
+    },
+    {
+      "id": "event_email_header",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_email_header"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_email_header"
+        },
+        {
+          "type": "add",
+          "target": "evidence.ev_mailia_response"
+        }
+      ]
+    },
+    {
+      "id": "event_mailia_records",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_mailia_records"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_nexhost_response"
+        },
+        {
+          "type": "add",
+          "target": "facts.fact_mailia_response"
+        }
+      ]
+    },
+    {
+      "id": "event_nexhost_access",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_nexhost_access"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_nexhost_response"
+        },
+        {
+          "type": "add",
+          "target": "evidence.ev_brightnet_response"
+        },
+        {
+          "type": "add",
+          "target": "facts.fact_nexhost_access"
+        }
+      ]
+    },
+    {
+      "id": "event_brightnet_subscriber",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_brightnet_subscriber"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_brightnet_subscriber"
+        }
+      ]
+    },
+    {
+      "id": "event_jinai_search",
+      "trigger": {
+        "type": "conversation",
+        "targetId": "conv_jinai_search"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_aizawa_phone"
+        }
+      ]
+    },
+    {
+      "id": "event_aizawa_first",
+      "trigger": {
+        "type": "conversation",
+        "targetId": "conv_aizawa_first"
+      },
+      "effects": []
+    },
+    {
+      "id": "event_site_history",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_site_history"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_site_history"
+        }
+      ]
+    },
+    {
+      "id": "event_mail_sent",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_mail_sent"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_mail_sent"
+        }
+      ]
+    },
+    {
+      "id": "event_credentials_note",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_credentials_note"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_credentials_note"
+        }
+      ]
+    },
+    {
+      "id": "event_motive_note",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_motive_note"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_motive_note"
+        }
+      ]
+    },
+    {
+      "id": "event_case_clear",
+      "trigger": {
+        "type": "conversation",
+        "targetId": "conv_aizawa_final"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_confession"
+        }
+      ]
+    },
+    {
+      "id": "event_jinai_intro",
+      "trigger": {
+        "type": "conversation",
+        "targetId": "conv_jinai_intro"
+      },
+      "effects": []
+    },
+    {
+      "id": "event_asano_intro",
+      "trigger": {
+        "type": "conversation",
+        "targetId": "conv_asano_intro"
+      },
+      "effects": []
     }
   ],
   "hints": []

@@ -15,8 +15,8 @@
         <span>CYBER CASE FILES</span>
       </a>
       <div class="case-heading">
-        <span class="eyebrow">捜査資料 / CASE 001</span>
-        <h1>SNS乗っ取り</h1>
+        <span id="case-eyebrow" class="eyebrow">捜査資料 / CASE 001</span>
+        <h1 id="case-title">SNS乗っ取り</h1>
       </div>
       <div class="top-actions">
         <span class="prototype-badge">UI 試作</span>
@@ -46,14 +46,14 @@
           <span>画面の状態はこのブラウザに保存されます</span>
         </div>
         <div id="detail-view" class="detail-view"></div>
+        <section id="dialogue-choices" class="dialogue-choices" hidden aria-label="選択肢"></section>
         <section id="dialogue-pane" class="dialogue-pane" aria-live="polite">
           <div class="dialogue-label">DIALOGUE / 会話</div>
           <div class="dialogue-speaker-row"><span id="dialogue-icon" class="dialogue-icon"></span><div><span id="dialogue-speaker" class="dialogue-speaker"></span><h2 id="dialogue-title"></h2></div></div>
           <p id="dialogue-text" class="dialogue-text"></p>
-          <button id="dialogue-close" class="reset-button" type="button">会話をやめる</button>
+          <div id="dialogue-controls" class="dialogue-controls"><button id="dialogue-next" class="action-button" type="button" hidden>次へ</button><button id="dialogue-close" class="reset-button" type="button" hidden>やめる</button><button id="log-analysis-close" class="reset-button" type="button" hidden>解析を終了する</button></div>
         </section>
-        <section id="dialogue-choices" class="dialogue-choices" hidden aria-label="選択肢"></section>
-      </section>
+     </section>
 
       <nav class="side-panel evidence-panel" aria-label="捜査資料">
         <div class="panel-heading">
@@ -90,5 +90,9 @@
     </dialog>
   </body>
 </html>
+
+
+
+
 
 

@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 1,
+  "id": "simple-case002",
+  "title": "事件001 SNS乗っ取り（簡易版）",
+  "defaults": {
+    "background": "assets/backgrounds/default-investigation.png",
+    "characterIcon": "assets/icons/ayaka.png",
+    "evidenceIcon": "assets/icons/ayaka.png"
+  },
+  "characters": [
+    {
+      "id": "ayaka",
+      "name": "藤崎彩花",
+      "role": "被害者",
+      "icon": "assets/icons/ayaka.png",
+      "background": "assets/backgrounds/ayaka-selection.png",
+      "description": "SNS「Chirp」のアカウントを乗っ取られた被害者。",
+      "interactions": [
+        {
+          "id": "conv_ayaka_first",
+          "title": "彩花への聞き込み",
+          "repeatable": true,
+          "startNodeId": "ayaka_start",
+          "nodes": [
+            {
+              "id": "ayaka_start",
+              "speakerId": "player",
+              "text": "藤崎さん、何があったのか聞かせてください。",
+              "choices": [
+                {
+                  "id": "choice_ayaka_empathy",
+                  "nextNodeId": "ayaka_empathy",
+                  "completionEventId": "event_aizawa_interest",
+                  "text": "心当たりのある人物はいますか"
+                },
+                {
+                  "id": "choice_ayaka_post",
+                  "text": "投稿の画面を確認させてください",
+                  "nextNodeId": "ayaka_post",
+                  "completionEventId": "event_defamation_post"
+                },
+                {
+                  "id": "choice_ayaka_change",
+                  "text": "最近、変わったことはありましたか？",
+                  "nextNodeId": "ayaka_change",
+                  "completionEventId": "event_ayaka_phone"
+                }
+              ]
+            },
+            {
+              "id": "ayaka_empathy",
+              "speakerId": "ayaka",
+              "text": "ありがとうございます……。実は、大学時代の知人である相沢拓海さんから、一方的に好意を寄せられていました。黒田さんと付き合い始めてから、少し様子が変わった気がします。"
+            },
+            {
+              "id": "ayaka_post",
+              "speakerId": "ayaka",
+              "text": "私のChirpに、私や周囲の人を傷つける投稿がされていました。画面を確認してもらえますか？"
+            },
+            {
+              "id": "ayaka_change",
+              "speakerId": "ayaka",
+              "text": "そういえば、最近SNSの運営からのようなメールが来ました。アカウントの確認が必要だと書いてありました。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jinai",
+      "name": "陣内誠一郎",
+      "role": "警部",
+      "icon": "assets/icons/jinnai.png",
+      "background": "assets/backgrounds/jinnai-selection.png",
+      "description": "捜査方針を確認する上司。",
+      "interactions": [
+        {
+          "id": "conv_jinai",
+          "title": "陣内警部への報告",
+          "repeatable": true,
+          "startNodeId": "jinai_start",
+          "nodes": [
+            {
+              "id": "jinai_start",
+              "routes": [
+                {
+                  "requires": {
+                    "type": "and",
+                    "conditions": [
+                      {
+                        "type": "fact",
+                        "targetId": "fact_aizawa_interest"
+                      },
+                      {
+                        "type": "not",
+                        "condition": {
+                          "type": "event",
+                          "targetId": "event_jinai_interest_discussed"
+                        }
+                      }
+                    ]
+                  },
+                  "nextNodeId": "jinai_aizawa"
+                },
+                {
+                  "requires": {
+                    "type": "and",
+                    "conditions": [
+                      {
+                        "type": "fact",
+                        "targetId": "fact_suspicious_ip"
+                      },
+                      {
+                        "type": "not",
+                        "condition": {
+                          "type": "fact",
+                          "targetId": "fact_brightnet"
+                        }
+                      }
+                    ]
+                  },
+                  "nextNodeId": "jinai_brightnet"
+                },
+                {
+                  "nextNodeId": "jinai_gate_any_report"
+                }
+              ]
+            },
+            {
+              "id": "jinai_gate_any_report",
+              "routes": [
+                {
+                  "requires": {
+                    "type": "not",
+                    "condition": {
+                      "type": "or",
+                      "conditions": [
+                        {
+                          "type": "fact",
+                          "targetId": "fact_aizawa_interest"
+                        },
+                        {
+                          "type": "fact",
+                          "targetId": "fact_defamation_post"
+                        },
+                        {
+                          "type": "fact",
+                          "targetId": "fact_suspicious_ip"
+                        },
+                        {
+                          "type": "evidence",
+                          "targetId": "ev_ayaka_phone"
+                        }
+                      ]
+                    }
+                  },
+                  "nextNodeId": "jinai_ask_victim"
+                },
+                {
+                  "nextNodeId": "jinai_report"
+                }
+              ]
+            },
+            {
+              "id": "jinai_ask_victim",
+              "speakerId": "jinai",
+              "text": "まず被害者に話を聞こう。藤崎さんから、何が起きたのか確認してきてくれ。"
+            },
+            {
+              "id": "jinai_aizawa",
+              "speakerId": "jinai",
+              "text": "相沢に聞けば、何か分かるかもしれないな。",
+              "nextNodeId": "jinai_ack_aizawa"
+            },
+            {
+              "id": "jinai_ack_aizawa",
+              "speakerId": "player",
+              "text": "なるほど。",
+              "nextNodeId": "jinai_start",
+              "completionEventId": "event_jinai_interest_discussed"
+            },
+            {
+              "id": "jinai_brightnet",
+              "speakerId": "jinai",
+              "text": "不正ログインのIPアドレスは、プロバイダであるBrightNet（ブライトネット）のものだな。あとはこっちに任せろ。",
+              "nextNodeId": "jinai_ack_brightnet"
+            },
+            {
+              "id": "jinai_ack_brightnet",
+              "speakerId": "player",
+              "text": "はい。",
+              "nextNodeId": "jinai_report",
+              "completionEventId": "event_brightnet_result"
+            },
+            {
+              "id": "jinai_report",
+              "speakerId": "player",
+              "text": "判明事項や入手した証拠品を報告します。",
+              "choices": [
+                {
+                  "id": "choice_jinai_report_aizawa",
+                  "text": "藤崎は相沢から一方的な好意を寄せられていた",
+                  "requires": {
+                    "type": "fact",
+                    "targetId": "fact_aizawa_interest"
+                  },
+                  "nextNodeId": "jinai_aizawa"
+                },
+                {
+                  "id": "choice_jinai_report_chirp",
+                  "text": "藤崎のChirpアカウントで名誉棄損の投稿を確認した",
+                  "requires": {
+                    "type": "fact",
+                    "targetId": "fact_defamation_post"
+                  },
+                  "nextNodeId": "jinai_chirp"
+                },
+                {
+                  "id": "choice_jinai_report_phone",
+                  "text": "藤崎のスマートフォンを任意提出してもらった",
+                  "requires": {
+                    "type": "evidence",
+                    "targetId": "ev_ayaka_phone"
+                  },
+                  "nextNodeId": "jinai_phone"
+                }
+              ]
+            },
+            {
+              "id": "jinai_chirp",
+              "speakerId": "jinai",
+              "text": "Chirpに差押えをすれば、アクセスログを入手できそうだな。",
+              "nextNodeId": "jinai_ack_chirp"
+            },
+            {
+              "id": "jinai_ack_chirp",
+              "speakerId": "player",
+              "text": "なるほど。",
+              "nextNodeId": "jinai_report",
+              "completionEventId": "event_chirp_log"
+            },
+            {
+              "id": "jinai_phone",
+              "speakerId": "jinai",
+              "text": "端末を調べれば、事件に関係する記録が見つかるかもしれないな。",
+              "nextNodeId": "jinai_ack_phone"
+            },
+            {
+              "id": "jinai_ack_phone",
+              "speakerId": "player",
+              "text": "なるほど。",
+              "nextNodeId": "jinai_start"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aizawa",
+      "name": "相沢拓海",
+      "role": "参考人",
+      "icon": "assets/icons/aizawa.png",
+      "background": "assets/backgrounds/aizawa-selection-with-character.png",
+      "description": "彩花の大学時代の知人。",
+      "requires": {
+        "type": "or",
+        "targetId": "fact_aizawa_interest",
+        "conditions": [
+          {
+            "type": "fact",
+            "targetId": "fact_aizawa_interest",
+            "operator": "exists"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_brightnet",
+            "operator": "exists"
+          }
+        ]
+      },
+      "interactions": [
+        {
+          "id": "conv_aizawa",
+          "title": "相沢拓海との会話",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_aizawa_interest"
+          },
+          "startNodeId": "aizawa_interaction_gate",
+          "nodes": [
+            {
+              "id": "aizawa_interaction_gate",
+              "routes": [
+                {
+                  "requires": {
+                    "type": "fact",
+                    "targetId": "fact_brightnet"
+                  },
+                  "nextNodeId": "aizawa_final"
+                },
+                {
+                  "nextNodeId": "aizawa_first"
+                }
+              ]
+            },
+            {
+              "id": "aizawa_first",
+              "speakerId": "aizawa",
+              "text": "彩花さんから話は聞きました。僕に何か用ですか？",
+              "nextNodeId": "aizawa_first_2"
+            },
+            {
+              "id": "aizawa_first_2",
+              "speakerId": "player",
+              "text": "何か心当たりはありますか",
+              "nextNodeId": "aizawa_first_3"
+            },
+            {
+              "id": "aizawa_first_3",
+              "speakerId": "aizawa",
+              "text": "疑っているんですか？"
+            },
+            {
+              "id": "aizawa_final",
+              "speakerId": "player",
+              "text": "BrightNetの回答で、対象時刻の回線契約者があなたと分かりました。説明してください。",
+              "nextNodeId": "aizawa_final_2"
+            },
+            {
+              "id": "aizawa_final_2",
+              "speakerId": "aizawa",
+              "text": "……僕がやりました。彩花さんに振り向いてほしくて、Chirpのアカウントを乗っ取りました。",
+              "completionEventId": "event_case_clear"
+            }
+          ],
+          "repeatable": true
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_ayaka_phone",
+      "name": "藤崎彩花のスマートフォン",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "事件に関連するデータが保存されているか確認できる。",
+      "investigations": [
+        {
+          "id": "inspect_ayaka_phone",
+          "label": "スマートフォンを調べる",
+          "description": "事件に関連がありそうなデータはなさそうだ。",
+          "completionEventId": "event_phone_checked"
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "id": "log_chirp",
+      "name": "Chirpアクセスログ",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "SNS事業者Chirpから取得したアクセスログ。",
+      "rows": [
+        {
+          "id": "row_chirp_normal",
+          "time": "21:02:11",
+          "text": "203.0.113.12  通常ログイン",
+          "important": false
+        },
+        {
+          "id": "row_chirp_suspicious",
+          "time": "21:14:08",
+          "text": "198.51.100.25  ログイン成功",
+          "important": true,
+          "result": "不正なログインに使われた接続元IPアドレスが判明した。",
+          "completionEventId": "event_suspicious_ip"
+        }
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact_aizawa_interest",
+      "name": "藤崎は相沢から一方的な好意を寄せられていた",
+      "description": "彩花は大学時代の知人である相沢拓海から一方的に好意を寄せられていた。",
+      "sortOrder": 10
+    },
+    {
+      "id": "fact_defamation_post",
+      "name": "藤崎のChirpアカウントに名誉棄損の投稿があった",
+      "description": "彩花のChirpアカウントから、本人や周囲の人を傷つける投稿が行われた。",
+      "sortOrder": 20
+    },
+    {
+      "id": "fact_suspicious_ip",
+      "name": "Chirpへの不正ログイン元IPアドレス",
+      "description": "Chirpのログから、不正なログインに使われたIPアドレスが分かった。",
+      "sortOrder": 30
+    },
+    {
+      "id": "fact_brightnet",
+      "name": "不正ログイン元IPアドレスの契約者は相沢だった",
+      "description": "BrightNetへの照会で、対象時刻の回線契約者が相沢拓海だと分かった。",
+      "sortOrder": 40
+    },
+    {
+      "id": "fact_confession",
+      "name": "相沢がChirpアカウントの乗っ取りを認めた",
+      "description": "相沢がChirpのアカウント乗っ取りを認めた。",
+      "sortOrder": 50
+    }
+  ],
+  "events": [
+    {
+      "id": "event_aizawa_interest",
+      "trigger": {
+        "type": "choice",
+        "targetId": "choice_ayaka_empathy"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_aizawa_interest"
+        }
+      ]
+    },
+    {
+      "id": "event_defamation_post",
+      "trigger": {
+        "type": "choice",
+        "targetId": "choice_ayaka_post"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_defamation_post"
+        }
+      ]
+    },
+    {
+      "id": "event_ayaka_phone",
+      "trigger": {
+        "type": "choice",
+        "targetId": "choice_ayaka_change"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_ayaka_phone"
+        }
+      ]
+    },
+    {
+      "id": "event_phone_checked",
+      "trigger": {
+        "type": "investigation",
+        "targetId": "inspect_ayaka_phone"
+      },
+      "effects": []
+    },
+    {
+      "id": "event_chirp_log",
+      "trigger": {
+        "type": "conversationNode",
+        "targetId": "conv_jinai/jinai_ack_chirp"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "logs.log_chirp"
+        }
+      ]
+    },
+    {
+      "id": "event_suspicious_ip",
+      "trigger": {
+        "type": "logRow",
+        "targetId": "row_chirp_suspicious"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_suspicious_ip"
+        }
+      ]
+    },
+    {
+      "id": "event_brightnet_result",
+      "trigger": {
+        "type": "conversationNode",
+        "targetId": "conv_jinai/jinai_ack_brightnet"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_brightnet"
+        }
+      ]
+    },
+    {
+      "id": "event_case_clear",
+      "trigger": {
+        "type": "conversationNode",
+        "targetId": "conv_aizawa/aizawa_final_2"
+      },
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_confession"
+        }
+      ]
+    },
+    {
+      "id": "event_jinai_interest_discussed",
+      "trigger": {
+        "type": "conversationNode",
+        "targetId": "conv_jinai/jinai_ack_aizawa"
+      },
+      "effects": []
+    }
+  ],
+  "hints": []
+}

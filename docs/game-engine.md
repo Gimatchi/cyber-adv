@@ -92,16 +92,16 @@ remove
 set
 ```
 
-EffectはEventだけが保持し実行する。起動元の会話・調査の完了記録とEventの完了記録はエンジンが保存する。`add`、`remove`、`set`の意味と再実行規則は「ConditionとEffectの確定仕様」に従う。事件001専用Effectは作らない。
+EffectはEventだけが保持し実行する。呼び出し元の会話・調査の完了記録とEventの完了記録はエンジンが保存する。`add`、`remove`、`set`の意味と再実行規則は「ConditionとEffectの確定仕様」に従う。事件001専用Effectは作らない。
 
 ## 6. Event
 
-Eventはゲーム内で発生する処理単位。会話・会話ノード・会話中の選択肢・証拠調査項目・ログ行・ヒント段階の`completionEventId`とEventの`trigger`は同じ対象を指し、シナリオ読込時に対応関係を検証する。ノードのEventはそのセリフが全文表示された時点で実行し、取得・解禁の黄色い通知を同時に表示する。保存形式の詳細と起動元の対応表は[`data-design.md`](data-design.md)を正とする。
+Eventはゲーム内で発生する処理単位。会話・会話ノード・会話中の選択肢・証拠調査項目・ログ行・ヒント段階が`completionEventId`でEventを呼び出す。Eventの任意の`requires`は呼び出し時の起動条件で、会話や選択肢と同じCondition形式を使う。条件を省略したEventは無条件で実行し、条件を満たさないEventはスキップして完了扱いにしない。ノードのEventはそのセリフが全文表示された時点で呼び出し、実際に適用したEffectの通知を同時に表示する。保存形式の詳細は[`data-design.md`](data-design.md)を正とする。
 
 ```json
 {
   "id": "event_ayaka_first_interview",
-  "trigger": { "type": "conversation", "targetId": "conv_ayaka_first" },
+  "requires": { "type": "fact", "targetId": "fact_received_suspicious_email", "operator": "exists" },
   "effects": [
     {
       "type": "add",
@@ -279,7 +279,7 @@ Effectは次のとおりで、Event内の配列順に実行する。
 - `remove`: `{ "type": "remove", "target": "evidence.ev_id" }`の形。同じ4集合から削除する。未登録でも何もしない。
 - `set`: `{ "type": "set", "target": "cleared", "value": true }`の形。PlayerStateの`cleared`だけをboolean値に置換する。任意パスの書換えやGMState変更は許さない。
 
-状態に存在しない参照先、型不一致、禁止フィールドへの`set`はEvent全体を失敗させ、変更をすべてロールバックする。Eventはプレイヤーごとに一度だけ実行し、成功時に起動元の完了記録と`(playerId, eventId)`の一意な完了記録を同じDBトランザクション内で保存する。二重要求は保存済み結果を返し、Effectsを再適用しない。失敗時の再試行はトランザクション全体を再実行する。
+状態に存在しない参照先、型不一致、禁止フィールドへの`set`はEvent全体を失敗させ、変更をすべてロールバックする。Eventはプレイヤーごとに一度だけ実行し、呼び出し元の完了記録は操作の成立時に保存する。Eventの起動条件を満たす場合は、Eventの完了記録とEffectを同じDBトランザクション内で保存する。条件を満たさない場合はEventとEffectを適用せず、Eventの完了記録も保存しない。二重要求は保存済み結果を返し、Effectsを再適用しない。失敗時の再試行はトランザクション全体を再実行する。
 
 
 

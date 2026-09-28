@@ -244,3 +244,29 @@ button { font: inherit; }
   }
   .log-view { max-height: none; overflow: visible; }
 }
+
+/* Keep selection details readable over scenario artwork. */
+.detail-view:not(.is-log-analysis) .detail-topline,
+.detail-view .detail-copy h2,
+.detail-view .detail-copy .detail-role,
+.detail-view .detail-copy .detail-description {
+  text-shadow: 0 2px 3px rgba(0, 0, 0, .98), 0 0 12px rgba(0, 0, 0, .9);
+}
+.detail-view .detail-copy {
+  padding: 14px 16px;
+  border: 1px solid rgba(225, 238, 247, .16);
+  border-radius: 8px;
+  background: rgba(5, 12, 20, .48);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .22);
+  backdrop-filter: blur(2px);
+}
+.detail-view .detail-copy .detail-description { color: #e1e9f0; }
+.detail-view .detail-copy .action-button {
+  border-color: rgba(115, 224, 204, .78);
+  color: #e0fff8;
+  background: rgba(8, 48, 49, .92);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .34);
+}
+.detail-view .detail-copy .action-button:hover:not(:disabled) {
+  background: rgba(8, 58, 56, .98);
+}

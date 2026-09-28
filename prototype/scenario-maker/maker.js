@@ -7,9 +7,42 @@ const COLLECTIONS = {
 const $ = (selector) => document.querySelector(selector);
 const ui = { tabs: $('#collection-tabs'), list: $('#item-list'), outline: $('#outline-list'), outlineTitle: $('#outline-title'), fields: $('#editor-fields'), title: $('#editor-title'), count: $('#item-count'), collectionTitle: $('#collection-title'), preview: $('#json-preview'), jsonDialog: $('#json-dialog'), jsonOpen: $('#json-open-button'), jsonClose: $('#json-close-button'), validation: $('#validation-list'), toast: $('#toast'), saveState: $('#save-state') };
 let scenario; let activeCollection = 'characters'; let selectedIndex = -1; let selectedDetail = { type: 'base' }; let toastTimer;
+const LAYOUT_STORAGE_KEY = 'cyber-adv.scenario-maker.panel-widths.v1';
+const layoutElement = document.querySelector('.layout');
+const panelWidths = { left: 245, middle: 260 };
 const clone = (value) => value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 const setOptional = (object, key, value) => value === '' || value === undefined ? delete object[key] : object[key] = value;
 const parse = (text, label) => { try { return JSON.parse(text); } catch (error) { throw new Error(`${label}のJSONが正しくありません: ${error.message}`); } };
+function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
+function applyPanelWidths() { layoutElement.style.setProperty('--left-panel-width', `${panelWidths.left}px`); layoutElement.style.setProperty('--middle-panel-width', `${panelWidths.middle}px`); document.querySelectorAll('.resize-handle').forEach((handle) => handle.setAttribute('aria-valuenow', String(panelWidths[handle.dataset.resize]))); }
+function constrainPanelWidths() { if (window.matchMedia('(max-width: 850px)').matches) return; const available = layoutElement.clientWidth; panelWidths.middle = clamp(panelWidths.middle, 200, Math.min(600, available - 536)); panelWidths.left = clamp(panelWidths.left, 200, Math.min(520, available - panelWidths.middle - 336)); }
+function savePanelWidths() { try { localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(panelWidths)); } catch { /* 幅の保存に失敗してもリサイズは使える */ } }
+function initPanelResizers() {
+  try { const saved = JSON.parse(localStorage.getItem(LAYOUT_STORAGE_KEY) || 'null'); if (Number.isFinite(saved?.left)) panelWidths.left = saved.left; if (Number.isFinite(saved?.middle)) panelWidths.middle = saved.middle; } catch { /* 初期幅を使う */ }
+  constrainPanelWidths(); applyPanelWidths(); window.addEventListener('resize', () => { constrainPanelWidths(); applyPanelWidths(); });
+  for (const handle of document.querySelectorAll('.resize-handle')) {
+    handle.addEventListener('pointerdown', (event) => {
+      if (window.matchMedia('(max-width: 850px)').matches) return;
+      event.preventDefault(); handle.setPointerCapture(event.pointerId);
+      const startX = event.clientX; const startLeft = panelWidths.left; const startMiddle = panelWidths.middle;
+      const move = (pointerEvent) => {
+        const delta = pointerEvent.clientX - startX; const available = layoutElement.clientWidth;
+        if (handle.dataset.resize === 'left') panelWidths.left = clamp(startLeft + delta, 200, Math.min(520, available - startMiddle - 336));
+        else panelWidths.middle = clamp(startMiddle + delta, 200, Math.min(600, available - panelWidths.left - 336));
+        applyPanelWidths();
+      };
+      const stop = () => { handle.removeEventListener('pointermove', move); handle.removeEventListener('pointerup', stop); handle.removeEventListener('pointercancel', stop); savePanelWidths(); };
+      handle.addEventListener('pointermove', move); handle.addEventListener('pointerup', stop); handle.addEventListener('pointercancel', stop);
+    });
+    handle.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || window.matchMedia('(max-width: 850px)').matches) return;
+      event.preventDefault(); const delta = event.key === 'ArrowRight' ? 16 : -16; const available = layoutElement.clientWidth;
+      if (handle.dataset.resize === 'left') panelWidths.left = clamp(panelWidths.left + delta, 200, Math.min(520, available - panelWidths.middle - 336));
+      else panelWidths.middle = clamp(panelWidths.middle + delta, 200, Math.min(600, available - panelWidths.left - 336));
+      applyPanelWidths(); savePanelWidths();
+    });
+  }
+}
 function blankScenario() { return { schemaVersion: 1, id: 'case_new', title: '新しい事件', defaults: {}, characters: [], evidence: [], logs: [], facts: [], events: [], hints: [] }; }
 function allInteractions() { return (scenario.characters || []).flatMap((character) => (character.interactions || []).map((graph) => ({ character, graph }))); }
 function interactionLabel(graph, character) { return `${character.name || character.id}：${graph.title || graph.id}（${graph.id}）`; }
@@ -66,7 +99,7 @@ function renderConversationNode(graph, node, parent) {
   select(card, '次のノード', node.nextNodeId || '', [{ value: '', label: '指定なし（会話終了）' }, ...nodes.filter((x) => x !== node).map((x) => ({ value: x.id, label: x.id }))], (value) => { setOptional(node, 'nextNodeId', value); if (value) { delete node.choices; delete node.routes; } mutate(); }); renderChoices(card, node, nodes); renderRoutes(card, node, nodes); remove(card, () => { const index = nodes.indexOf(node); if (index >= 0) nodes.splice(index, 1); if (graph.startNodeId === node.id) delete graph.startNodeId; selectedDetail = { type: 'graph', graph }; mutate(); });
   parent.append(card);
 }
-function addConversation(character) { const graphs = character.interactions || (character.interactions = []); const n = graphs.length + 1; const graph = { id: `interaction_${character.id || 'character'}_${n}`, title: '新しい会話', startNodeId: 'node_001', nodes: [{ id: 'node_001', speakerId: character.id, text: '' }] }; graphs.push(graph); selectedDetail = { type: 'graph', graph }; mutate(); }
+function addConversation(character) { const graphs = character.interactions || (character.interactions = []); let number = graphs.length + 1; while (graphs.some((graph) => graph.id === `interaction_${character.id || 'character'}_${number}`)) number += 1; const graph = { id: `interaction_${character.id || 'character'}_${number}`, title: `${character.name || character.id}との会話 ${number}`, startNodeId: 'node_001', nodes: [{ id: 'node_001', speakerId: character.id, text: '' }] }; graphs.push(graph); selectedDetail = { type: 'graph', graph }; mutate(); }
 function addConversationNode(graph) { const nodes = graph.nodes || (graph.nodes = []); const n = nodes.length + 1; const node = { id: `node_${String(n).padStart(3, '0')}`, speakerId: '', text: '' }; nodes.push(node); if (!graph.startNodeId) graph.startNodeId = node.id; selectedDetail = { type: 'node', graph, node }; mutate(); }
 function renderChoices(parent, node, nodes) { const box = section('選択肢'); const list = node.choices || []; list.forEach((choice, index) => { const row = document.createElement('div'); row.className = 'nested-card'; const order = document.createElement('div'); order.className = 'order-row'; const label = document.createElement('strong'); label.textContent = choice.text || choice.id || `選択肢 ${index + 1}`; order.append(label); orderButtons(order, list, index); row.append(order); bind(row, '選択肢ID', choice, 'id'); bind(row, '選択肢本文', choice, 'text', true); select(row, '遷移先', choice.nextNodeId || '', [{ value: '', label: '選択してください' }, ...nodes.map((n) => ({ value: n.id, label: n.id }))], (value) => { setOptional(choice, 'nextNodeId', value); mutate(); }); condition(row, '選択肢の表示条件', choice.requires, (value) => { value ? choice.requires = value : delete choice.requires; mutate(); }); eventLink(row, '選択時に起動するEvent', choice, 'completionEventId'); remove(row, () => { list.splice(index, 1); mutate(); }); box.append(row); }); const add = document.createElement('button'); add.type = 'button'; add.className = 'button secondary'; add.textContent = '選択肢を追加'; add.addEventListener('click', () => { node.choices = list; list.push({ id: `choice_${node.id || 'node'}_${list.length + 1}`, text: '' }); delete node.nextNodeId; delete node.routes; mutate(); }); box.append(add); parent.append(box); }
 function renderRoutes(parent, node, nodes) { const box = section('条件による自動分岐（分岐専用の空ノード）'); const list = node.routes || []; list.forEach((route, index) => { const row = document.createElement('div'); row.className = 'nested-card'; condition(row, '分岐条件（上から評価）', route.requires, (value) => { value ? route.requires = value : delete route.requires; mutate(); }); select(row, '次のノード', route.nextNodeId || '', [{ value: '', label: '選択してください' }, ...nodes.filter((n) => n !== node).map((n) => ({ value: n.id, label: n.id }))], (value) => { setOptional(route, 'nextNodeId', value); mutate(); }); bind(row, '次の会話ID（別の会話へ移る場合）', route, 'nextConversationId'); eventLink(row, '分岐後に起動するEvent', route, 'completionEventId'); remove(row, () => { list.splice(index, 1); mutate(); }); box.append(row); }); const add = document.createElement('button'); add.type = 'button'; add.className = 'button secondary'; add.textContent = '分岐を追加'; add.addEventListener('click', () => { node.routes = list; list.push({ nextNodeId: '' }); delete node.nextNodeId; delete node.choices; mutate(); }); box.append(add); parent.append(box); }
@@ -146,13 +179,17 @@ function validateScenario() {
   if (scenario.conversations?.length) errors.push('旧形式の最上位 conversations が残っています。人物の interactions[] へ移行してください');
   return { errors, warnings };
 }
-function renderValidation() { const { errors, warnings } = validateScenario(); ui.validation.replaceChildren(); if (!errors.length && !warnings.length) { const li = document.createElement('li'); li.className = 'ok'; li.textContent = 'エラーはありません。人物内会話グラフと参照を確認しました。'; ui.validation.append(li); return; } [...errors, ...warnings].forEach((message) => { const li = document.createElement('li'); li.className = errors.includes(message) ? 'error' : ''; li.textContent = `${errors.includes(message) ? 'エラー' : '確認'}：${message}`; ui.validation.append(li); }); }
+function renderValidation() { const { errors, warnings } = validateScenario(); ui.validation.replaceChildren(); if (!errors.length && !warnings.length) { const li = document.createElement('li'); li.className = 'ok'; li.textContent = 'エラーはありません。人物ごとの会話グラフと参照を確認しました。'; ui.validation.append(li); return; } [...errors, ...warnings].forEach((message) => { const li = document.createElement('li'); li.className = errors.includes(message) ? 'error' : ''; li.textContent = `${errors.includes(message) ? 'エラー' : '確認'}：${message}`; ui.validation.append(li); }); }
 function normalizeScenario(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('JSONの最上位はオブジェクトにしてください');
   for (const [key, config] of Object.entries(COLLECTIONS)) if (!Array.isArray(input[key])) input[key] = [];
   // 旧メーカー形式を読み込んだ場合は、最初の非player/narrator話者を持つ人物に会話グラフを移す。
   if (Array.isArray(input.conversations)) { for (const graph of input.conversations) { const speaker = (graph.nodes || []).map((node) => node.speakerId).find((id) => id && !['player', 'narrator'].includes(id)); const owner = input.characters.find((character) => character.id === speaker) || input.characters[0]; if (owner) { owner.interactions ||= []; owner.interactions.push(graph); } } delete input.conversations; }
-  for (const character of input.characters) { character.interactions ||= []; for (const graph of character.interactions) for (const node of graph.nodes || []) for (const [index, choice] of (node.choices || []).entries()) choice.id ||= `choice_${graph.id}_${node.id}_${index + 1}`; }
+  for (const character of input.characters) {
+    if (character.interaction) { character.interactions ||= []; character.interactions.push(character.interaction); delete character.interaction; }
+    character.interactions ||= [];
+    for (const graph of character.interactions) for (const node of graph.nodes || []) for (const [index, choice] of (node.choices || []).entries()) choice.id ||= `choice_${graph.id}_${node.id}_${index + 1}`;
+  }
   for (const event of input.events) delete event.trigger;
   input.schemaVersion ||= 1; if (!input.defaults || typeof input.defaults !== 'object' || Array.isArray(input.defaults)) input.defaults = {}; return input;
 }
@@ -163,4 +200,5 @@ function renderAll() { renderTabs(); renderList(); renderOutline(); renderEditor
 ui.jsonOpen.addEventListener('click', () => { renderPreview(); ui.jsonDialog.showModal(); }); ui.jsonClose.addEventListener('click', () => ui.jsonDialog.close());
 $('#case-id').addEventListener('input', (event) => { scenario.id = event.target.value; mutate(); }); $('#case-title').addEventListener('input', (event) => { scenario.title = event.target.value; mutate(); }); $('#case-defaults').addEventListener('change', (event) => { try { scenario.defaults = parse(event.target.value, '共通背景'); mutate(); } catch (error) { toast(error.message); } }); $('#add-button').addEventListener('click', addItem); $('#delete-button').addEventListener('click', () => { if (selectedIndex >= 0) { scenario[activeCollection].splice(selectedIndex, 1); selectedIndex = -1; selectedDetail = { type: 'base' }; mutate(); } }); $('#download-button').addEventListener('click', download); $('#validate-button').addEventListener('click', renderValidation); $('#file-input').addEventListener('change', (event) => { const file = event.target.files?.[0]; if (file) loadFile(file); event.target.value = ''; }); $('#copy-button').addEventListener('click', async () => { try { await navigator.clipboard.writeText(JSON.stringify(scenario, null, 2)); toast('JSONをコピーしました'); } catch { toast('コピーできません。JSONを選択してコピーしてください'); } });
 async function start() { const saved = localStorage.getItem(STORAGE_KEY); if (saved) { try { scenario = normalizeScenario(parse(saved, '保存データ')); } catch { scenario = blankScenario(); } } else { scenario = blankScenario(); const source = new URLSearchParams(location.search).get('source'); if (source) { try { const response = await fetch(`../${encodeURIComponent(source)}`); if (response.ok) scenario = normalizeScenario(await response.json()); } catch { /* ローカル起動時は空の編集画面を使う */ } } } scenario = normalizeScenario(scenario); renderAll(); persist(); }
+initPanelResizers();
 start();

@@ -1,4 +1,4 @@
-# ゲームエンジン仕様
+﻿# ゲームエンジン仕様
 
 ## 1. 基本原則
 
@@ -156,7 +156,7 @@ UI更新
 
 `routes`だけを持つ空ノードは表示せず、配列順に条件を評価して最初に成立した`nextNodeId`または`nextConversationId`へ自動遷移する。条件なしのrouteは最後のフォールバックにする。別会話へ遷移する場合は、現在の会話を完了してから対象会話を開始する。ルートが1つも成立せずフォールバックもない場合はシナリオ検証エラーとする。
 
-人物の`requires`を評価し、条件を満たさない人物は一覧に表示しない。現在のStateで開始可能な会話グラフを条件付きルートからたどり、到達可能なノードまたは選択肢のEventに未取得の`evidence`・`logs`・`facts`へのEffectが残っている人物には「！」を表示する。
+人物一覧には、人物が持つ会話グラフのうち少なくとも一つの`requires`を満たす場合に表示する。現在のStateで開始可能な会話グラフを条件付きルートからたどり、到達可能なノードまたは選択肢のEventに未取得の`evidence`・`logs`・`facts`へのEffectが残っている人物には「！」を表示する。
 
 人物・証拠品・ログの選択画面では、背景画像に重ねる文字に影を付け、文字領域には控えめな半透明の暗色背景を敷いて可読性を保つ。画面内の「話をする」「証拠品を調べる」「ログを解析する」ボタンは、背景に埋もれない不透明度の高い背景色にする。ログ選択画面は証拠品詳細と同じカード配置でアイコン、名称、説明、操作ボタンを表示し、ログ解析中の画面は専用の既存表示を維持する。
 
@@ -265,7 +265,7 @@ GMStateは事件全体で共有し、`currentStage`と全体アナウンスを�
 
 ## 17. ConditionとEffectの確定仕様
 
-Conditionの葉は安定IDを持つ。`evidence`、`log`、`fact`は`operator: "exists"`だけを使い、`conversation`、`investigation`、`logRow`、`event`は`operator: "completed"`だけを使う。複合条件は次のJSON形に固定する：
+Conditionの葉は安定IDと状態演算子を持つ。`evidence`、`log`、`fact`は`exists`（所持・取得済み）または`notExists`（未所持・未取得）を使い、`conversation`、`investigation`、`logRow`、`event`は`completed`（完了済み）または`notCompleted`（未完了）を使う。複合条件は次のJSON形に固定する：
 
 ```json
 { "type": "and", "conditions": [ CONDITION, CONDITION ] }
@@ -282,6 +282,8 @@ Effectは次のとおりで、Event内の配列順に実行する。
 - `set`: `{ "type": "set", "target": "cleared", "value": true }`の形。PlayerStateの`cleared`だけをboolean値に置換する。任意パスの書換えやGMState変更は許さない。
 
 状態に存在しない参照先、型不一致、禁止フィールドへの`set`はEvent全体を失敗させ、変更をすべてロールバックする。Eventはプレイヤーごとに一度だけ実行し、呼び出し元の完了記録は操作の成立時に保存する。Eventの起動条件を満たす場合は、Eventの完了記録とEffectを同じDBトランザクション内で保存する。条件を満たさない場合はEventとEffectを適用せず、Eventの完了記録も保存しない。二重要求は保存済み結果を返し、Effectsを再適用しない。失敗時の再試行はトランザクション全体を再実行する。
+
+
 
 
 

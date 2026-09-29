@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "simple-case002",
+  "id": "simple-case003",
   "title": "事件001 SNS乗っ取り（簡易版）",
   "defaults": {
     "background": "assets/backgrounds/default-investigation.png",
@@ -364,6 +364,25 @@
           "completionEventId": "event_phone_checked"
         }
       ]
+    },
+    {
+      "id": "ev_ayaka_photo",
+      "name": "待ち伏せ場所の画像",
+      "description": "犯人が待ち伏せしているとされる場所の画像。\n不鮮明でよく分からないが、なんとかして特定したい。",
+      "investigations": [
+        {
+          "id": "investigation_ev_ayaka_photo_1",
+          "nodes": [
+            {
+              "id": "node_001",
+              "speakerId": "player",
+              "text": "画像は不鮮明だし、どこを見たらばしょがあかるだろうか"
+            }
+          ],
+          "startNodeId": "node_001",
+          "label": "待ち伏せ場所の特定"
+        }
+      ]
     }
   ],
   "logs": [
@@ -447,6 +466,10 @@
         {
           "type": "add",
           "target": "evidence.ev_ayaka_phone"
+        },
+        {
+          "type": "add",
+          "target": "evidence.ev_ayaka_photo"
         }
       ]
     },

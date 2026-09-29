@@ -1,4 +1,4 @@
-# シナリオ・データ設計
+﻿# シナリオ・データ設計
 
 ## 1. 基本方針
 
@@ -85,11 +85,11 @@ scenario/
 }
 ```
 
-`id`、`name`は必須。`icon`、`background`、`role`、`description`、`requires`は任意。`icon`は人物一覧と会話で使う既定の画像・表情の素材参照である。`requires`を指定した人物は、条件を満たすまで人物一覧に表示しない。省略時は`defaults.characterIcon`、それもなければエンジン内蔵アイコンを使う。人物を選択した画面では`background`を背景として使い、省略時は事件既定の背景を使う。会話グラフは人物項目の`interactions[]`に含め、人物を選択すると利用条件を満たす会話を開始できる。会話の話者は人物IDを参照する。プレイヤーのセリフは特別な話者ID `player`、場面説明は特別な話者ID `narrator` を使い、どちらの人物項目も作らない。人物の秘密・動機・作者向け履歴は含めない。人名は日本語では名字、名前の順、英語表記も姓、名の順とする。
+`id`、`name`は必須。`icon`、`background`、`role`、`description`は任意。`icon`は人物一覧と会話で使う既定の画像・表情の素材参照である。人物独自の表示条件は持たない。少なくとも一つの会話グラフの`requires`を満たす人物を人物一覧に表示する。省略時は`defaults.characterIcon`、それもなければエンジン内蔵アイコンを使う。人物を選択した画面では`background`を背景として使い、省略時は事件既定の背景を使う。会話グラフは人物項目の`interactions[]`に含め、人物を選択すると利用条件を満たす会話を開始できる。会話の話者は人物IDを参照する。プレイヤーのセリフは特別な話者ID `player`、場面説明は特別な話者ID `narrator` を使い、どちらの人物項目も作らない。人物の秘密・動機・作者向け履歴は含めない。人名は日本語では名字、名前の順、英語表記も姓、名の順とする。
 
 ### 人物の会話グラフ `characters[].interactions[]`
 
-シナリオのトップレベルに独立した`conversations[]`は置かない。人物が入口となる会話グラフは、その人物の`interactions[]`に定義する。一人の人物に、条件や進行状況に応じて複数の会話グラフを割り当てられる。人物を選択した際、利用条件を満たす会話を選択可能にする。会話内容を一つの長いグラフにまとめるか、用途ごとに複数グラフへ分けるかはシナリオに応じて選ぶ。
+シナリオのトップレベルに独立した`conversations[]`は置かない。人物が入口となる会話グラフは、その人物の`interactions[]`に定義する。一人の人物に、条件や進行状況に応じて複数の会話グラフを割り当てられる。人物一覧には、少なくとも一つの会話グラフの`requires`を満たす人物だけを表示し、選択後は利用条件を満たす会話を選択可能にする。会話内容を一つの長いグラフにまとめるか、用途ごとに複数グラフへ分けるかはシナリオに応じて選ぶ。
 
 ```json
 {
@@ -145,7 +145,15 @@ scenario/
 
 ### 証拠調査の操作
 
-会話のセリフペインでは会話タイトルを表示せず話者名を大きく表示し、`player`は「あなた」と表示する。証拠調査中は証拠品名を大きく表示する。選択肢はメインペイン右下で背景画像に重ねて表示し、セリフペインの位置を押し下げない。選択肢が多い場合は選択肢領域をスクロール可能にし、必要ならセリフペインにも重ねる。証拠調査の選択肢には「調査を終了する」を末尾に置く。調査項目を選んだ後の結果表示では「戻る」を表示し、「証拠品を調べる」を押した直後の調査項目選択画面へ戻る。「！」は新しい情報を取得できる未完了の会話・証拠調査・ログ調査、未読の判明事項、未使用のヒント段階がある場合に状態から導出する。対象には人物・証拠品・ログ・判明事項の各アイコンと資料タブを含める。判明事項の既読状態はPlayerStateの`readFacts`で管理する。新しい証拠・ログ・判明事項を追加したEvent、または新たな人物を解禁したEventの通知は選択肢にせず、セリフペインに色付きで表示する。通常のセリフ本文とは見た目を分け、操作を追加で要求しない。
+会話のセリフペインでは会話タイトルを表示せず話者名を大きく表示し、`player`は「あなた」と表示する。証拠調査中は証拠品名を大きく表示する。選択肢はメインペイン右下で背景画像に重ねて表示し、セリフペインの位置を押し下げない。選択肢が多い場合は選択肢領域をスクロール可能にし、必要ならセリフペインにも重ねる。証拠品の「証拠品を調べる」を押すと調査項目を選び、選択後は会話と同じノード進行で調査結果を表示する。調査ノードでは会話ノードと同じ`text`、`nextNodeId`、`choices`、`routes`、`completionEventId`を使える。調査項目の`startNodeId`から開始し、ノードの選択肢・自動分岐・次ノードをたどる。結果ノードの文章が全文表示された時点でそのノードのEventを実行し、調査項目の終端まで到達した時点で調査項目を完了してEventを実行する。終端の「戻る」で調査項目の選択画面へ戻る。「調査を終了する」は調査項目選択画面に置く。従来どおり`description`だけを持つ調査項目も指定でき、その文を単一の結果ノードとして扱う。「！」は新しい情報を取得できる未完了の会話・証拠調査・ログ調査、未読の判明事項、未使用のヒント段階がある場合に状態から導出する。対象には人物・証拠品・ログ・判明事項の各アイコンと資料タブを含める。判明事項の既読状態はPlayerStateの`readFacts`で管理する。新しい証拠・ログ・判明事項を追加したEvent、または新たな人物を解禁したEventの通知は選択肢にせず、セリフペインに色付きで表示する。通常のセリフ本文とは見た目を分け、操作を追加で要求しない。
+
+### 事件002でのOSINT調査例
+
+OSINTによる段階的な推理も、事件固有のUIや処理を追加せず、人物の`interactions[]`にある会話グラフ、選択肢、Condition、Eventで表現する。初回聞き取り後に公開投稿と画像の存在を伝え、Eventで画像証拠を追加する。画像証拠の`investigations[]`では、視覚的には場所を特定できないという結果を示す。その後に開始する会話グラフで、画像ファイルのメタデータを調べる、Exifの撮影日時・位置情報を読む、座標を架空の地図上の交番に結びつける、という段階を選択肢で進める。
+
+各段階では正解選択肢のみ次のノードへ進め、不正解選択肢は説明ノードを経由して同じ設問に戻す。最終の交番特定ノードの`completionEventId`がEventを起動し、「交番で待ち伏せか」のFactを追加する。アクセスログ等の次段階の会話・調査にはこのFactを`requires`として設定する。GMが解説時間を設けるための一時停止はGMStateのLockで行い、シナリオデータ内にGMロック状態を保存しない。Fact取得後に次の捜査を直ちに開くか、GM解説後に開くかは運営時のロック解除で制御する。
+
+Exifに記録された座標は撮影位置の手がかりとして扱い、投稿者や実際の待ち伏せを単独で確定する情報として扱わない。シナリオ上は元画像に位置情報が残っている理由（被害者端末に保存された加工前画像など）を説明し、架空の座標・地図を使う。
 
 ### 証拠 `evidence[]`
 
@@ -167,7 +175,7 @@ scenario/
 }
 ```
 
-証拠の`id`、`name`は必須。`icon`、`background`、`description`、`investigations`は任意。`icon`は証拠一覧・詳細で使う画像の素材参照で、省略時は`defaults.evidenceIcon`、それもなければエンジン内蔵アイコンを使う。証拠を選択した画面では`background`を背景として使い、省略時は事件既定の背景を使う。証拠はプレイヤーが取得・調査できる資料で、調査結果として得る知識はFactに分ける。調査項目の`id`は事件内で一意とする。調査項目は`label`を必須とし、状態変更が必要な場合は`completionEventId`を指定する。
+証拠の`id`、`name`は必須。`icon`、`background`、`description`、`investigations`は任意。`icon`は証拠一覧・詳細で使う画像の素材参照で、省略時は`defaults.evidenceIcon`、それもなければエンジン内蔵アイコンを使う。証拠を選択した画面では`background`を背景として使い、省略時は事件既定の背景を使う。証拠はプレイヤーが取得・調査できる資料で、調査結果として得る知識はFactに分ける。調査項目の`id`は事件内で一意とする。調査項目は`label`を必須とし、状態変更が必要な場合は`completionEventId`を指定する。段階的な調査結果が必要な場合は、`startNodeId`と会話ノードと同じ形式の`nodes[]`を追加する。ノードIDは調査項目内で一意とし、`nextNodeId`・`choices[].nextNodeId`・`routes[].nextNodeId`はその調査項目内のノードIDを参照する。`nodes[]`を省略した場合は`description`を単一の結果ノードとして扱う。
 
 ### ログ `logs[]` と行 `rows[]`
 
@@ -209,26 +217,26 @@ scenario/
 Conditionの保存形式は以下に固定する。
 
 ```json
-{ "type": "evidence", "targetId": "ev_ayaka_phone", "operator": "exists" }
+{ "type": "evidence", "targetId": "ev_ayaka_phone", "operator": "exists" }\n{ "type": "evidence", "targetId": "ev_ayaka_phone", "operator": "notExists" }
 { "type": "log", "targetId": "log_sns_access", "operator": "exists" }
-{ "type": "fact", "targetId": "fact_phishing_site", "operator": "exists" }
-{ "type": "conversation", "targetId": "conv_ayaka_first", "operator": "completed" }
+{ "type": "fact", "targetId": "fact_phishing_site", "operator": "exists" }\n{ "type": "fact", "targetId": "fact_phishing_site", "operator": "notExists" }
+{ "type": "conversation", "targetId": "conv_ayaka_first", "operator": "completed" }\n{ "type": "conversation", "targetId": "conv_ayaka_first", "operator": "notCompleted" }
 { "type": "investigation", "targetId": "inspect_saved_email", "operator": "completed" }
 { "type": "logRow", "targetId": "row_tor_login", "operator": "completed" }
-{ "type": "event", "targetId": "event_ayaka_first", "operator": "completed" }
+{ "type": "event", "targetId": "event_ayaka_first", "operator": "completed" }\n{ "type": "event", "targetId": "event_ayaka_first", "operator": "notCompleted" }
 { "type": "and", "conditions": [ CONDITION, CONDITION ] }
 { "type": "or", "conditions": [ CONDITION, CONDITION ] }
 { "type": "not", "condition": CONDITION }
 ```
 
-`evidence`、`log`、`fact`は`exists`、`conversation`、`investigation`、`logRow`、`event`は`completed`だけを使用する。AND/ORは1件以上の子を持ち、NOTはConditionをちょうど1件持つ。最大ネスト深度は16。メーカーではJSONを入力させず、種別・対象・演算子と条件グループの追加操作で編集する。会話の`requires`は単一Conditionとして保存する。
+`evidence`、`log`、`fact`は`exists`（所持・取得済み）または`notExists`（未所持・未取得）を使用する。`conversation`、`investigation`、`logRow`、`event`は`completed`（完了済み）または`notCompleted`（未完了）を使用する。AND/ORは1件以上の子を持ち、NOTはConditionをちょうど1件持つ。最大ネスト深度は16。メーカーではJSONを入力させず、種別・対象・演算子と条件グループの追加操作で編集する。会話の`requires`は単一Conditionとして保存する。
 
 ### Event `events[]` と Effect
 
 ```json
 {
   "id": "event_inspect_tor_login",
-  "requires": { "type": "fact", "targetId": "fact_phishing_site", "operator": "exists" },
+  "requires": { "type": "fact", "targetId": "fact_phishing_site", "operator": "exists" }\n{ "type": "fact", "targetId": "fact_phishing_site", "operator": "notExists" },
   "effects": [
     { "type": "add", "target": "facts.fact_tor_access" }
   ]
@@ -346,6 +354,9 @@ Conversation: conv_ayaka_first
 この形式では、会話・ノード・選択肢・ルートのConditionと、Conditionの`and` / `or` / `not`を初版に含める。任意のフラグ、数値変数、複数言語対応、素材バリアントは初版に含めない。必要になった場合は、既存データとの互換性とエンジンへの影響を確認し、`schemaVersion`を更新してから追加する。初版のCondition / Effectで表現できない仕様を作者が自由記述で補わない。
 
 旧形式の`prototype/case001.json`と旧シナリオメーカー試作版は、本書確定形式より前のデータ形式である。現在の`prototype/case001.json`は`schemaVersion: 1`の新形式を使用する。旧形式を読み込む場合は、移行処理またはCase 001の変換を明示的に行い、旧形式を暗黙に新形式として扱わない。
+
+
+
 
 
 

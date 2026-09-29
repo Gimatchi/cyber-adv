@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "case001",
-  "title": "事件001 SNS乗っ取り",
+  "id": "case001-yobi",
+  "title": "事件001 SNS乗っ取り 予備",
   "defaults": {
     "background": "assets/backgrounds/default-investigation.png",
     "characterIcon": "assets/icons/ayaka.png",

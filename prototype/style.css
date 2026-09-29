@@ -81,6 +81,10 @@ button { font: inherit; }
 .action-button { margin-top: 20px; padding: 9px 15px; border: 1px solid rgba(88,199,178,.32); border-radius: 7px; color: #aee4d9; background: rgba(88,199,178,.09); font-size: 11px; cursor: pointer; transition: .15s ease; }
 .action-button:hover:not(:disabled) { border-color: var(--accent); background: rgba(88,199,178,.17); }
 .action-button:disabled { border-color: var(--line); color: #8090a0; background: rgba(255,255,255,.025); cursor: default; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.detail-actions .action-button { margin-top: 0; }
+.action-button.secondary { color: var(--ink); background: rgba(10, 20, 29, .54); border-color: var(--line); }
+.action-button.secondary:hover:not(:disabled) { border-color: var(--accent); background: rgba(25, 42, 52, .82); }
 .empty-state { padding: 21px 12px; color: #748599; font-size: 11px; line-height: 1.8; text-align: center; }
 .evidence-tabs { padding: 0 15px 9px; display: flex; gap: 5px; border-bottom: 1px solid var(--line); }
 .tab-button { padding: 7px 10px; border: 0; border-radius: 6px; color: #8293a4; background: transparent; font-size: 10px; cursor: pointer; }

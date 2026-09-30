@@ -13,3 +13,11 @@
 .resize-handle:hover,.resize-handle:focus-visible{background:#173333;outline:none}
 .resize-handle:hover::after,.resize-handle:focus-visible::after{background:#32c6a6;box-shadow:3px 0 #32c6a6}
 @media(max-width:850px){.layout{display:flex;flex-direction:column;height:auto;min-height:0}.resize-handle{display:none}}
+.conversation-block{--conversation-border:#3b7f86;--conversation-surface:#142b37;--conversation-heading:#1c4550;display:grid;gap:2px;margin:7px 0 10px;padding:5px;border:1px solid var(--conversation-border);border-radius:9px;background:var(--conversation-surface)}
+.conversation-color-1{--conversation-border:#7566a5;--conversation-surface:#211d36;--conversation-heading:#39315c}
+.conversation-color-2{--conversation-border:#a26f43;--conversation-surface:#30251c;--conversation-heading:#563b27}
+.conversation-color-3{--conversation-border:#557f5d;--conversation-surface:#1b2c24;--conversation-heading:#294833}
+.conversation-block-heading{margin-bottom:3px;padding:3px;border-radius:6px;background:var(--conversation-heading)}
+.conversation-block-heading .outline-entry{color:#f0f6fa;font-weight:700}
+.conversation-block-heading .outline-entry.is-active{border-color:var(--conversation-border);background:#0f1e2a}
+.conversation-block .node-outline-row{margin-left:5px;padding-left:10px;border-left:2px solid var(--conversation-border)}

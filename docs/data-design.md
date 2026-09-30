@@ -96,9 +96,7 @@ scenario/
   "id": "conv_ayaka",
   "title": "藤崎彩花との会話",
   "background": "assets/backgrounds/interview-room.png",
-  "startNodeId": "node_001",
-  "completionEventId": "event_ayaka_first",
-  "nodes": [
+  "startNodeId": "node_001",  "nodes": [
     {
       "id": "node_001",
       "speakerId": "ayaka",
@@ -124,7 +122,7 @@ scenario/
 }
 ```
 
-`id`、`title`、`startNodeId`、`nodes`は必須。`background`、`requires`、`completionEventId`、`repeatable`は任意。`background`は会話中の既定背景。`requires`を省略した会話は、その人物が表示されていれば利用できる。`repeatable: true`の会話は完了後も入口を表示し、会話完了状態を進行条件として記録しない。ノードはオブジェクトのキーではなく配列項目とし、メーカーで順番に追加・編集できるようにする。一人の人物が状況に応じて異なる会話をする場合は、複数のグラフに分けるか、一つのグラフ内の条件付き`routes`で表現できる。相沢への初回接触と追及のように同じ相手とのやり取りが続く場合は、条件付きrouteで一つのグラフにまとめる方法もある。
+`id`、`title`、`startNodeId`、`nodes`は必須。`background`、`requires`、`repeatable`は任意。旧データ互換用の`completionEventId`も読み込めるが、新規データでは使用しない。`background`は会話中の既定背景。`requires`を省略した会話は、その人物が表示されていれば利用できる。`repeatable: true`の会話は完了後も入口を表示し、会話完了状態を進行条件として記録しない。ノードはオブジェクトのキーではなく配列項目とし、メーカーで順番に追加・編集できるようにする。一人の人物が状況に応じて異なる会話をする場合は、複数のグラフに分けるか、一つのグラフ内の条件付き`routes`で表現できる。相沢への初回接触と追及のように同じ相手とのやり取りが続く場合は、条件付きrouteで一つのグラフにまとめる方法もある。
 
 ノードのフィールド：
 
@@ -137,11 +135,12 @@ scenario/
 | `icon` | 任意 | この発言で表示する画像・表情の素材参照。省略時は人物の既定アイコンを使う。`player`と`narrator`はアイコンを表示しない。 |
 | `background` | 任意 | このノードだけに使う背景。省略時は会話・事件の既定背景を使う。 |
 | `requires` | 任意 | このノードを表示・実行する条件。満たさないノードへ進む選択肢は表示しない。 |
-| `nextNodeId` | 分岐なしの場合 | 次のノード。会話末尾では省略して終了する。 |
-| `choices` | 選択がある場合 | 選択肢配列。各要素は`text`、任意の`requires`、`nextNodeId`、`completionEventId`を持つ。`completionEventId`を指定した選択肢を選ぶと、そのEventを一度だけ起動する。条件を満たさない選択肢は表示しない。 |
+| `nextNodeId` | 任意 | 同じ会話内の次ノード。`nextConversationId`とは同時指定しない。 |
+| `nextConversationId` | 任意 | 同じ人物に属する別会話のID。対象会話の`startNodeId`から開始する。途中ノードへの遷移はしない。対象会話の`requires`はこの遷移では評価しないため、必要な条件は遷移元に設定する。`nextNodeId`とは同時指定しない。 |
+| `choices` | 選択がある場合 | 選択肢配列。各要素は`text`、任意の`requires`、`nextNodeId`または`nextConversationId`、`completionEventId`を持つ。会話遷移先は同じ人物の別会話に限り、開始ノードから開始する。遷移先の`requires`は評価しない。`completionEventId`を指定した選択肢を選ぶと、そのEventを一度だけ起動する。条件を満たさない選択肢は表示しない。 |
 | `routes` | ルート専用ノードの場合 | 条件を順番に評価する自動分岐。各要素は任意の`requires`と`nextNodeId`または`nextConversationId`を持つ。 |
 
-会話と証拠品会話ノードの`text`、人物・証拠・ログ・Factの`description`、旧形式の証拠調査項目の`description`、選択肢の`text`、ログ行の`text`は複数行を許可し、改行をそのまま表示する。メーカーではこれらを複数行入力欄で編集する。JSONでは改行文字として保存し、書き出し時に正しくエスケープする。`nextNodeId`、`choices`、`routes`は同時に指定しない。`routes`を持つノードは表示用の話者・文章を持たず、条件を満たす最初のルートへ自動的に進む。ルートの遷移先が別会話の場合は、現在の会話を完了して対象会話を開始する。会話や調査結果に紐づくEvent / Effectは、対応する文章が全文表示されるまで適用しない。適用直後に、実際に追加・解禁された対象だけを色付き通知でセリフペインに表示する。汎用の確認を促すセリフは挟まない。会話の完了時に進行状態を変更する処理は、会話データへ直接書かずEventに置く。
+会話と証拠品会話ノードの`text`、人物・証拠・ログ・Factの`description`、旧形式の証拠調査項目の`description`、選択肢の`text`、ログ行の`text`は複数行を許可し、改行をそのまま表示する。メーカーではこれらを複数行入力欄で編集する。JSONでは改行文字として保存し、書き出し時に正しくエスケープする。`nextNodeId`、`choices`、`routes`は同時に指定しない。`routes`を持つノードは表示用の話者・文章を持たず、条件を満たす最初のルートへ自動的に進む。ノード・選択肢・ルートから別会話へ遷移する場合は、現在の会話を離れる処理（旧会話`completionEventId`を含む）を行い、対象会話の`startNodeId`から開始する。遷移先の会話`requires`は評価しない。別会話の途中ノードへは遷移しない。会話や調査結果に紐づくEvent / Effectは、対応する文章が全文表示されるまで適用しない。適用直後に、実際に追加・解禁された対象だけを色付き通知でセリフペインに表示する。汎用の確認を促すセリフは挟まない。新規データの進行状態変更は、最後に表示するノードの`completionEventId`など、本文が全文表示された時点で起動するEventに置く。旧データの会話`completionEventId`は互換用に残し、会話を終了または別会話へ移るときに実行する。
 
 ### 証拠調査の操作
 

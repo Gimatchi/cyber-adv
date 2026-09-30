@@ -113,12 +113,27 @@
       "icon": "assets/evidence/smartphone.png",
       "background": "assets/backgrounds/evidence-desk.png",
       "description": "保存されたメールとSNSアクセスログを調べられる。",
-      "investigations": [
+      "startNodeId": "ev_mika_phone_001",
+      "completionEventId": "event_inspect_mika_phone_mail",
+      "nodes": [
         {
-          "id": "inspect_mika_phone_mail",
-          "label": "保存されたメールを確認する",
-          "description": "受信メールを確認する。",
-          "completionEventId": "event_inspect_mika_phone_mail"
+          "id": "ev_mika_phone_001",
+          "speakerId": "narrator",
+          "text": "スマートフォンのどのデータを確認しますか？",
+          "choices": [
+            { "id": "choice_phone_mail", "text": "保存されたメールを見る", "nextNodeId": "ev_mika_phone_002" },
+            { "id": "choice_phone_apps", "text": "アプリの利用記録を見る", "nextNodeId": "ev_mika_phone_003" }
+          ]
+        },
+        {
+          "id": "ev_mika_phone_002",
+          "speakerId": "player",
+          "text": "保存されたメールを確認する。"
+        },
+        {
+          "id": "ev_mika_phone_003",
+          "speakerId": "narrator",
+          "text": "アプリの利用記録を確認する。"
         }
       ]
     }
@@ -174,10 +189,6 @@
     },
     {
       "id": "event_inspect_mika_phone_mail",
-      "trigger": {
-        "type": "investigation",
-        "targetId": "inspect_mika_phone_mail"
-      },
       "effects": [
         {
           "type": "add",

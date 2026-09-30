@@ -356,12 +356,27 @@
       "name": "藤崎彩花のスマートフォン",
       "background": "assets/backgrounds/default-investigation.png",
       "description": "事件に関連するデータが保存されているか確認できる。",
-      "investigations": [
+      "startNodeId": "node_001",
+      "completionEventId": "event_phone_checked",
+      "nodes": [
         {
-          "id": "inspect_ayaka_phone",
-          "label": "スマートフォンを調べる",
-          "description": "事件に関連がありそうなデータはなさそうだ。",
-          "completionEventId": "event_phone_checked"
+          "id": "node_001",
+          "speakerId": "narrator",
+          "text": "スマートフォン内のデータを調べます。どこを確認しますか？",
+          "choices": [
+            { "id": "choice_phone_mail", "text": "保存されたメールを見る", "nextNodeId": "node_002" },
+            { "id": "choice_phone_history", "text": "閲覧履歴を見る", "nextNodeId": "node_003" }
+          ]
+        },
+        {
+          "id": "node_002",
+          "speakerId": "narrator",
+          "text": "保存されたメールを確認したが、事件に関係する情報は見つからなかった。"
+        },
+        {
+          "id": "node_003",
+          "speakerId": "narrator",
+          "text": "閲覧履歴を確認したが、事件に関係する情報は見つからなかった。"
         }
       ]
     }

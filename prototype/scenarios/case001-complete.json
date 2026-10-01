@@ -64,14 +64,31 @@
         {
           "id": "conv_ayaka_followup",
           "title": "彩花への再聞き込み",
-          "requires": {
-            "type": "fact",
-            "targetId": "fact_tor_access",
-            "operator": "exists"
-          },
           "repeatable": true,
-          "startNodeId": "ayaka_followup_start",
+          "startNodeId": "ayaka_followup_001",
           "nodes": [
+            {
+              "id": "ayaka_followup_001",
+              "speakerId": "",
+              "text": "藤崎さん、改めてお話を伺います。",
+              "choices": [
+                {
+                  "id": "choice_ayaka_followup_001_1",
+                  "text": "Chirp(SNS)のことを聞く",
+                  "nextConversationId": "conv_ayaka_first"
+                },
+                {
+                  "id": "choice_ayaka_followup_001_2",
+                  "text": "不審なメールについて聞く",
+                  "requires": {
+                    "type": "fact",
+                    "targetId": "fact_tor_access",
+                    "operator": "exists"
+                  },
+                  "nextNodeId": "ayaka_followup_start"
+                }
+              ]
+            },
             {
               "id": "ayaka_followup_start",
               "speakerId": "player",

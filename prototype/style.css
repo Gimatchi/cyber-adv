@@ -274,3 +274,12 @@ button { font: inherit; }
 .detail-view .detail-copy .action-button:hover:not(:disabled) {
   background: rgba(8, 58, 56, .98);
 }
+
+.dialogue-answer-form { margin-top: 12px; }
+.dialogue-answer-form[hidden] { display: none; }
+.dialogue-answer-form > label { display: block; margin-bottom: 6px; color: #a9c1c6; font-size: 12px; }
+.dialogue-answer-row { display: flex; gap: 8px; }
+.dialogue-answer-row input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid rgba(117, 165, 171, .55); border-radius: 7px; color: #e8f2f4; background: rgba(6, 16, 24, .92); font: inherit; }
+.dialogue-answer-row .action-button { margin: 0; white-space: nowrap; }
+.dialogue-answer-feedback { min-height: 1.4em; margin: 6px 0 0; color: #ffcc82; font-size: 12px; }
+@media (max-width: 480px) { .dialogue-answer-row { flex-direction: column; } }

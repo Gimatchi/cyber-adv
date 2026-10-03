@@ -51,6 +51,11 @@
           <div class="dialogue-label">DIALOGUE / 会話</div>
           <div class="dialogue-speaker-row"><span id="dialogue-icon" class="dialogue-icon"></span><div><span id="dialogue-speaker" class="dialogue-speaker"></span><h2 id="dialogue-title"></h2></div></div>
           <p id="dialogue-text" class="dialogue-text"></p>
+          <form id="dialogue-answer-form" class="dialogue-answer-form" hidden>
+            <label for="dialogue-answer">回答</label>
+            <div class="dialogue-answer-row"><input id="dialogue-answer" name="answer" type="text" autocomplete="off"><button class="action-button" type="submit">回答する</button></div>
+            <p id="dialogue-answer-feedback" class="dialogue-answer-feedback" role="status" aria-live="polite"></p>
+          </form>
           <div id="dialogue-controls" class="dialogue-controls"><button id="dialogue-next" class="action-button" type="button" hidden>次へ</button><button id="dialogue-close" class="reset-button" type="button" hidden>やめる</button><button id="log-analysis-close" class="reset-button" type="button" hidden>解析を終了する</button></div>
         </section>
      </section>

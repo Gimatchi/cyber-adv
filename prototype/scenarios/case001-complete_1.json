@@ -10,7 +10,7 @@
   "characters": [
     {
       "id": "ayaka",
-      "name": "土崎彩花",
+      "name": "藤崎彩花",
       "role": "被害者",
       "icon": "assets/icons/ayaka.png",
       "background": "assets/backgrounds/ayaka-selection.png",
@@ -25,13 +25,13 @@
             {
               "id": "ayaka_first_start",
               "speakerId": "player",
-              "text": "土崎さん、何があったのか聞かせてください。",
+              "text": "藤崎さん、何があったのか聞かせてください。",
               "nextNodeId": "ayaka_first_account"
             },
             {
               "id": "ayaka_first_account",
               "speakerId": "ayaka",
-              "text": "昨日、Chirpに入れなくなりました。知らない投稿もされていて、彼氏との写真まで公開されてしまったんです。",
+              "text": "昨日、Chirpに入れなくなりました。知らない投稿もされていて、友人との写真まで公開されてしまったんです。",
               "nextNodeId": "ayaka_first_post"
             },
             {
@@ -43,20 +43,20 @@
             {
               "id": "ayaka_first_image",
               "speakerId": "ayaka",
-              "text": "これです。『彩花をこの場所で待ち伏せする』という文章と、場所が分かりそうな写真が投稿されていました。\nそれにわ、私たちの悪口と、ふざけているように見えるように加工された写真まで・・・",
+              "text": "これです。『彩花をこの場所で待ち伏せする』という文章と、場所が分かりそうな写真が投稿されていました。元の画像も端末に残っています。",
               "completionEventId": "event_ayaka_first_image",
               "nextNodeId": "ayaka_first_safety"
             },
             {
               "id": "ayaka_first_safety",
               "speakerId": "player",
-              "text": "分かりました。\n安全のため、まず画像から撮影場所の手掛かりを確認します。その後、アカウントへの不正アクセスを調べます。",
+              "text": "安全のため、まず画像から撮影場所の手掛かりを確認します。その後、アカウントへの不正アクセスを調べます。",
               "nextNodeId": "ayaka_first_mail"
             },
             {
               "id": "ayaka_first_mail",
               "speakerId": "ayaka",
-              "text": "分かりました。私のスマートフォンも預けますので、犯人を突き止めてください。",
+              "text": "分かりました。運営からのようなメールが届いて、リンクを開いた覚えもあります。",
               "completionEventId": "event_ayaka_first_complete"
             }
           ]
@@ -64,31 +64,14 @@
         {
           "id": "conv_ayaka_followup",
           "title": "彩花への再聞き込み",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_tor_access",
+            "operator": "exists"
+          },
           "repeatable": true,
-          "startNodeId": "ayaka_followup_001",
+          "startNodeId": "ayaka_followup_start",
           "nodes": [
-            {
-              "id": "ayaka_followup_001",
-              "speakerId": "player",
-              "text": "土崎さん、改めてお話を伺います。",
-              "choices": [
-                {
-                  "id": "choice_ayaka_followup_001_1",
-                  "text": "Chirp(SNS)のことを聞く",
-                  "nextConversationId": "conv_ayaka_first"
-                },
-                {
-                  "id": "choice_ayaka_followup_001_2",
-                  "text": "不審なメールについて聞く",
-                  "requires": {
-                    "type": "fact",
-                    "targetId": "fact_tor_access",
-                    "operator": "exists"
-                  },
-                  "nextNodeId": "ayaka_followup_start"
-                }
-              ]
-            },
             {
               "id": "ayaka_followup_start",
               "speakerId": "player",
@@ -124,174 +107,100 @@
       ]
     },
     {
-      "id": "kuroda",
-      "name": "黒見恒一",
-      "role": "被害関係者",
-      "icon": "assets/icons/kuroda.png",
-      "background": "assets/backgrounds/kuroda-selection-with-character.png",
-      "description": "彩花の恋人。公開された情報による被害も受けている。",
+      "id": "asano",
+      "name": "麻野優子",
+      "role": "捜査員",
+      "icon": "assets/icons/asano.png",
+      "background": "assets/backgrounds/asano-selection-with-character.png",
+      "description": "サイバー捜査の知識を持つ捜査員。会話の中で考え方や用語を説明する。",
       "interactions": [
         {
-          "id": "conv_kuroda_optional",
-          "title": "黒見への任意聞き込み",
+          "id": "conv_asano_osint_hint",
+          "title": "画像の調べ方を相談する",
           "requires": {
-            "type": "fact",
-            "targetId": "fact_credentials_entered",
+            "type": "evidence",
+            "targetId": "ev_wait_location_image",
             "operator": "exists"
           },
           "repeatable": true,
-          "startNodeId": "kuroda_start",
+          "startNodeId": "asano_osint_start",
           "nodes": [
             {
-              "id": "kuroda_start",
-              "speakerId": "kuroda",
-              "text": "僕にも関係する写真が公開されました。彩花を心配しています。",
-              "nextNodeId": "kuroda_relation"
+              "id": "asano_osint_start",
+              "speakerId": "asano",
+              "text": "まずは画像そのものから確認しましょう。画面に写った景色だけで場所を断定せず、ファイルに付いた情報も見ます。",
+              "nextNodeId": "asano_osint_meta"
             },
             {
-              "id": "kuroda_relation",
+              "id": "asano_osint_meta",
               "speakerId": "player",
-              "text": "天童さんについて知っていることはありますか？",
-              "nextNodeId": "kuroda_answer"
+              "text": "画像ファイルに付いた情報とは？",
+              "nextNodeId": "asano_osint_exif"
             },
             {
-              "id": "kuroda_answer",
-              "speakerId": "kuroda",
-              "text": "大学時代の知人です。\n昔はよくつるんでました。最近はあんまり連絡しなくなりましたね。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "aizawa",
-      "name": "天童拓海",
-      "role": "参考人",
-      "icon": "assets/icons/aizawa.png",
-      "background": "assets/backgrounds/aizawa-selection-with-character.png",
-      "description": "彩花と大学時代に面識がある人物。",
-      "interactions": [
-        {
-          "id": "conv_aizawa_first",
-          "title": "天童への初回聞き込み",
-          "requires": {
-            "type": "fact",
-            "targetId": "fact_subscriber_aizawa",
-            "operator": "exists"
-          },
-          "repeatable": false,
-          "startNodeId": "aizawa_first_start",
-          "nodes": [
+              "id": "asano_osint_exif",
+              "speakerId": "asano",
+              "text": "Exifなどのメタデータです。撮影時刻や位置情報が残ることがあります。ただし撮影場所を示す手掛かりであって、投稿者や実際の行動を単独で証明するものではありません。",
+              "nextNodeId": "asano_osint_limit"
+            },
             {
-              "id": "aizawa_first_start",
+              "id": "asano_osint_limit",
               "speakerId": "player",
-              "text": "土崎さんのChirpアカウントへの不正アクセスについて、確認したいことがあります。",
-              "nextNodeId": "aizawa_first_reply"
-            },
-            {
-              "id": "aizawa_first_reply",
-              "speakerId": "aizawa",
-              "text": "僕は何も知りません。大学の知人というだけですよ。",
-              "nextNodeId": "aizawa_first_question"
-            },
-            {
-              "id": "aizawa_first_question",
-              "speakerId": "player",
-              "text": "事件当日の行動や、土崎さんとの関係について確認しました。必要な資料を精査し、改めて話を聞きます。",
-              "completionEventId": "event_aizawa_first_interview"
+              "text": "分かりました。画像の調査を進めます。"
             }
           ]
         },
         {
-          "id": "conv_aizawa_confrontation",
-          "title": "証拠を示して天童を追及する",
+          "id": "conv_asano_tor_hint",
+          "title": "ログの読み方を相談する",
           "requires": {
-            "type": "fact",
-            "targetId": "fact_aizawa_evidence_complete",
+            "type": "evidence",
+            "targetId": "ev_chirp_log",
             "operator": "exists"
           },
           "repeatable": true,
-          "startNodeId": "aizawa_confront_start",
+          "startNodeId": "asano_tor_start",
           "nodes": [
             {
-              "id": "aizawa_confront_start",
+              "id": "asano_tor_start",
+              "speakerId": "asano",
+              "text": "ログは時刻、操作、接続元を並べて見ると流れがつかみやすいです。普段と異なる記録を探してみてください。",
+              "nextNodeId": "asano_tor_ip"
+            },
+            {
+              "id": "asano_tor_ip",
               "speakerId": "player",
-              "text": "フィッシングサイトの確認、メールの送信、不正アクセスに関する資料があなたの端末に残っていました。",
-              "choices": [
-                {
-                  "id": "aizawa_confront_deny_choice",
-                  "text": "記録の内容について説明を求める",
-                  "nextNodeId": "aizawa_confront_deny"
-                },
-                {
-                  "id": "aizawa_confront_plan_choice",
-                  "text": "計画と動機について確認する",
-                  "nextNodeId": "aizawa_confront_plan"
-                },
-                {
-                  "id": "aizawa_confront_all_choice",
-                  "text": "資料を時系列に示し、説明を求める",
-                  "nextNodeId": "aizawa_confront_confess"
-                }
-              ]
+              "text": "Torの出口IPが見つかったら、利用者を特定できますか。",
+              "nextNodeId": "asano_tor_answer"
             },
             {
-              "id": "aizawa_confront_deny",
-              "speakerId": "aizawa",
-              "text": "そんな記録は知らない……いや、少し待ってください。",
-              "nextNodeId": "aizawa_confront_plan"
-            },
-            {
-              "id": "aizawa_confront_plan",
-              "speakerId": "player",
-              "text": "メール、サイト、ログイン、端末の記録が時系列でつながっています。あなたの説明を聞かせてください。",
-              "nextNodeId": "aizawa_confront_confess"
-            },
-            {
-              "id": "aizawa_confront_confess",
-              "speakerId": "aizawa",
-              "text": "……僕がやりました。彩花が黒見と付き合い始めたことが許せなかった。偽のメールで情報を入力させて、アカウントに入ったんです。投稿も僕がしました。",
-              "completionEventId": "event_aizawa_confession",
-              "nextNodeId": "aizawa_confront_close"
-            },
-            {
-              "id": "aizawa_confront_close",
-              "speakerId": "narrator",
-              "text": "天童の供述と収集した資料を記録し、事件001の捜査を終了した。"
+              "id": "asano_tor_answer",
+              "speakerId": "asano",
+              "text": "それだけでは個人を特定できません。出口IPはTorネットワークから接続した手掛かりです。メールや偽サイトなど、別の記録を保有する事業者へ順に照会しましょう。"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "riko",
-      "name": "雛泉理子",
-      "role": "参考人",
-      "icon": "assets/icons/izumi.png",
-      "background": "assets/backgrounds/izumi-selection-with-character.png",
-      "description": "彩花、黒見、天童の大学時代の関係を知る友人。",
-      "interactions": [
+        },
         {
-          "id": "conv_riko_optional",
-          "title": "雛泉への任意聞き込み",
+          "id": "conv_asano_inquiry_hint",
+          "title": "照会先を相談する",
           "requires": {
             "type": "fact",
-            "targetId": "fact_subscriber_aizawa",
+            "targetId": "fact_mail_sender_identified",
             "operator": "exists"
           },
           "repeatable": true,
-          "startNodeId": "riko_start",
+          "startNodeId": "asano_inquiry_start",
           "nodes": [
             {
-              "id": "riko_start",
-              "speakerId": "player",
-              "text": "天童さんと彩花さんの関係について教えてください。",
-              "nextNodeId": "riko_answer"
+              "id": "asano_inquiry_start",
+              "speakerId": "asano",
+              "text": "照会先は、今ある記録を誰が保有しているかで考えます。メール送信アカウントの情報はメール事業者、サイトのアクセス記録はホスティング事業者、回線契約者は通信事業者が持っています。",
+              "nextNodeId": "asano_inquiry_next"
             },
             {
-              "id": "riko_answer",
-              "speakerId": "riko",
-              "text": "天童さんは大学時代から彩花を気にかけていました。黒見さんと付き合い始めてから、様子が変わったように感じました。ただ、私が見聞きした範囲の話です。"
+              "id": "asano_inquiry_next",
+              "speakerId": "player",
+              "text": "一つのIPだけで決めつけず、記録を順につなげます。"
             }
           ]
         }
@@ -299,7 +208,7 @@
     },
     {
       "id": "jinnai",
-      "name": "院内警部",
+      "name": "陣内警部",
       "role": "上司",
       "icon": "assets/icons/jinnai.png",
       "background": "assets/backgrounds/jinnai-selection.png",
@@ -319,7 +228,7 @@
             {
               "id": "jinnai_search_start",
               "speakerId": "jinnai",
-              "text": "天童宅を捜索したいということだな。目的と対象、根拠を整理して説明してくれ。",
+              "text": "相沢宅を捜索したいということだな。目的と対象、根拠を整理して説明してくれ。",
               "choices": [
                 {
                   "id": "jinnai_search_wrong1_choice",
@@ -328,7 +237,7 @@
                 },
                 {
                   "id": "jinnai_search_wrong2_choice",
-                  "text": "関係者が天童を怪しいと言っていました",
+                  "text": "関係者が相沢を怪しいと言っていました",
                   "nextNodeId": "jinnai_search_wrong2"
                 },
                 {
@@ -360,128 +269,7 @@
             {
               "id": "jinnai_search_end",
               "speakerId": "player",
-              "text": "天童の端末など、事件に関係する資料の確認に進みます。"
-            }
-          ]
-        },
-        {
-          "id": "conv_search_aizawa",
-          "title": "天童に関係する場所を捜索する",
-          "requires": {
-            "type": "event",
-            "targetId": "event_jinnai_search_approved",
-            "operator": "completed"
-          },
-          "repeatable": true,
-          "startNodeId": "search_aizawa_start",
-          "nodes": [
-            {
-              "id": "search_aizawa_start",
-              "speakerId": "jinnai",
-              "text": "必要な手続を経て、許可された範囲で捜索を実施する。事件に関係する端末と資料を確認する。",
-              "completionEventId": "event_search_aizawa",
-              "nextNodeId": "search_aizawa_end"
-            },
-            {
-              "id": "search_aizawa_end",
-              "speakerId": "player",
-              "text": "取得した端末を適切に保全し、内容を解析する。"
-            }
-          ]
-        },
-        {
-          "id": "conv_brightnet_inquiry",
-          "title": "BrightNetへ照会する",
-          "requires": {
-            "type": "fact",
-            "targetId": "fact_hosting_access_ip",
-            "operator": "exists"
-          },
-          "repeatable": true,
-          "startNodeId": "brightnet_inquiry_start",
-          "nodes": [
-            {
-              "id": "brightnet_inquiry_start",
-              "speakerId": "jinnai",
-              "text": "IPアドレスと接続時刻が分かった。BrightNetには何を確認する？",
-              "choices": [
-                {
-                  "id": "brightnet_wrong",
-                  "text": "契約者を犯人として扱う",
-                  "nextNodeId": "brightnet_wrong_explain"
-                },
-                {
-                  "id": "brightnet_right",
-                  "text": "指定時刻にそのIPを割り当てられた回線契約者の記録",
-                  "nextNodeId": "brightnet_right_answer"
-                }
-              ]
-            },
-            {
-              "id": "brightnet_wrong_explain",
-              "speakerId": "jinnai",
-              "text": "契約者と実際の利用者は同じとは限らない。まずは割当記録を確認し、他の資料と合わせて判断する。",
-              "nextNodeId": "brightnet_inquiry_start"
-            },
-            {
-              "id": "brightnet_right_answer",
-              "speakerId": "jinnai",
-              "text": "対象IPと時刻を指定して照会する。回答を受けたら他の記録との関連を確認しよう。",
-              "completionEventId": "event_inquiry_brightnet",
-              "nextNodeId": "brightnet_right_end"
-            },
-            {
-              "id": "brightnet_right_end",
-              "speakerId": "narrator",
-              "text": "BrightNetから契約者情報を得た。"
-            }
-          ]
-        },
-        {
-          "id": "conv_nexhost_inquiry",
-          "title": "NexHostへ照会する",
-          "requires": {
-            "type": "fact",
-            "targetId": "fact_hosting_provider",
-            "operator": "exists"
-          },
-          "repeatable": true,
-          "startNodeId": "nexhost_inquiry_start",
-          "nodes": [
-            {
-              "id": "nexhost_inquiry_start",
-              "speakerId": "jinnai",
-              "text": "偽サイトの記録を保有するNexHostへ照会する。必要な記録は何だろう。",
-              "choices": [
-                {
-                  "id": "nexhost_wrong",
-                  "text": "サイトを見た全員の情報",
-                  "nextNodeId": "nexhost_wrong_explain"
-                },
-                {
-                  "id": "nexhost_right",
-                  "text": "サイト管理接続と対象時間帯のアクセス記録",
-                  "nextNodeId": "nexhost_right_answer"
-                }
-              ]
-            },
-            {
-              "id": "nexhost_wrong_explain",
-              "speakerId": "jinnai",
-              "text": "事件に関係する対象と時間を絞り、必要な記録を確認する。",
-              "nextNodeId": "nexhost_inquiry_start"
-            },
-            {
-              "id": "nexhost_right_answer",
-              "speakerId": "jinnai",
-              "text": "対象時刻を指定して照会する。回答されたIPは、別途割当記録と照合しよう。",
-              "completionEventId": "event_inquiry_nexhost",
-              "nextNodeId": "nexhost_right_end"
-            },
-            {
-              "id": "nexhost_right_end",
-              "speakerId": "narrator",
-              "text": "NexHostのアクセスログを入手した。"
+              "text": "相沢の端末など、事件に関係する資料の確認に進みます。"
             }
           ]
         },
@@ -503,7 +291,7 @@
               }
             ]
           },
-          "repeatable": true,
+          "repeatable": false,
           "startNodeId": "mailia_inquiry_start",
           "nodes": [
             {
@@ -549,147 +337,125 @@
           ]
         },
         {
-          "id": "interaction_jinnai_8",
-          "title": "Torは追跡不能",
-          "startNodeId": "node_001",
-          "nodes": [
-            {
-              "id": "node_001",
-              "speakerId": "jinnai",
-              "text": "なるほど、不正アクセスをしたIPアドレスからは追跡が困難であると・・・\nとなると、別のルートで捜査をするしかなさそうだな。"
-            }
-          ],
+          "id": "conv_nexhost_inquiry",
+          "title": "NexHostへ照会する",
           "requires": {
             "type": "fact",
-            "targetId": "fact_tor_access",
+            "targetId": "fact_hosting_provider",
             "operator": "exists"
           },
-          "repeatable": true
-        },
-        {
-          "title": "Chirpを解析しよう",
-          "startNodeId": "node_001",
+          "repeatable": false,
+          "startNodeId": "nexhost_inquiry_start",
           "nodes": [
             {
-              "id": "node_001",
+              "id": "nexhost_inquiry_start",
               "speakerId": "jinnai",
-              "text": "Chirpのログインログ、投稿ログから、犯人を突き止められるかもしれない。頑張って解析してくれ。"
-            }
-          ],
-          "id": "interaction_jinnai_chirp1",
-          "repeatable": true,
-          "requires": {
-            "type": "evidence",
-            "targetId": "ev_chirp_log",
-            "operator": "exists"
-          }
-        },
-        {
-          "id": "innai_chirp",
-          "title": "Chirpへのログ差押え",
-          "startNodeId": "innai_chirp_first",
-          "nodes": [
-            {
-              "id": "innai_chirp_first",
-              "speakerId": "jinnai",
-              "text": "Chirpへの差押えをしたいんだな。なぜそれをしたい？",
+              "text": "偽サイトの記録を保有するNexHostへ照会する。必要な記録は何だろう。",
               "choices": [
                 {
-                  "id": "choice_innai_chirp_first_1",
-                  "text": "彩花さんのほかの投稿を見たい",
-                  "nextNodeId": "node_002"
+                  "id": "nexhost_wrong",
+                  "text": "サイトを見た全員の情報",
+                  "nextNodeId": "nexhost_wrong_explain"
                 },
                 {
-                  "id": "choice_innai_chirp_first_2",
-                  "text": "名誉棄損の投稿をした人を特定したい",
-                  "nextNodeId": "node_003"
-                },
-                {
-                  "id": "choice_innai_chirp_first_3",
-                  "text": "名誉棄損の投稿を見た人を調べたい",
-                  "nextNodeId": "node_004"
+                  "id": "nexhost_right",
+                  "text": "サイト管理接続と対象時間帯のアクセス記録",
+                  "nextNodeId": "nexhost_right_answer"
                 }
               ]
             },
             {
-              "id": "node_002",
+              "id": "nexhost_wrong_explain",
               "speakerId": "jinnai",
-              "text": "他の投稿についてはすでにスマートフォンからも見えるし、本件に関係ありそうなのはほかになさそうだよ。",
-              "nextNodeId": "innai_chirp_first"
+              "text": "事件に関係する対象と時間を絞り、必要な記録を確認する。",
+              "nextNodeId": "nexhost_inquiry_start"
             },
             {
-              "id": "node_003",
+              "id": "nexhost_right_answer",
               "speakerId": "jinnai",
-              "text": "そうだな。ログを差押えれば、不正アクセスをした人のIPアドレスが分かるかもしれないな。",
-              "nextNodeId": "node_005"
+              "text": "対象時刻を指定して照会する。回答されたIPは、別途割当記録と照合しよう。",
+              "completionEventId": "event_inquiry_nexhost",
+              "nextNodeId": "nexhost_right_end"
             },
             {
-              "id": "node_004",
-              "speakerId": "jinnai",
-              "text": "この投稿を見た他の人を調べても、今回の捜査には関係なさそうだな。",
-              "nextNodeId": "innai_chirp_first"
-            },
-            {
-              "id": "node_005",
-              "speakerId": "jinnai",
-              "text": "よし、俺が差押えの手続きをするから、待ってろ。",
-              "completionEventId": "event_phone_exam_complete"
+              "id": "nexhost_right_end",
+              "speakerId": "narrator",
+              "text": "NexHostのアクセスログを入手した。"
             }
-          ],
-          "repeatable": true,
-          "requires": {
-            "type": "and",
-            "targetId": "",
-            "operator": "exists",
-            "conditions": [
-              {
-                "type": "fact",
-                "targetId": "fact_osint_location",
-                "operator": "exists"
-              },
-              {
-                "type": "fact",
-                "targetId": "fact_credentials_entered",
-                "operator": "exists"
-              }
-            ]
-          }
+          ]
         },
         {
-          "id": "interaction_jinnai_11",
-          "title": "スマートフォンの解析",
-          "startNodeId": "node_001",
-          "nodes": [
-            {
-              "id": "node_001",
-              "speakerId": "jinnai",
-              "text": "次は、相談者のスマートフォンを確認すれば、犯人特定の手がかりが分かるかもしれない。"
-            }
-          ],
-          "repeatable": true,
+          "id": "conv_brightnet_inquiry",
+          "title": "BrightNetへ照会する",
           "requires": {
             "type": "fact",
-            "targetId": "fact_osint_location",
+            "targetId": "fact_hosting_access_ip",
             "operator": "exists"
-          }
-        },
-        {
-          "id": "interaction_jinnai_10",
-          "startNodeId": "node_001",
+          },
+          "repeatable": false,
+          "startNodeId": "brightnet_inquiry_start",
           "nodes": [
             {
-              "id": "node_001",
+              "id": "brightnet_inquiry_start",
               "speakerId": "jinnai",
-              "text": "相談者の身の安全のためにも、まずは犯人の待ち伏せ場所を特定しよう。それが最優先だ。"
+              "text": "IPアドレスと接続時刻が分かった。BrightNetには何を確認する？",
+              "choices": [
+                {
+                  "id": "brightnet_wrong",
+                  "text": "契約者を犯人として扱う",
+                  "nextNodeId": "brightnet_wrong_explain"
+                },
+                {
+                  "id": "brightnet_right",
+                  "text": "指定時刻にそのIPを割り当てられた回線契約者の記録",
+                  "nextNodeId": "brightnet_right_answer"
+                }
+              ]
+            },
+            {
+              "id": "brightnet_wrong_explain",
+              "speakerId": "jinnai",
+              "text": "契約者と実際の利用者は同じとは限らない。まずは割当記録を確認し、他の資料と合わせて判断する。",
+              "nextNodeId": "brightnet_inquiry_start"
+            },
+            {
+              "id": "brightnet_right_answer",
+              "speakerId": "jinnai",
+              "text": "対象IPと時刻を指定して照会する。回答を受けたら他の記録との関連を確認しよう。",
+              "completionEventId": "event_inquiry_brightnet",
+              "nextNodeId": "brightnet_right_end"
+            },
+            {
+              "id": "brightnet_right_end",
+              "speakerId": "narrator",
+              "text": "BrightNetから契約者情報を得た。"
             }
-          ],
-          "title": "待ち伏せ場所の特定",
-          "repeatable": true,
+          ]
+        },
+        {
+          "id": "conv_search_aizawa",
+          "title": "相沢に関係する場所を捜索する",
           "requires": {
-            "type": "evidence",
-            "targetId": "ev_wait_location_image",
-            "operator": "exists"
-          }
+            "type": "event",
+            "targetId": "event_jinnai_search_approved",
+            "operator": "completed"
+          },
+          "repeatable": false,
+          "startNodeId": "search_aizawa_start",
+          "nodes": [
+            {
+              "id": "search_aizawa_start",
+              "speakerId": "jinnai",
+              "text": "必要な手続を経て、許可された範囲で捜索を実施する。事件に関係する端末と資料を確認する。",
+              "completionEventId": "event_search_aizawa",
+              "nextNodeId": "search_aizawa_end"
+            },
+            {
+              "id": "search_aizawa_end",
+              "speakerId": "player",
+              "text": "取得した端末を適切に保全し、内容を解析する。"
+            }
+          ]
         },
         {
           "startNodeId": "first_jinnai_1",
@@ -707,118 +473,174 @@
       ]
     },
     {
-      "id": "asano",
-      "name": "麻布優子",
-      "role": "捜査員",
-      "icon": "assets/icons/asano.png",
-      "background": "assets/backgrounds/asano-selection-with-character.png",
-      "description": "サイバー捜査の知識を持つ捜査員。会話の中で考え方や用語を説明する。",
+      "id": "aizawa",
+      "name": "相沢拓海",
+      "role": "参考人",
+      "icon": "assets/icons/aizawa.png",
+      "background": "assets/backgrounds/aizawa-selection-with-character.png",
+      "description": "彩花と大学時代に面識がある人物。",
       "interactions": [
         {
-          "id": "interaction_asano_4",
-          "title": "まずは画像を確認",
-          "startNodeId": "node_001",
-          "nodes": [
-            {
-              "id": "node_001",
-              "speakerId": "asano",
-              "text": "まずは相談者に話を聞こう。そうしないと、何が起こってるのか分からないよ。"
-            }
-          ],
-          "repeatable": true,
-          "requires": {
-            "type": "evidence",
-            "targetId": "ev_wait_location_image",
-            "operator": "notExists"
-          }
-        },
-        {
-          "id": "conv_asano_inquiry_hint",
-          "title": "照会先を相談する",
+          "id": "conv_aizawa_first",
+          "title": "相沢への初回聞き込み",
           "requires": {
             "type": "fact",
-            "targetId": "fact_mail_sender_identified",
+            "targetId": "fact_subscriber_aizawa",
             "operator": "exists"
           },
-          "repeatable": true,
-          "startNodeId": "asano_inquiry_start",
+          "repeatable": false,
+          "startNodeId": "aizawa_first_start",
           "nodes": [
             {
-              "id": "asano_inquiry_start",
-              "speakerId": "asano",
-              "text": "照会先は、今ある記録を誰が保有しているかで考えます。メール送信アカウントの情報はメール事業者、サイトのアクセス記録はホスティング事業者、回線契約者は通信事業者が持っています。",
-              "nextNodeId": "asano_inquiry_next"
+              "id": "aizawa_first_start",
+              "speakerId": "player",
+              "text": "藤崎さんのChirpアカウントへの不正アクセスについて、確認したいことがあります。",
+              "nextNodeId": "aizawa_first_reply"
             },
             {
-              "id": "asano_inquiry_next",
+              "id": "aizawa_first_reply",
+              "speakerId": "aizawa",
+              "text": "僕は何も知りません。大学の知人というだけですよ。",
+              "nextNodeId": "aizawa_first_question"
+            },
+            {
+              "id": "aizawa_first_question",
               "speakerId": "player",
-              "text": "一つのIPだけで決めつけず、記録を順につなげます。"
+              "text": "事件当日の行動や、藤崎さんとの関係について確認しました。必要な資料を精査し、改めて話を聞きます。",
+              "completionEventId": "event_aizawa_first_interview"
             }
           ]
         },
         {
-          "id": "conv_asano_tor_hint",
-          "title": "ログの読み方を相談する",
+          "id": "conv_aizawa_confrontation",
+          "title": "証拠を示して相沢を追及する",
           "requires": {
-            "type": "evidence",
-            "targetId": "ev_chirp_log",
+            "type": "fact",
+            "targetId": "fact_aizawa_evidence_complete",
             "operator": "exists"
           },
           "repeatable": true,
-          "startNodeId": "asano_tor_start",
+          "startNodeId": "aizawa_confront_start",
           "nodes": [
             {
-              "id": "asano_tor_start",
-              "speakerId": "asano",
-              "text": "ログは時刻、操作、接続元を並べて見ると流れがつかみやすいです。普段と異なる記録を探してみてください。",
-              "nextNodeId": "asano_tor_ip"
-            },
-            {
-              "id": "asano_tor_ip",
+              "id": "aizawa_confront_start",
               "speakerId": "player",
-              "text": "Torの出口IPが見つかったら、利用者を特定できますか。",
-              "nextNodeId": "asano_tor_answer"
+              "text": "フィッシングサイトの確認、メールの送信、不正アクセスに関する資料があなたの端末に残っていました。",
+              "choices": [
+                {
+                  "id": "aizawa_confront_deny_choice",
+                  "text": "記録の内容について説明を求める",
+                  "nextNodeId": "aizawa_confront_deny"
+                },
+                {
+                  "id": "aizawa_confront_plan_choice",
+                  "text": "計画と動機について確認する",
+                  "nextNodeId": "aizawa_confront_plan"
+                },
+                {
+                  "id": "aizawa_confront_all_choice",
+                  "text": "資料を時系列に示し、説明を求める",
+                  "nextNodeId": "aizawa_confront_confess"
+                }
+              ]
             },
             {
-              "id": "asano_tor_answer",
-              "speakerId": "asano",
-              "text": "それだけでは個人を特定できません。出口IPはTorネットワークから接続した手掛かりです。メールや偽サイトなど、別の記録を保有する事業者へ順に照会しましょう。"
+              "id": "aizawa_confront_deny",
+              "speakerId": "aizawa",
+              "text": "そんな記録は知らない……いや、少し待ってください。",
+              "nextNodeId": "aizawa_confront_plan"
+            },
+            {
+              "id": "aizawa_confront_plan",
+              "speakerId": "player",
+              "text": "メール、サイト、ログイン、端末の記録が時系列でつながっています。あなたの説明を聞かせてください。",
+              "nextNodeId": "aizawa_confront_confess"
+            },
+            {
+              "id": "aizawa_confront_confess",
+              "speakerId": "aizawa",
+              "text": "……僕がやりました。彩花さんが黒田さんと付き合い始めたことが許せなかった。偽のメールで情報を入力させて、アカウントに入ったんです。投稿も僕がしました。",
+              "completionEventId": "event_aizawa_confession",
+              "nextNodeId": "aizawa_confront_close"
+            },
+            {
+              "id": "aizawa_confront_close",
+              "speakerId": "narrator",
+              "text": "相沢の供述と収集した資料を記録し、事件001の捜査を終了した。"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "kuroda",
+      "name": "黒田恒一",
+      "role": "被害関係者",
+      "icon": "assets/icons/kuroda.png",
+      "background": "assets/backgrounds/kuroda-selection-with-character.png",
+      "description": "彩花の恋人。公開された情報による被害も受けている。",
+      "interactions": [
         {
-          "id": "conv_asano_osint_hint",
-          "title": "画像の調べ方を相談する",
+          "id": "conv_kuroda_optional",
+          "title": "黒田への任意聞き込み",
           "requires": {
-            "type": "evidence",
-            "targetId": "ev_wait_location_image",
+            "type": "fact",
+            "targetId": "fact_osint_location",
             "operator": "exists"
           },
           "repeatable": true,
-          "startNodeId": "asano_osint_start",
+          "startNodeId": "kuroda_start",
           "nodes": [
             {
-              "id": "asano_osint_start",
-              "speakerId": "asano",
-              "text": "まずは画像そのものから確認しましょう。画面に写った景色だけで場所を断定せず、ファイルに付いた情報も見ます。",
-              "nextNodeId": "asano_osint_meta"
+              "id": "kuroda_start",
+              "speakerId": "kuroda",
+              "text": "僕にも関係する写真が公開されました。彩花を心配しています。",
+              "nextNodeId": "kuroda_relation"
             },
             {
-              "id": "asano_osint_meta",
+              "id": "kuroda_relation",
               "speakerId": "player",
-              "text": "画像ファイルに付いた情報とは？",
-              "nextNodeId": "asano_osint_exif"
+              "text": "相沢さんについて知っていることはありますか？",
+              "nextNodeId": "kuroda_answer"
             },
             {
-              "id": "asano_osint_exif",
-              "speakerId": "asano",
-              "text": "Exifなどのメタデータです。撮影時刻や位置情報が残ることがあります。ただし撮影場所を示す手掛かりであって、投稿者や実際の行動を単独で証明するものではありません。",
-              "nextNodeId": "asano_osint_limit"
-            },
+              "id": "kuroda_answer",
+              "speakerId": "kuroda",
+              "text": "大学時代の知人ですが、今の段階で犯人と決めつけることはできません。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "riko",
+      "name": "和泉理子",
+      "role": "参考人",
+      "icon": "assets/icons/izumi.png",
+      "background": "assets/backgrounds/izumi-selection-with-character.png",
+      "description": "彩花、黒田、相沢の大学時代の関係を知る友人。",
+      "interactions": [
+        {
+          "id": "conv_riko_optional",
+          "title": "和泉への任意聞き込み",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_subscriber_aizawa",
+            "operator": "exists"
+          },
+          "repeatable": true,
+          "startNodeId": "riko_start",
+          "nodes": [
             {
-              "id": "asano_osint_limit",
+              "id": "riko_start",
               "speakerId": "player",
-              "text": "分かりました。画像の調査を進めます。"
+              "text": "相沢さんと彩花さんの関係について教えてください。",
+              "nextNodeId": "riko_answer"
+            },
+            {
+              "id": "riko_answer",
+              "speakerId": "riko",
+              "text": "相沢さんは大学時代から彩花を気にかけていました。黒田さんと付き合い始めてから、様子が変わったように感じました。ただ、私が見聞きした範囲の話です。"
             }
           ]
         }
@@ -840,14 +662,14 @@
       "nodes": [
         {
           "id": "osint_start",
-          "speakerId": "player",
-          "text": "ふむ、実際に待ち伏せをしているかは分からないけど、安全のために警戒するに越したことはない。場所を特定しよう。",
+          "speakerId": "narrator",
+          "text": "画像を目視する。場所を示す看板などは不鮮明で、見た目だけでは特定できない。",
           "nextNodeId": "osint_visual_question"
         },
         {
           "id": "osint_visual_question",
           "speakerId": "player",
-          "text": "画像を見てみたけど、やはり不鮮明で、見た目だけでは場所は分からないなぁ・・・\n次に何を確認する？",
+          "text": "次に何を確認する？",
           "choices": [
             {
               "id": "osint_visual_wrong1",
@@ -856,12 +678,12 @@
             },
             {
               "id": "osint_visual_wrong2",
-              "text": "投稿者のアカウント情報の住所を撮影場所とみなす",
+              "text": "投稿者の名前を撮影場所とみなす",
               "nextNodeId": "osint_visual_explain2"
             },
             {
               "id": "osint_visual_correct",
-              "text": "画像のファイル情報を調べる",
+              "text": "元画像のファイル情報を調べる",
               "nextNodeId": "osint_metadata"
             }
           ]
@@ -875,13 +697,13 @@
         {
           "id": "osint_visual_explain2",
           "speakerId": "narrator",
-          "text": "アカウント情報自体は撮影場所を示さない。画像ファイルそのものから確認できる情報を探そう。",
+          "text": "投稿者名は撮影場所を示さない。画像ファイルそのものから確認できる情報を探そう。",
           "nextNodeId": "osint_visual_question"
         },
         {
           "id": "osint_metadata",
           "speakerId": "player",
-          "text": "よし、画像ファイルに残っている情報から場所を特定しよう！\n・・・Exif(エグジフ)情報って言うんだな。麻布さんから聞いておいてよかった。",
+          "text": "画像ファイルのメタデータを確認する。",
           "nextNodeId": "osint_metadata_question"
         },
         {
@@ -915,47 +737,66 @@
         {
           "id": "osint_meta_explain2",
           "speakerId": "narrator",
-          "text": "Exifの位置情報は撮影端末(カメラやスマートフォンなど)の記録で、投稿者の身元を単独で証明しない。",
+          "text": "Exifの位置情報は撮影端末の記録で、投稿者の身元を単独で証明しない。",
           "nextNodeId": "osint_metadata_question"
         },
         {
           "id": "osint_map",
           "speakerId": "player",
-          "text": "座標情報がある、これを実際の位置と照らし合わせよう。",
+          "text": "座標を演習用の地図と照合する。",
           "nextNodeId": "osint_map_question"
         },
         {
           "id": "osint_map_question",
           "speakerId": "narrator",
-          "text": "座標を確認すると、その場所は・・・\n※実際には実画像のExifを見てもらう。",
-          "input": {
-            "match": "contains",
-            "acceptedAnswers": [
-              "交番"
-            ],
-            "ignoreCase": true,
-            "ignoreWhitespace": true,
-            "incorrectText": "・・・いや、その場所ではないな。少し座標が違う"
-          },
-          "nextNodeId": "osint_unlock"
+          "text": "座標は市内の架空地点を示している。",
+          "choices": [
+            {
+              "id": "osint_map_wrong1",
+              "text": "最寄りの交番を選ぶ",
+              "nextNodeId": "osint_map_explain1"
+            },
+            {
+              "id": "osint_map_wrong2",
+              "text": "最寄りの交差点を選ぶ",
+              "nextNodeId": "osint_map_explain2"
+            },
+            {
+              "id": "osint_map_correct",
+              "text": "地図上で座標と一致する交番を特定する",
+              "nextNodeId": "osint_conclusion"
+            }
+          ]
         },
         {
           "id": "osint_map_explain1",
-          "speakerId": "player",
-          "text": "・・・いや、その場所ではないな。少し座標が違う",
+          "speakerId": "narrator",
+          "text": "近い施設というだけでは座標との一致を確認できない。地図上の位置を照合しよう。",
           "nextNodeId": "osint_map_question"
+        },
+        {
+          "id": "osint_map_explain2",
+          "speakerId": "narrator",
+          "text": "交差点ではなく、座標が示す地点を特定する。",
+          "nextNodeId": "osint_map_question"
+        },
+        {
+          "id": "osint_conclusion",
+          "speakerId": "narrator",
+          "text": "座標と一致するのは青葉交番だった。画像は撮影場所の手掛かりとなり、投稿者や実際の待ち伏せを単独で証明するものではない。",
+          "completionEventId": "event_osint_complete",
+          "nextNodeId": "osint_unlock"
         },
         {
           "id": "osint_unlock",
           "speakerId": "player",
-          "text": "ふむ、待ち伏せ場所は大手交番か。地域警察官に連絡しておくか。\nさて、次は不正アクセスされたSNSの調査だな",
-          "completionEventId": "event_osint_complete"
+          "text": "OSINTの結果を記録した。安全を確保したうえで、アカウント侵害の捜査へ進む。"
         }
       ]
     },
     {
       "id": "ev_ayaka_phone",
-      "name": "土崎彩花のスマートフォン",
+      "name": "藤崎彩花のスマートフォン",
       "icon": "assets/icons/evidence.png",
       "description": "不審なメール、ブラウザー履歴、メモが残っている。",
       "requires": {
@@ -963,131 +804,104 @@
         "targetId": "fact_osint_location",
         "operator": "exists"
       },
-      "startNodeId": "phone_exif",
+      "startNodeId": "phone_start",
       "nodes": [
         {
-          "routes": [
-            {
-              "requires": {
-                "type": "fact",
-                "targetId": "fact_osint_location",
-                "operator": "notExists"
-              },
-              "nextNodeId": "node_007"
-            },
-            {
-              "nextNodeId": "phone_start"
-            }
-          ],
-          "id": "phone_exif"
-        },
-        {
-          "id": "node_007",
-          "speakerId": "player",
-          "text": "このスマートフォンのデータも気になるが、まずは待ち伏せ場所を特定しないとな。相談者の安全確保のためだ。"
-        },
-        {
           "id": "phone_start",
-          "speakerId": "player",
-          "text": "土崎彩花さんのスマートフォンを確認しよう。何を調べようか・・・",
+          "speakerId": "narrator",
+          "text": "彩花の端末を確認する。調べる項目を選ぶ。",
           "choices": [
             {
-              "id": "phone_memo_choice",
-              "text": "Chirpの普段のやり取り",
-              "nextNodeId": "phone_memo1"
-            },
-            {
               "id": "phone_email_choice",
-              "text": "メールボックス",
-              "nextNodeId": "phone_email",
-              "requires": {
-                "type": "fact",
-                "targetId": "fact_tor_access",
-                "operator": "exists"
-              }
+              "text": "Chirpから届いたように見えるメール",
+              "nextNodeId": "phone_email"
             },
             {
               "id": "phone_browser_choice",
-              "text": "ウェブサイトの閲覧履歴",
-              "nextNodeId": "phone_browser",
-              "requires": {
-                "type": "fact",
-                "targetId": "fact_fake_account",
-                "operator": "exists"
-              }
+              "text": "ブラウザーの閲覧履歴",
+              "nextNodeId": "phone_browser"
             },
             {
-              "text": "端末の確認を終える",
-              "id": "phone_done",
-              "nextNodeId": "phone_finish",
-              "requires": {
-                "type": "or",
-                "targetId": "",
-                "operator": "exists",
-                "conditions": [
-                  {
-                    "type": "fact",
-                    "targetId": "fact_suspicious_email",
-                    "operator": "exists"
-                  },
-                  {
-                    "type": "fact",
-                    "targetId": "fact_phishing_site",
-                    "operator": "exists"
-                  },
-                  {
-                    "type": "fact",
-                    "targetId": "fact_credentials_entered",
-                    "operator": "exists"
-                  }
-                ]
-              }
+              "id": "phone_memo_choice",
+              "text": "端末内のメモ",
+              "nextNodeId": "phone_memo"
             }
           ]
         },
         {
           "id": "phone_email",
           "speakerId": "player",
-          "text": "Chirp(SNS)からメールが届いている。\n表示名はChirpに似ているが、リンク先は別のログイン画面だ。メールヘッダーには送信経路が残っている。",
-          "nextNodeId": "phone_start",
-          "completionEventId": "event_phone_email"
+          "text": "表示名はChirpに似ているが、リンク先は別のログイン画面だ。メールヘッダーには送信経路が残っている。",
+          "completionEventId": "event_phone_email",
+          "nextNodeId": "phone_next"
         },
         {
           "id": "phone_browser",
           "speakerId": "narrator",
           "text": "11月12日17時05分、フィッシングサイトへのアクセスが記録されている。",
           "completionEventId": "event_phone_browser",
-          "nextNodeId": "phone_start"
+          "nextNodeId": "phone_next"
         },
         {
-          "id": "phone_memo1",
-          "speakerId": "player",
-          "text": "なるほど・・・ たしかに名誉を傷つけるような投稿をされている。",
-          "nextNodeId": "phone_memo2"
-        },
-        {
-          "id": "phone_memo2",
-          "speakerId": "player",
-          "text": "黒見恒一という人物と多くやり取りをしているな。\nなるほど、黒見恒一と交際しているのか。それにしても楽しそうにしているな。",
+          "id": "phone_memo",
+          "speakerId": "narrator",
+          "text": "SNSのIDとパスワードを記録したメモがある。認証情報が端末に残っていた。",
           "completionEventId": "event_phone_memo",
-          "nextNodeId": "phone_memo3"
+          "nextNodeId": "phone_next"
         },
         {
-          "id": "phone_memo3",
+          "id": "phone_next",
           "speakerId": "player",
-          "text": "犯人は、土崎彩花さんと彼氏の黒見恒一さんの関係を快く思っていなかったのか・・・？\n・・・ともかく、Chirpについて調べれば いろいろ分かりそうだ。",
-          "nextNodeId": "phone_start"
+          "text": "確認したい項目はほかにもある。",
+          "choices": [
+            {
+              "id": "phone_again_email",
+              "text": "メールを確認する",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_suspicious_email",
+                "operator": "notExists"
+              },
+              "nextNodeId": "phone_email"
+            },
+            {
+              "id": "phone_again_browser",
+              "text": "閲覧履歴を確認する",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_phishing_site",
+                "operator": "notExists"
+              },
+              "nextNodeId": "phone_browser"
+            },
+            {
+              "id": "phone_again_memo",
+              "text": "メモを確認する",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_credentials_entered",
+                "operator": "notExists"
+              },
+              "nextNodeId": "phone_memo"
+            },
+            {
+              "id": "phone_done",
+              "text": "端末の確認を終える",
+              "nextNodeId": "phone_finish"
+            }
+          ]
         },
         {
           "id": "phone_finish",
-          "speakerId": "player",
-          "text": "判明した情報を整理して、捜査を続けよう"
+          "speakerId": "narrator",
+          "text": "端末の初期確認を終えた。ログとメールの時刻を照合する。",
+          "completionEventId": "event_phone_exam_complete"
         }
       ]
     },
     {
       "id": "ev_aizawa_phone",
-      "name": "天童拓海のスマートフォン",
+      "name": "相沢拓海のスマートフォン",
       "icon": "assets/icons/evidence.png",
       "description": "捜索で取得した端末。事件に関連するデータを確認する。",
       "requires": {
@@ -1127,7 +941,7 @@
         {
           "id": "aizawa_phone_browser",
           "speakerId": "narrator",
-          "text": "天童の自宅回線からフィッシングサイトを確認した履歴が見つかった。",
+          "text": "相沢の自宅回線からフィッシングサイトを確認した履歴が見つかった。",
           "completionEventId": "event_aizawa_browser",
           "nextNodeId": "aizawa_phone_next"
         },
@@ -1148,7 +962,7 @@
         {
           "id": "aizawa_phone_plan",
           "speakerId": "narrator",
-          "text": "犯行の手順と、彩花や黒見への感情を記した計画メモがある。",
+          "text": "犯行の手順と、彩花や黒田への感情を記した計画メモがある。",
           "completionEventId": "event_aizawa_plan",
           "nextNodeId": "aizawa_phone_next"
         },
@@ -1221,8 +1035,7 @@
         {
           "id": "node_001",
           "speakerId": "player",
-          "text": "Chirp(SNS事業者)から、ログインログ兼投稿ログを差し押さえた。これを見れば、不正にアクセスをして悪質な投稿をした犯人が分かるかもしれない。",
-          "completionEventId": "event_chirp_log"
+          "text": "Chirp(SNS事業者)から、ログインログ兼投稿ログを差し押さえた。これを見れば、不正にアクセスをして悪質な投稿をした犯人が分かるかもしれない。"
         }
       ],
       "startNodeId": "node_001"
@@ -1243,8 +1056,7 @@
           "id": "mailia_response_start",
           "speakerId": "narrator",
           "text": "回答書には、送信アカウントの登録情報と対象時刻の送信記録がある。登録名だけでは利用者を確定できない。",
-          "nextNodeId": "mailia_response_end",
-          "completionEventId": "event_inquiry_mailia2"
+          "nextNodeId": "mailia_response_end"
         },
         {
           "id": "mailia_response_end",
@@ -1258,16 +1070,7 @@
       "id": "ev_nexhost_response",
       "name": "NexHostの照会回答書",
       "icon": "assets/icons/evidence.png",
-      "description": "フィッシングサイトの管理接続とアクセス記録。",
-      "nodes": [
-        {
-          "id": "node_001",
-          "speakerId": "narrator",
-          "completionEventId": "event_inquiry_nexhost2",
-          "text": "テスト"
-        }
-      ],
-      "startNodeId": "node_001"
+      "description": "フィッシングサイトの管理接続とアクセス記録。"
     },
     {
       "id": "ev_brightnet_response",
@@ -1284,14 +1087,13 @@
         {
           "id": "brightnet_response_start",
           "speakerId": "narrator",
-          "text": "回答書では、対象時刻に192.0.2.30を利用していた回線の契約者が天童拓海と記録されている。契約者情報だけで実際の利用者や犯人と断定することはできない。",
-          "nextNodeId": "brightnet_response_end",
-          "completionEventId": "event_inquiry_brightnet2"
+          "text": "回答書では、対象時刻に192.0.2.30を利用していた回線の契約者が相沢拓海と記録されている。契約者情報だけで実際の利用者や犯人と断定することはできない。",
+          "nextNodeId": "brightnet_response_end"
         },
         {
           "id": "brightnet_response_end",
           "speakerId": "player",
-          "text": "他の記録との関連を確認し、天童本人に事情を聞く。",
+          "text": "他の記録との関連を確認し、相沢本人に事情を聞く。",
           "completionEventId": "event_read_brightnet_response"
         }
       ]
@@ -1312,7 +1114,7 @@
         {
           "id": "row_chirp_normal",
           "time": "16:50:03",
-          "text": "192.0.2.10  土崎彩花の通常ログイン",
+          "text": "192.0.2.10  藤崎彩花の通常ログイン",
           "important": true,
           "result": "彩花の自宅回線からの通常利用記録。",
           "completionEventId": "event_inspect_chirp_normal"
@@ -1322,7 +1124,7 @@
           "time": "17:20:37",
           "text": "198.51.100.90  ログイン成功（Tor出口ノード）",
           "important": true,
-          "result": "投稿直前にログインしているIPアドレスを見つけた。しかしそれはTor出口ノードのIPアドレスだった。",
+          "result": "投稿直前にTor出口IPから不審なログインがあった。IPだけでは個人を特定できない。",
           "completionEventId": "event_inspect_chirp_tor"
         },
         {
@@ -1395,8 +1197,8 @@
     },
     {
       "id": "fact_osint_location",
-      "name": "待ち伏せ場所は大手交番",
-      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。",
+      "name": "画像の撮影地点は青葉交番",
+      "description": "加工前画像のExif座標を架空の地図と照合し、撮影地点が青葉交番と一致した。撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。",
       "sortOrder": 20
     },
     {
@@ -1413,14 +1215,14 @@
     },
     {
       "id": "fact_credentials_entered",
-      "description": "土崎彩花は大学時代からの同級生である「黒田恒一」と交際している。\n社会人になった今でも交際は続いているようだ",
-      "name": "土崎彩花は黒田恒一と交際している",
-      "sortOrder": 9
+      "name": "認証情報が端末に残っていた",
+      "description": "彩花は偽サイトに認証情報を入力したと話し、端末にも情報を記録したメモがある。",
+      "sortOrder": 50
     },
     {
       "id": "fact_tor_access",
-      "name": "不正アクセスのIPアドレスはTor出口ノード",
-      "description": "投稿直前にTor出口ノードのIPアドレスからChirpへのログインが記録されている。\nこのIPアドレスだけでは個人を特定できない。",
+      "name": "Tor出口IPから不審なログインがあった",
+      "description": "投稿直前にTor出口IPからChirpへのログインが記録されている。IPだけでは個人を特定できない。",
       "sortOrder": 60
     },
     {
@@ -1455,50 +1257,50 @@
     },
     {
       "id": "fact_subscriber_aizawa",
-      "name": "対象回線の契約者は天童拓海",
-      "description": "BrightNetの記録では契約者が天童拓海。契約者情報だけでは犯人と断定できない。",
+      "name": "対象回線の契約者は相沢拓海",
+      "description": "BrightNetの記録では契約者が相沢拓海。契約者情報だけでは犯人と断定できない。",
       "sortOrder": 120
     },
     {
       "id": "fact_aizawa_first_interview",
-      "name": "天童は関与を否定した",
-      "description": "初回聞き込みで天童は事件への関与を否定した。",
+      "name": "相沢は関与を否定した",
+      "description": "初回聞き込みで相沢は事件への関与を否定した。",
       "sortOrder": 130
     },
     {
       "id": "fact_aizawa_browser",
-      "name": "天童端末にサイト閲覧履歴があった",
-      "description": "天童の端末にフィッシングサイトの管理画面を確認した記録があった。",
+      "name": "相沢端末にサイト閲覧履歴があった",
+      "description": "相沢の端末にフィッシングサイトの管理画面を確認した記録があった。",
       "sortOrder": 140
     },
     {
       "id": "fact_aizawa_sent_mail",
-      "name": "天童端末にメール送信記録があった",
+      "name": "相沢端末にメール送信記録があった",
       "description": "彩花宛てのフィッシングメール送信記録が見つかった。",
       "sortOrder": 150
     },
     {
       "id": "fact_aizawa_credentials",
-      "name": "天童端末に彩花の認証情報があった",
+      "name": "相沢端末に彩花の認証情報があった",
       "description": "彩花のChirp認証情報を記したメモが見つかった。",
       "sortOrder": 160
     },
     {
       "id": "fact_aizawa_plan",
-      "name": "天童端末に犯行計画と動機の記録があった",
+      "name": "相沢端末に犯行計画と動機の記録があった",
       "description": "端末のメモに犯行の手順と動機が記録されていた。",
       "sortOrder": 170
     },
     {
       "id": "fact_aizawa_evidence_complete",
-      "name": "天童の犯行を裏付ける資料がそろった",
+      "name": "相沢の犯行を裏付ける資料がそろった",
       "description": "サイト確認、メール送信、認証情報、不正アクセスの記録を合わせて確認した。",
       "sortOrder": 180
     },
     {
       "id": "fact_aizawa_confession",
-      "name": "天童が犯行を認めた",
-      "description": "天童はフィッシングと不正アクセス、投稿を行ったと認めた。",
+      "name": "相沢が犯行を認めた",
+      "description": "相沢はフィッシングと不正アクセス、投稿を行ったと認めた。",
       "sortOrder": 190
     }
   ],
@@ -1506,6 +1308,10 @@
     {
       "id": "event_ayaka_first_image",
       "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_post_image"
+        },
         {
           "type": "add",
           "target": "evidence.ev_wait_location_image"
@@ -1563,10 +1369,34 @@
     },
     {
       "id": "event_phone_exam_complete",
+      "requires": {
+        "type": "and",
+        "conditions": [
+          {
+            "type": "fact",
+            "targetId": "fact_suspicious_email",
+            "operator": "exists"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_phishing_site",
+            "operator": "exists"
+          },
+          {
+            "type": "fact",
+            "targetId": "fact_credentials_entered",
+            "operator": "exists"
+          }
+        ]
+      },
       "effects": [
         {
           "type": "add",
           "target": "evidence.ev_chirp_log"
+        },
+        {
+          "type": "add",
+          "target": "logs.log_chirp_access"
         }
       ]
     },
@@ -1616,6 +1446,14 @@
         {
           "type": "add",
           "target": "evidence.ev_mailia_response"
+        },
+        {
+          "type": "add",
+          "target": "facts.fact_mailia_response"
+        },
+        {
+          "type": "add",
+          "target": "facts.fact_fake_account"
         }
       ],
       "requires": {
@@ -1649,6 +1487,10 @@
         {
           "type": "add",
           "target": "evidence.ev_nexhost_response"
+        },
+        {
+          "type": "add",
+          "target": "logs.log_nexhost_access"
         }
       ],
       "requires": {
@@ -1676,6 +1518,10 @@
         {
           "type": "add",
           "target": "evidence.ev_brightnet_response"
+        },
+        {
+          "type": "add",
+          "target": "facts.fact_subscriber_aizawa"
         }
       ],
       "requires": {
@@ -1806,42 +1652,6 @@
           "type": "set",
           "target": "cleared",
           "value": true
-        }
-      ]
-    },
-    {
-      "id": "event_chirp_log",
-      "effects": [
-        {
-          "type": "add",
-          "target": "logs.log_chirp_access"
-        }
-      ]
-    },
-    {
-      "id": "event_inquiry_mailia2",
-      "effects": [
-        {
-          "type": "add",
-          "target": "facts.fact_fake_account"
-        }
-      ]
-    },
-    {
-      "id": "event_inquiry_nexhost2",
-      "effects": [
-        {
-          "type": "add",
-          "target": "logs.log_nexhost_access"
-        }
-      ]
-    },
-    {
-      "id": "event_inquiry_brightnet2",
-      "effects": [
-        {
-          "type": "add",
-          "target": "facts.fact_subscriber_aizawa"
         }
       ]
     }

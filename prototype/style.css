@@ -56,7 +56,7 @@ button { font: inherit; }
 .avatar { width: 36px; aspect-ratio: 1 / 1; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid rgba(136,163,188,.18); border-radius: 6px; color: #b0c3d5; background: linear-gradient(145deg, #263d4b, #172634); font: 11px 'Noto Sans Mono', 'Noto Sans JP'; }
 .avatar.is-accent { border-color: rgba(88,199,178,.3); color: #9ce0d2; background: linear-gradient(145deg, #1d4947, #183038); }
 .item-copy { min-width: 0; display: grid; gap: 4px; }
-.item-name { overflow: hidden; color: #d4dfe9; font-size: 12px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.item-name { display: -webkit-box; overflow: hidden; color: #d4dfe9; font-size: 12px; font-weight: 500; line-height: 1.45; white-space: normal; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .item-meta { color: #7e90a3; font-size: 10px; }
 .item-mark { margin-left: auto; color: var(--accent); font-size: 12px; }
 .people-panel .list-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 3px 9px; gap: 7px; }

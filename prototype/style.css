@@ -161,6 +161,12 @@ button { font: inherit; }
 .log-row .question-flag{width:17px;height:17px}
 .log-row.is-discovered{border-color:rgba(88,199,178,.35);background:rgba(88,199,178,.07)}
 .question-flag.is-discovered{border-color:rgba(88,199,178,.45);color:#8fe0ce;background:rgba(88,199,178,.1)}
+.log-view { padding: 14px 16px; border: 1px solid rgba(135,170,159,.12); border-radius: 8px; color: #c2d8c9; background: #070b0a; }
+.log-view .log-title { color: #91b7a0; }
+.log-view .log-row { margin-top: 0; padding: 6px 4px; border: 0; border-radius: 0; color: #c2d8c9; background: transparent; }
+.log-view .log-row:hover:not(:disabled) { color: #effff2; background: rgba(94,157,115,.1); }
+.log-view .log-row:disabled { color: #84968a; }
+.log-view .log-row.is-discovered { color: #a9e2b6; background: transparent; }
 .dialogue-controls{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}.dialogue-controls button{margin:0}.dialogue-controls [hidden]{display:none}
 .side-panel .list-stack{min-height:0;max-height:calc(100vh - 260px);overflow-y:auto;scrollbar-color:rgba(126,161,177,.5) transparent;scrollbar-width:thin}
 @media (max-width:700px){.side-panel .list-stack{max-height:280px}}
@@ -178,6 +184,32 @@ button { font: inherit; }
 .dialogue-choices{position:absolute;z-index:4;right:38px;bottom:210px;max-width:calc(100% - 76px);max-height:42%;overflow-y:auto;margin:0;padding:10px;border:1px solid rgba(190,210,230,.16);border-radius:10px;background:rgba(8,14,22,.68);backdrop-filter:blur(5px);scrollbar-color:rgba(126,161,177,.5) transparent;scrollbar-width:thin}
 .dialogue-notices{display:grid;gap:5px;margin:10px 0;padding:10px 12px;border-left:3px solid #f0ca76;border-radius:4px;background:rgba(240,202,118,.08)}
 .dialogue-notice{margin:0;color:#f2d48e;font-size:13px;font-weight:600;line-height:1.7}
+
+/* Keep developer controls available without making them part of the investigation workspace. */
+.topbar { min-height: 76px; grid-template-columns: 1fr minmax(180px,1fr) 1fr; }
+.wordmark { color: #c0d0db; }
+.wordmark-icon { border-radius: 50%; }
+.top-actions { position: relative; }
+.developer-menu { position: relative; }
+.menu-button { width: 42px; height: 42px; display: grid; place-content: center; gap: 5px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.035); cursor: pointer; list-style: none; }
+.menu-button::-webkit-details-marker { display: none; }
+.menu-button span { width: 17px; height: 2px; border-radius: 2px; background: #c4d4dc; }
+.developer-menu[open] .menu-button { border-color: rgba(88,199,178,.45); background: var(--accent-soft); }
+.developer-menu-popover { position: absolute; z-index: 20; top: calc(100% + 10px); right: 0; width: min(260px, calc(100vw - 28px)); padding: 10px; display: grid; gap: 4px; border: 1px solid rgba(168,192,216,.2); border-radius: 12px; background: #142130; box-shadow: 0 16px 38px rgba(0,0,0,.38); }
+.developer-menu-popover a, .developer-menu-popover button { width: 100%; padding: 11px 12px; border: 0; border-radius: 8px; color: #d8e4eb; background: transparent; font: inherit; font-size: 12px; text-align: left; text-decoration: none; cursor: pointer; }
+.developer-menu-popover a:hover, .developer-menu-popover button:hover { background: rgba(255,255,255,.06); }
+.developer-menu-popover .menu-version { margin-bottom: 5px; padding: 10px 12px 12px; display: grid; gap: 5px; border-bottom: 1px solid var(--line); }
+.menu-version strong { color: #e3edf1; font-size: 13px; font-weight: 600; }
+.menu-version small { color: #8ea0ad; font-size: 10px; }
+.developer-menu-popover .menu-danger { color: #e5aaa1; }
+.developer-menu-popover .menu-danger:hover { background: rgba(232,165,154,.08); }
+.toast { bottom: 24px; }
+@media (max-width: 700px) {
+  .topbar { min-height: 68px; grid-template-columns: 1fr auto; }
+  .top-actions { grid-column: 2; grid-row: 1; }
+  .case-heading { display: block; grid-column: 1; grid-row: 2; justify-self: start; padding: 0 0 10px 38px; text-align: left; }
+  .case-heading h1 { font-size: 15px; }
+}
 @media (max-width:700px){.dialogue-choices .action-button{width:100%;min-width:0}}
 @media (max-width:700px){.dialogue-choices{right:24px;bottom:200px;max-width:calc(100% - 48px);max-height:38%;padding:8px}}
 
@@ -189,10 +221,9 @@ button { font: inherit; }
     height: 100dvh;
     min-height: 480px;
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
   }
   .topbar { min-height: 60px; padding: 0 24px; }
-  .savebar { min-height: 38px; padding: 0 24px; }
   .workspace {
     width: 100%;
     min-height: 0;
@@ -208,11 +239,10 @@ button { font: inherit; }
     min-width: 0;
     padding: 0 16px 12px;
     display: grid;
-    grid-template-rows: 36px minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
   }
-  .case-status-row { min-height: 0; }
   .detail-view {
-    grid-area: 2 / 1;
+    grid-area: 1 / 1;
     min-height: 0;
     min-width: 0;
     padding: 14px 16px;
@@ -221,7 +251,7 @@ button { font: inherit; }
   .detail-card { margin-top: 12px; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; }
   .detail-description, .detail-id { margin-top: 10px; }
   .dialogue-pane {
-    grid-area: 3 / 1;
+    grid-area: 2 / 1;
     height: clamp(170px, 30vh, 220px);
     min-height: 0;
     margin-top: 10px;
@@ -235,7 +265,7 @@ button { font: inherit; }
   .dialogue-text { flex: 1; min-height: 0; margin: 8px 0; overflow-y: auto; overflow-wrap: anywhere; }
   .dialogue-controls { margin-top: 4px; }
   .dialogue-choices {
-    grid-area: 2 / 1;
+    grid-area: 1 / 1;
     position: relative;
     align-self: end;
     justify-self: end;

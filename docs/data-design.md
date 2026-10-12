@@ -45,6 +45,14 @@ scenario/
   "schemaVersion": 1,
   "id": "case001",
   "title": "SNS乗っ取り",
+  "prologue": {
+    "background": "assets/backgrounds/ayaka-selection.png",
+    "text": "事件の導入文。"
+  },
+  "epilogue": {
+    "background": "assets/backgrounds/jinnai-selection.png",
+    "text": "事件解決後の文章。"
+  },
   "defaults": {
     "background": "assets/backgrounds/office.png",
     "characterIcon": "assets/ui/default-character.png",
@@ -66,7 +74,13 @@ scenario/
 | `schemaVersion` | 必須 | データ形式の版。初版は`1`。 |
 | `id` | 必須 | 事件ID。例：`case001`。 |
 | `title` | 必須 | 事件名。 |
+| `prologue` | 任意 | 初回表示とメニュー再生に使う序章。未設定なら再生機能・メニュー項目を無視する。 |
+| `epilogue` | 任意 | 事件クリア後の会話終了時とメニュー再生に使う終章。未設定なら再生機能・メニュー項目を無視する。 |
 | `defaults` | 任意 | 事件内の表示用既定画像。`background`、`characterIcon`、`evidenceIcon`を任意に設定する。設定がない場合はエンジン内蔵の既定表示を使う。 |
+
+`prologue`と`epilogue`は、それぞれ`background`（背景画像への相対パス）と`text`（複数行の本文）を持つ。両方の値がある場合だけ再生する。背景画像には暗いオーバーレイを重ね、本文を順に表示する。場面別BGMは`audio-config.json`の`sceneTracks.prologue` / `sceneTracks.epilogue`を使う。スキップすると本文表示を完了扱いにし、通常終了と同じ終了ボタンへ進める。プロローグは「ゲーム開始」、エピローグは「戻る」を表示する。
+
+初回プロローグの視聴済み状態はプレイヤー単位で保存し、通常終了またはスキップ後にゲーム開始を選んだ時点で記録する。以後はメニューから何度でも再生でき、再生・再視聴によって事件のPlayerStateを変更しない。エピローグはクリア状態になった会話の終了後に一度自動再生し、クリア後はメニューから何度でも再生できる。再生途中の離脱・再読み込みでは先頭から再生し直す。試作版では視聴済み状態をブラウザ内に保存し、本番ではプレイヤーに紐づけて保存する。
 
 画像フィールドは画像ファイルへの相対パス文字列とする。背景は`defaults.background`を事件の既定背景、会話の`background`を会話全体の背景、ノードの`background`をそのノードだけの背景として設定できる。会話中の背景は「ノード → 会話 → 事件既定 → エンジン内蔵背景」の順に選ぶ。人物・証拠品・ログを個別に選択した画面では、その項目の`background`、事件既定、エンジン内蔵背景の順に選ぶ。人物アイコンは「ノード → 人物 → `defaults.characterIcon` → エンジン内蔵アイコン」、証拠アイコンは「証拠 → `defaults.evidenceIcon` → エンジン内蔵アイコン」の順に選ぶ。プレイヤーとナレーターには人物アイコンを表示しない。
 

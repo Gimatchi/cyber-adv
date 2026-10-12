@@ -27,6 +27,14 @@
           <label>事件ID<input id="case-id" autocomplete="off"></label>
           <label>事件名<input id="case-title" autocomplete="off"></label>
           <label>種類別の共通背景（JSON）<textarea id="case-defaults" spellcheck="false">{}</textarea></label>
+          <details class="story-editor">
+            <summary>プロローグ・エピローグ</summary>
+            <label>プロローグ背景画像<input id="prologue-background" autocomplete="off" placeholder="assets/backgrounds/ayaka-selection.png"></label>
+            <label>プロローグ本文<textarea id="prologue-text" rows="5" placeholder="空欄ならプロローグを再生しません"></textarea></label>
+            <label>エピローグ背景画像<input id="epilogue-background" autocomplete="off" placeholder="assets/backgrounds/jinnai-selection.png"></label>
+            <label>エピローグ本文<textarea id="epilogue-text" rows="5" placeholder="空欄ならエピローグを再生しません"></textarea></label>
+            <small>各場面は背景画像と本文の両方が設定されたときに有効です。BGMはaudio-config.jsonの場面別設定を使います。</small>
+          </details>
         </section>
         <div class="section-head"><div><span class="eyebrow">CONTENTS</span><h2>編集する項目</h2></div><span id="item-count" class="count">0</span></div>
         <div id="collection-tabs" class="collection-tabs"></div>

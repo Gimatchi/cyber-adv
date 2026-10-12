@@ -31,13 +31,24 @@
               <input id="se-volume" type="range" min="0" max="100" step="1" value="70">
               <small>音量0%で消音します。プロローグ・事件クリア後は専用曲を優先します。</small>
             </section>
+            <button id="replay-prologue" type="button" hidden>プロローグを再生</button>
+            <button id="replay-epilogue" type="button" hidden>エピローグを再生</button>
             <a href="./scenario-maker/index.html?source=case001.json">シナリオ編集</a>
             <button id="save-button" type="button">保存</button>
-            <button id="reset-button" class="menu-danger" type="button">試作データを削除</button>
+            <button id="reset-button" class="menu-danger" type="button">セーブデータを削除</button>
           </div>
         </details>
       </div>
     </header>
+
+    <section id="title-screen" class="title-screen" aria-labelledby="title-screen-heading">
+      <div class="title-screen-card">
+        <span class="eyebrow">CYBER CASE FILES</span>
+        <h1 id="title-screen-heading">サイバー捜査ノベルADV</h1>
+        <p id="title-screen-case"></p>
+        <button id="title-start-button" class="action-button" type="button">ゲーム開始</button>
+      </div>
+    </section>
 
     <main class="workspace">
       <nav class="side-panel people-panel" aria-label="登場人物">
@@ -87,12 +98,32 @@
     </main>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <section id="story-sequence" class="story-sequence" hidden aria-labelledby="story-sequence-title">
+      <div class="story-sequence-content">
+        <div class="dialogue-label" id="story-sequence-kind"></div>
+        <h1 id="story-sequence-title"></h1>
+        <p id="story-sequence-text"></p>
+        <div class="story-sequence-actions">
+          <button id="story-sequence-skip" class="reset-button" type="button">スキップ</button>
+          <button id="story-sequence-finish" class="action-button" type="button" hidden></button>
+        </div>
+      </div>
+    </section>
     <dialog id="inspection-dialog" class="inspection-dialog" aria-labelledby="inspection-title">
       <div class="dialog-topline">EVIDENCE REVIEW / 証拠品調査</div>
       <h2 id="inspection-title">証拠品を調べる</h2>
       <div id="inspection-content"></div>
       <div class="dialog-actions">
         <button id="inspection-close" class="reset-button" type="button">やめる</button>
+      </div>
+    </dialog>
+    <dialog id="delete-save-dialog" class="inspection-dialog delete-save-dialog" aria-labelledby="delete-save-title">
+      <div class="dialog-topline">SAVE DATA / セーブデータ</div>
+      <h2 id="delete-save-title">セーブデータを削除しますか？</h2>
+      <p>削除するとタイトル画面に戻ります。削除したセーブデータは復元できません。</p>
+      <div class="dialog-actions">
+        <button id="delete-save-cancel" class="reset-button" type="button">キャンセル</button>
+        <button id="delete-save-confirm" class="action-button danger-action" type="button">削除してタイトルへ戻る</button>
       </div>
     </dialog>
   </body>

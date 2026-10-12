@@ -318,4 +318,23 @@ button { font: inherit; }
 .dialogue-answer-row input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid rgba(117, 165, 171, .55); border-radius: 7px; color: #e8f2f4; background: rgba(6, 16, 24, .92); font: inherit; }
 .dialogue-answer-row .action-button { margin: 0; white-space: nowrap; }
 .dialogue-answer-feedback { min-height: 1.4em; margin: 6px 0 0; color: #ffcc82; font-size: 12px; }
+.story-sequence { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 24px; background-position: center; background-size: cover; }
+.story-sequence[hidden] { display: none; }
+.story-sequence::before { position: absolute; inset: 0; content: ''; background: rgba(3, 8, 14, .72); }
+.story-sequence-content { position: relative; width: min(900px, 100%); max-height: min(78vh, 760px); overflow: auto; padding: clamp(24px, 6vw, 64px); border: 1px solid rgba(211, 232, 239, .2); border-radius: 12px; background: rgba(5, 12, 20, .58); box-shadow: 0 20px 70px #0009; backdrop-filter: blur(3px); }
+.story-sequence-content h1 { margin: 12px 0 22px; font-size: clamp(23px, 4vw, 38px); }
+.story-sequence-content p { min-height: 8em; margin: 0; color: #f1f4f5; font-size: clamp(16px, 2.2vw, 21px); line-height: 2; white-space: pre-wrap; }
+.story-sequence-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 28px; }
+.title-screen { position: fixed; z-index: 15; inset: 0; display: grid; place-items: center; padding: 24px; background: radial-gradient(ellipse at 50% 35%, rgba(30, 60, 72, .94), rgba(7, 14, 22, .99) 68%); }
+.title-screen[hidden] { display: none; }
+.title-screen-card { width: min(720px, 100%); padding: clamp(28px, 7vw, 72px); border: 1px solid rgba(168, 192, 216, .2); border-radius: 14px; background: rgba(10, 19, 29, .72); box-shadow: 0 24px 80px #0008; text-align: center; }
+.title-screen-card h1 { margin: 18px 0 10px; font-size: clamp(28px, 5vw, 46px); }
+.title-screen-card p { color: #adc0cc; }
+.title-screen-card .action-button { min-width: 180px; margin-top: 24px; font-size: 14px; }
+.delete-save-dialog > p { color: #c5d1d9; line-height: 1.8; }
+.delete-save-dialog .dialog-actions { align-items: center; gap: 10px; }
+.delete-save-dialog .reset-button { margin-left: 0; }
+.delete-save-dialog .action-button { margin: 0; }
+.danger-action { border-color: rgba(232, 165, 154, .45); color: #ffccc4; background: rgba(107, 43, 43, .38); }
+.danger-action:hover:not(:disabled) { border-color: #e8a59a; background: rgba(107, 43, 43, .62); }
 @media (max-width: 480px) { .dialogue-answer-row { flex-direction: column; } }

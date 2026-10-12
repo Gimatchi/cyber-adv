@@ -22,6 +22,15 @@
           <summary class="menu-button" aria-label="メニューを開く"><span></span><span></span><span></span></summary>
           <div class="developer-menu-popover">
             <div class="menu-version"><span class="eyebrow">VERSION</span><strong>UI 試作版</strong><small>本番実装時に削除予定</small></div>
+            <section class="audio-settings" aria-label="音声設定">
+              <label for="bgm-mode">BGM</label>
+              <select id="bgm-mode" aria-label="BGMを選択"></select>
+              <label for="bgm-volume">BGM音量 <output id="bgm-volume-value" for="bgm-volume">35%</output></label>
+              <input id="bgm-volume" type="range" min="0" max="100" step="1" value="35">
+              <label for="se-volume">効果音音量 <output id="se-volume-value" for="se-volume">70%</output></label>
+              <input id="se-volume" type="range" min="0" max="100" step="1" value="70">
+              <small>音量0%で消音します。プロローグ・事件クリア後は専用曲を優先します。</small>
+            </section>
             <a href="./scenario-maker/index.html?source=case001.json">シナリオ編集</a>
             <button id="save-button" type="button">保存</button>
             <button id="reset-button" class="menu-danger" type="button">試作データを削除</button>

@@ -91,8 +91,8 @@ button { font: inherit; }
 .tab-button.is-active { color: #b9e6dd; background: var(--accent-soft); }
 .log-view { padding-top: 10px; }
 .log-row { width: 100%; margin-top: 8px; padding: 12px 10px; display: flex; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 7px; color: #c4d1dc; background: rgba(255,255,255,.025); font: 11px 'Noto Sans Mono', 'Noto Sans JP'; text-align: left; cursor: pointer; }
-.log-row:hover:not(:disabled) { border-color: rgba(88,199,178,.35); background: rgba(88,199,178,.07); }
-.log-row:disabled { color: #8391a0; cursor: default; }
+.log-row:hover:not([aria-disabled="true"]) { border-color: rgba(88,199,178,.35); background: rgba(88,199,178,.07); }
+.log-row[aria-disabled="true"] { color: #8391a0; cursor: default; }
 .log-row > span:nth-child(2) { flex: 1; }
 .log-action-label { flex: 0 0 auto; color: #8fd7c9; font-size: 10px; }
 .question-flag { width: 19px; height: 19px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid rgba(229,179,98,.34); border-radius: 4px; color: #edc77f; background: rgba(229,179,98,.09); font: 11px 'Noto Sans Mono', 'Noto Sans JP'; }
@@ -164,8 +164,8 @@ button { font: inherit; }
 .log-view { padding: 14px 16px; border: 1px solid rgba(135,170,159,.12); border-radius: 8px; color: #c2d8c9; background: #070b0a; }
 .log-view .log-title { color: #91b7a0; }
 .log-view .log-row { margin-top: 0; padding: 6px 4px; border: 0; border-radius: 0; color: #c2d8c9; background: transparent; }
-.log-view .log-row:hover:not(:disabled) { color: #effff2; background: rgba(94,157,115,.1); }
-.log-view .log-row:disabled { color: #84968a; }
+.log-view .log-row:hover:not([aria-disabled="true"]) { color: #effff2; background: rgba(94,157,115,.1); }
+.log-view .log-row[aria-disabled="true"] { color: #84968a; }
 .log-view .log-row.is-discovered { color: #a9e2b6; background: transparent; }
 .dialogue-controls{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}.dialogue-controls button{margin:0}.dialogue-controls [hidden]{display:none}
 .side-panel .list-stack{min-height:0;max-height:calc(100vh - 260px);overflow-y:auto;scrollbar-color:rgba(126,161,177,.5) transparent;scrollbar-width:thin}
@@ -195,7 +195,7 @@ button { font: inherit; }
 .menu-button::-webkit-details-marker { display: none; }
 .menu-button span { width: 17px; height: 2px; border-radius: 2px; background: #c4d4dc; }
 .developer-menu[open] .menu-button { border-color: rgba(88,199,178,.45); background: var(--accent-soft); }
-.developer-menu-popover { position: absolute; z-index: 20; top: calc(100% + 10px); right: 0; width: min(260px, calc(100vw - 28px)); padding: 10px; display: grid; gap: 4px; border: 1px solid rgba(168,192,216,.2); border-radius: 12px; background: #142130; box-shadow: 0 16px 38px rgba(0,0,0,.38); }
+.developer-menu-popover { position: absolute; z-index: 20; top: calc(100% + 10px); right: 0; width: min(310px, calc(100vw - 28px)); padding: 10px; display: grid; gap: 4px; border: 1px solid rgba(168,192,216,.2); border-radius: 12px; background: #142130; box-shadow: 0 16px 38px rgba(0,0,0,.38); }
 .developer-menu-popover a, .developer-menu-popover button { width: 100%; padding: 11px 12px; border: 0; border-radius: 8px; color: #d8e4eb; background: transparent; font: inherit; font-size: 12px; text-align: left; text-decoration: none; cursor: pointer; }
 .developer-menu-popover a:hover, .developer-menu-popover button:hover { background: rgba(255,255,255,.06); }
 .developer-menu-popover .menu-version { margin-bottom: 5px; padding: 10px 12px 12px; display: grid; gap: 5px; border-bottom: 1px solid var(--line); }
@@ -203,6 +203,12 @@ button { font: inherit; }
 .menu-version small { color: #8ea0ad; font-size: 10px; }
 .developer-menu-popover .menu-danger { color: #e5aaa1; }
 .developer-menu-popover .menu-danger:hover { background: rgba(232,165,154,.08); }
+.audio-settings { display: grid; gap: 7px; padding: 10px 12px 13px; border-bottom: 1px solid var(--line); color: #b9c9d4; font-size: 11px; }
+.audio-settings label { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.audio-settings output { color: #8fd7c9; font-variant-numeric: tabular-nums; }
+.audio-settings select { width: 100%; padding: 8px 9px; border: 1px solid var(--line); border-radius: 7px; color: #e0ebef; background: #0e1925; font: inherit; }
+.audio-settings input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); }
+.audio-settings small { color: #8193a1; font-size: 10px; }
 .toast { bottom: 24px; }
 @media (max-width: 700px) {
   .topbar { min-height: 68px; grid-template-columns: 1fr auto; }

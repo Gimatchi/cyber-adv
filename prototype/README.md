@@ -30,6 +30,10 @@ PC向けの3列表示では、ブラウザ内の表示領域の高さが800px以
 
 ページを再読み込みすると、シナリオと`player`の組み合わせごとに、選択中のタブ・対象、取得した証拠と判明事項、調査済みの証拠項目、完了Eventが復元されます。会話や調査ダイアログの途中状態は保存しません。初期化するには画面下の「試作データをリセット」を使ってください。
 
+ゲームメニューでは、BGMを「おはなし」「Generator」「シアン」「ブラックトレジャー」から選ぶか、ランダム再生にできます。初期曲はGeneratorです。BGMと効果音は別々に0〜100%で音量を調整でき、0%でミュートします。選曲と音量は進行状況とは別にブラウザへ保存されます。場面別の曲とファイルパスは`audio-config.json`で管理し、プロローグではCyber City、事件クリア後とエピローグでは夕日のロンドを優先します。プロローグ／エピローグ自体は試作では未実装です。
+
+後からプロローグ／エピローグ再生を追加するときは、再生開始時に`window.gameAudio.setScene('prologue')`または`window.gameAudio.setScene('epilogue')`を呼びます。プロローグ終了時は`window.gameAudio.setScene('game')`を呼ぶと、通常の選曲に戻ります。事件クリア後に`game`へ戻した場合はクリア状態を優先して夕日のロンドを維持します。
+
 ## Fonts
 
 画面には同梱した[Noto Sans JP](https://github.com/google/fonts/tree/main/ofl/notosansjp)を、ログや英数字には[Noto Sans Mono](https://github.com/google/fonts/tree/main/ofl/notosansmono)を使います。どちらもSIL Open Font License 1.1で、フォント単体の販売を除き商用利用・ソフトウェアへの同梱が可能です。画面上の作者クレジットは不要ですが、フォントを再配布するときは同梱した各OFLファイルと著作権表示をフォントと一緒に保管してください。ライセンス本文は`assets/fonts/`にあります。

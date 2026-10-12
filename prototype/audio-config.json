@@ -1,0 +1,13 @@
+{
+  "defaultGameTrackId": "generator",
+  "gameTracks": [
+    { "id": "story", "title": "おはなし", "path": "assets/bgm/story.mp3" },
+    { "id": "generator", "title": "Generator", "path": "assets/bgm/12464.mp3" },
+    { "id": "cyan", "title": "シアン", "path": "assets/bgm/10973.mp3" },
+    { "id": "black-treasure", "title": "ブラックトレジャー", "path": "assets/bgm/black-treasure.mp3" }
+  ],
+  "sceneTracks": {
+    "prologue": { "title": "Cyber City", "path": "assets/bgm/Cyber_City.mp3" },
+    "epilogue": { "title": "夕日のロンド", "path": "assets/bgm/10450.mp3" }
+  }
+}

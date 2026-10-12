@@ -508,6 +508,11 @@
         {
           "type": "add",
           "target": "facts.fact_confession"
+        },
+        {
+          "type": "set",
+          "target": "cleared",
+          "value": true
         }
       ]
     },

@@ -311,7 +311,7 @@
       "role": "上司",
       "icon": "assets/icons/jinnai.png",
       "background": "assets/backgrounds/jinnai-selection.png",
-      "description": "捜査の目的、対象、根拠を確認する上司。",
+      "description": "あなたの上司で、警察署の生活安全課長。本名は院内誠一郎。\n捜査の目的、対象、根拠を確認する上司。",
       "interactions": [
         {
           "id": "conv_jinnai_search",
@@ -717,11 +717,34 @@
     {
       "id": "asano",
       "name": "麻布優子",
-      "role": "捜査員",
       "icon": "assets/icons/asano.png",
       "background": "assets/backgrounds/asano-selection-with-character.png",
-      "description": "サイバー捜査の知識を持つ捜査員。会話の中で考え方や用語を説明する。",
+      "description": "あなたの同僚で、サイバー捜査の知識を持つ捜査員。\nサイバー捜査に関する捜査手法や用語を説明してくれる。",
       "interactions": [
+        {
+          "id": "azabu_first",
+          "startNodeId": "node_001",
+          "nodes": [
+            {
+              "id": "node_001",
+              "speakerId": "asano",
+              "text": "一緒に操作を頑張ろう！何を聞きたい？",
+              "choices": [
+                {
+                  "id": "choice_node_001_1",
+                  "text": "捜査手法について",
+                  "nextConversationId": "interaction_asano_4"
+                },
+                {
+                  "id": "choice_node_001_2",
+                  "text": "用語について"
+                }
+              ]
+            }
+          ],
+          "title": "最初",
+          "repeatable": true
+        },
         {
           "id": "interaction_asano_4",
           "title": "まずは画像を確認",
@@ -830,7 +853,8 @@
             }
           ]
         }
-      ]
+      ],
+      "role": "同僚"
     }
   ],
   "evidence": [
@@ -849,7 +873,7 @@
         {
           "id": "osint_start",
           "speakerId": "player",
-          "text": "ふむ、実際に待ち伏せをしているかは分からないけど、安全のために警戒するに越したことはない。場所を特定しよう。",
+          "text": "相談者の安全のために警戒する必要があるな。場所を特定しよう。",
           "nextNodeId": "osint_visual_question"
         },
         {

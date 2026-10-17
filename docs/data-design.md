@@ -14,15 +14,17 @@
 
 ```text
 scenario/
-└─ case001/
-   ├─ case.json
-   └─ assets/
-      ├─ characters/
-      ├─ backgrounds/
-      └─ evidence/
+├─ case001/
+│  └─ case.json
+├─ case002/
+│  └─ case.json
+└─ assets/
+   ├─ characters/
+   ├─ backgrounds/
+   └─ evidence/
 ```
 
-`case.json`は事件の全データを含む。人物ごと・種別ごとにJSONファイルを分けない。これにより、メーカーの読み込み・保存・書き出しを1ファイルで完結させる。ファイル分割が必要になった場合も、分割形式は配布・ビルド時の形式とし、作者が編集する正規形式は本書の`case.json`とする。
+各`case.json`はその事件の全データを含む。人物ごと・種別ごとにJSONファイルを分けない。これにより、メーカーの読み込み・保存・書き出しを1ファイルで完結させる。画像等は`scenario/assets/`以下に共通配置し、複数事件から参照できる。データ内の素材パスはこの共通素材領域を基準とする。ファイル分割が必要になった場合も、分割形式は配布・ビルド時の形式とし、作者が編集する正規形式は各事件の`case.json`とする。
 
 ## 3. 共通ルール
 
@@ -422,6 +424,16 @@ Conversation: conv_ayaka_first
 この形式では、会話・ノード・選択肢・ルートのConditionと、Conditionの`and` / `or` / `not`を初版に含める。任意のフラグ、数値変数、複数言語対応、素材バリアントは初版に含めない。必要になった場合は、既存データとの互換性とエンジンへの影響を確認し、`schemaVersion`を更新してから追加する。初版のCondition / Effectで表現できない仕様を作者が自由記述で補わない。
 
 旧形式の`prototype/case001.json`と旧シナリオメーカー試作版は、本書確定形式より前のデータ形式である。現在の`prototype/case001.json`は`schemaVersion: 1`の新形式を使用する。旧形式を読み込む場合は、移行処理またはCase 001の変換を明示的に行い、旧形式を暗黙に新形式として扱わない。
+
+## 9. Case 002の作成方針
+
+Case 002はCase 001のデータを変更せず、新しい`scenario/case002/case.json`として作成する。Case 001のシナリオJSONは作成途中であり、完全な作例ではない。Case 002では本書の確定データ形式を基準にし、Case 001からは再利用可能な構造や実装上の知見のみを参考にする。
+
+Case 001・Case 002のシナリオ定義は個別の`case.json`に置き、画像等の共通素材は`scenario/assets/`に集約する。各シナリオから参照する素材パスは共通素材領域を基準に記述する。試作環境で用いる場合は同じ考え方で`prototype/assets/`を共有する。
+
+本番環境で読み込むシナリオは運営側の設定で一つに決める。参加者がシナリオIDを送信して選択したり、画面上で選んだりする設計にはしない。開発用プロトタイプの`scenario` URLパラメータは、制作者が読み込み確認を行う用途に限る。
+
+Case 002の物語・捜査方針は[`story-investigation-plan-case002.md`](story-investigation-plan-case002.md)、物語草稿は[`novel-draft-case002.md`](novel-draft-case002.md)、捜査骨組みは[`scenario-outline-case002.md`](scenario-outline-case002.md)を参照する。試作用の初稿JSONは[`prototype/scenarios/case002.json`](../prototype/scenarios/case002.json)に作成済み。物語や照会資料の未確定事項が残るため、これは完成版・本番データではない。
 
 
 

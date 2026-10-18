@@ -4,8 +4,9 @@
 
 ## Case 002追加
 
-- [x] Case 001のシナリオデータを変更せず、Case 002用JSONの試作初稿を新規作成する（未確定事項を残すため、内容確定後も更新する）。
-- [ ] `prototype/scenarios/case002.json`をゲームとシナリオメーカーで読み込み、表示・進行・書き出し後の動作を確認する。
+- [x] AI生成のCase 002初稿を参考用の`prototype/scenarios/case002-yobi.json`として保管する。
+- [ ] Case 001のシナリオデータを変更せず、新しいCase 002用JSONを人力で作成する。
+- [ ] 人力で作成した`prototype/scenarios/case002.json`をゲームとシナリオメーカーで読み込み、表示・進行・書き出し後の動作を確認する。
 - [x] Case 001とCase 002の素材を共通の`prototype/assets/`から参照する。
 - [ ] URLの`scenario`切り替えは試作・開発確認だけに使い、本番参加者へシナリオ選択手段として公開しない。
 

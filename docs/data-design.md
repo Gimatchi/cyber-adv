@@ -427,13 +427,13 @@ Conversation: conv_ayaka_first
 
 ## 9. Case 002の作成方針
 
-Case 002はCase 001のデータを変更せず、新しい`scenario/case002/case.json`として作成する。Case 001のシナリオJSONは作成途中であり、完全な作例ではない。Case 002では本書の確定データ形式を基準にし、Case 001からは再利用可能な構造や実装上の知見のみを参考にする。
+Case 002はCase 001のデータを変更せず、新しい`scenario/case002/case.json`として作成する。Case 001のシナリオJSONは作成途中であり、全体構成の完全な作例ではない。Case 002では本書の確定データ形式を基準にし、明示的に流用を決めた待ち伏せ画像OSINTグラフのみCase 001完成版から移植する。
 
 Case 001・Case 002のシナリオ定義は個別の`case.json`に置き、画像等の共通素材は`scenario/assets/`に集約する。各シナリオから参照する素材パスは共通素材領域を基準に記述する。試作環境で用いる場合は同じ考え方で`prototype/assets/`を共有する。
 
 本番環境で読み込むシナリオは運営側の設定で一つに決める。参加者がシナリオIDを送信して選択したり、画面上で選んだりする設計にはしない。開発用プロトタイプの`scenario` URLパラメータは、制作者が読み込み確認を行う用途に限る。
 
-Case 002の物語・捜査方針は[`story-investigation-plan-case002.md`](story-investigation-plan-case002.md)、物語草稿は[`novel-draft-case002.md`](novel-draft-case002.md)、捜査骨組みは[`scenario-outline-case002.md`](scenario-outline-case002.md)を参照する。試作用の初稿JSONは[`prototype/scenarios/case002.json`](../prototype/scenarios/case002.json)に作成済み。物語や照会資料の未確定事項が残るため、これは完成版・本番データではない。
+Case 002の物語・捜査方針は[`story-investigation-plan-case002.md`](story-investigation-plan-case002.md)、物語草稿は[`novel-draft-case002.md`](novel-draft-case002.md)、捜査骨組みは[`scenario-outline-case002.md`](scenario-outline-case002.md)を参照する。以前作成した初稿JSONは[`prototype/scenarios/case002-yobi.json`](../prototype/scenarios/case002-yobi.json)に参考用として保管する。新しい`prototype/scenarios/case002.json`は人力で作り直す。現行ファイルはCase 001完成版のコピーであり、Case 002データとしては未作成である。
 
 
 

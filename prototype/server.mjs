@@ -14,11 +14,18 @@ const contentTypes = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
+  '.svg': 'image/svg+xml',
   '.ttf': 'font/ttf',
 };
 
 createServer(async (request, response) => {
-  const pathname = new URL(request.url ?? '/', 'http://localhost').pathname;
+  let pathname;
+  try {
+    pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://localhost').pathname);
+  } catch {
+    response.writeHead(400).end('Bad Request');
+    return;
+  }
   const relativePath = pathname === '/' ? 'index.html' : pathname.slice(1);
   const filePath = resolve(root, relativePath);
 

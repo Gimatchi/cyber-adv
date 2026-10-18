@@ -1,0 +1,1443 @@
+{
+  "schemaVersion": 1,
+  "id": "case002",
+  "title": "事件002 地下アイドルSNS乗っ取り",
+  "defaults": {
+    "background": "assets/backgrounds/default-investigation.png",
+    "characterIcon": "assets/icons/evidence.png",
+    "evidenceIcon": "assets/icons/evidence.png"
+  },
+  "characters": [
+    {
+      "id": "ayaka",
+      "name": "土崎彩花",
+      "role": "被害者・地下アイドル",
+      "icon": "assets/icons/ayaka.png",
+      "background": "assets/backgrounds/ayaka-selection.png",
+      "description": "地下アイドルとして活動中にSNSアカウントを不正利用され、本人らしくない投稿をされた。",
+      "interactions": [
+        {
+          "id": "conv_ayaka_first",
+          "title": "被害相談を受ける",
+          "repeatable": false,
+          "startNodeId": "ayaka_first_start",
+          "nodes": [
+            {
+              "id": "ayaka_first_start",
+              "speakerId": "player",
+              "text": "土崎さん、何があったのか聞かせてください。",
+              "nextNodeId": "ayaka_first_report"
+            },
+            {
+              "id": "ayaka_first_report",
+              "speakerId": "ayaka",
+              "text": "今朝、友人から連絡があって、私のSNSアカウントから変な投稿が出ていると聞きました。今は自分でログインできません。",
+              "nextNodeId": "ayaka_first_post"
+            },
+            {
+              "id": "ayaka_first_post",
+              "speakerId": "player",
+              "text": "投稿画面を見せてもらえますか。",
+              "nextNodeId": "ayaka_first_harm"
+            },
+            {
+              "id": "ayaka_first_harm",
+              "speakerId": "ayaka",
+              "text": "「この場所で待ち伏せする」という文と、不鮮明な画像が投稿されていました。それに、私が彼氏を裏切ったように見える文章や、活動を応援してくれる人に誤解される内容もあって……。そんな投稿はしていません。",
+              "nextNodeId": "ayaka_first_context",
+              "completionEventId": "event_ayaka_first_image"
+            },
+            {
+              "id": "ayaka_first_context",
+              "speakerId": "player",
+              "text": "アカウントに入れなくなる前に、何か変わったことはありませんでしたか。",
+              "nextNodeId": "ayaka_first_email"
+            },
+            {
+              "id": "ayaka_first_email",
+              "speakerId": "ayaka",
+              "text": "SNS運営からの連絡に見えるメールが届きました。確認が必要と書いてあり、リンクを開いてIDとパスワードを入力しました。メールも閲覧履歴も、スマートフォンに残っていると思います。",
+              "nextNodeId": "ayaka_first_public"
+            },
+            {
+              "id": "ayaka_first_public",
+              "speakerId": "player",
+              "text": "画像だけで場所や投稿者を断定せず、まず元画像に残る撮影時の情報を確認しましょう。その後、アカウントのログや端末記録を調べます。",
+              "nextNodeId": "ayaka_first_consent"
+            },
+            {
+              "id": "ayaka_first_consent",
+              "speakerId": "ayaka",
+              "text": "お願いします。ライブや握手会でファンの方と話すことはありますが、個人的な付き合いをしている人はいません。",
+              "completionEventId": "event_ayaka_first",
+              "nextNodeId": "ayaka_first_end"
+            },
+            {
+              "id": "ayaka_first_end",
+              "speakerId": "player",
+              "text": "分かりました。記録を一つずつ確認し、誰が操作したかを決めつけずに捜査します。"
+            }
+          ]
+        },
+        {
+          "id": "conv_ayaka_followup",
+          "title": "メールとログの時刻を確認する",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_tor_login",
+            "operator": "exists"
+          },
+          "repeatable": false,
+          "startNodeId": "ayaka_followup_start",
+          "nodes": [
+            {
+              "id": "ayaka_followup_start",
+              "speakerId": "player",
+              "text": "不審なログインの記録が見つかりました。メールを受け取った後のことを確認させてください。",
+              "nextNodeId": "ayaka_followup_received"
+            },
+            {
+              "id": "ayaka_followup_received",
+              "speakerId": "ayaka",
+              "text": "メールが来たのは11月12日の夕方です。アカウントの確認が必要と書いてありました。",
+              "nextNodeId": "ayaka_followup_link"
+            },
+            {
+              "id": "ayaka_followup_link",
+              "speakerId": "player",
+              "text": "リンク先でIDとパスワードを入力した後、何か変わったことはありましたか。",
+              "nextNodeId": "ayaka_followup_answer"
+            },
+            {
+              "id": "ayaka_followup_answer",
+              "speakerId": "ayaka",
+              "text": "入力後は普通の画面に戻ったように見えました。その後、アカウントに入れなくなり、あの投稿を知らされました。",
+              "completionEventId": "event_ayaka_followup",
+              "nextNodeId": "ayaka_followup_end"
+            },
+            {
+              "id": "ayaka_followup_end",
+              "speakerId": "player",
+              "text": "ありがとうございます。メールの送信経路とサイトの記録を確認します。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tendo",
+      "name": "天童拓海",
+      "role": "捜査対象者",
+      "icon": "assets/icons/aizawa.png",
+      "background": "assets/backgrounds/aizawa-selection-with-character.png",
+      "description": "彩花のライブや握手会に通っていたファン。彩花との私的なつながりはない。",
+      "interactions": [
+        {
+          "id": "conv_tendo_first",
+          "title": "天童への初回確認",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_subscriber_tendo",
+            "operator": "exists"
+          },
+          "repeatable": false,
+          "startNodeId": "tendo_first_start",
+          "nodes": [
+            {
+              "id": "tendo_first_start",
+              "speakerId": "player",
+              "text": "天童さん、土崎彩花さんをご存じですか。",
+              "nextNodeId": "tendo_first_answer"
+            },
+            {
+              "id": "tendo_first_answer",
+              "speakerId": "tendo",
+              "text": "彩花さんのライブや握手会には何度か行きました。ファンとして応援していただけです。個人的な付き合いはありません。",
+              "nextNodeId": "tendo_first_access"
+            },
+            {
+              "id": "tendo_first_access",
+              "speakerId": "player",
+              "text": "フィッシングサイトへのアクセス記録と、あなたの回線契約情報が確認されています。契約者情報だけで犯人と決めることはしません。",
+              "nextNodeId": "tendo_first_reply"
+            },
+            {
+              "id": "tendo_first_reply",
+              "speakerId": "tendo",
+              "text": "サイトのことは知りません。家の回線を他の人が使った可能性もあるでしょう。",
+              "completionEventId": "event_tendo_first",
+              "nextNodeId": "tendo_first_end"
+            },
+            {
+              "id": "tendo_first_end",
+              "speakerId": "player",
+              "text": "記録を引き続き確認します。必要な資料と手続を整理して、捜査を進めます。"
+            }
+          ]
+        },
+        {
+          "id": "conv_tendo_confrontation",
+          "title": "天童を証拠で追及する",
+          "requires": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "fact",
+                "targetId": "fact_tendo_browser",
+                "operator": "exists"
+              },
+              {
+                "type": "fact",
+                "targetId": "fact_tendo_mail",
+                "operator": "exists"
+              },
+              {
+                "type": "fact",
+                "targetId": "fact_tendo_credentials",
+                "operator": "exists"
+              },
+              {
+                "type": "fact",
+                "targetId": "fact_tendo_motive",
+                "operator": "exists"
+              }
+            ]
+          },
+          "repeatable": false,
+          "startNodeId": "tendo_confront_start",
+          "nodes": [
+            {
+              "id": "tendo_confront_start",
+              "speakerId": "player",
+              "text": "天童さん、端末から見つかった記録について確認します。",
+              "choices": [
+                {
+                  "id": "tendo_show_mail",
+                  "text": "彩花へ送ったメールの履歴を示す",
+                  "nextNodeId": "tendo_confront_mail"
+                },
+                {
+                  "id": "tendo_show_plan",
+                  "text": "投稿計画と動機を記したメモを示す",
+                  "nextNodeId": "tendo_confront_plan"
+                },
+                {
+                  "id": "tendo_show_all",
+                  "text": "複数の記録を照合して示す",
+                  "nextNodeId": "tendo_confront_all"
+                }
+              ]
+            },
+            {
+              "id": "tendo_confront_mail",
+              "speakerId": "tendo",
+              "text": "僕のアカウントを誰かが使ったのかもしれません。",
+              "nextNodeId": "tendo_confront_records"
+            },
+            {
+              "id": "tendo_confront_plan",
+              "speakerId": "tendo",
+              "text": "……そのメモだけで、僕が投稿したと分かるんですか。",
+              "nextNodeId": "tendo_confront_records"
+            },
+            {
+              "id": "tendo_confront_all",
+              "speakerId": "player",
+              "text": "事業者の記録、SNSログ、端末のメール送信・閲覧履歴、認証情報と計画メモを照合しました。どれか一つだけで判断しているのではありません。",
+              "nextNodeId": "tendo_confront_records"
+            },
+            {
+              "id": "tendo_confront_records",
+              "speakerId": "player",
+              "text": "ライブや公開情報を通じて彩花さんに彼氏がいると知り、二人の関係を壊すため、彩花さんのアカウントから本人らしくない投稿をしたのではありませんか。",
+              "nextNodeId": "tendo_confront_admission"
+            },
+            {
+              "id": "tendo_confront_admission",
+              "speakerId": "tendo",
+              "text": "……僕がやりました。彼氏がいると知って、二人を別れさせたかった。投稿をすれば彩花さんを困らせることにもなると思っていました。",
+              "completionEventId": "event_tendo_confession",
+              "nextNodeId": "tendo_confront_close"
+            },
+            {
+              "id": "tendo_confront_close",
+              "speakerId": "player",
+              "text": "供述と独立した記録・端末資料を照合して、確認できた事実を記録します。事件002の捜査を終了します。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "riko",
+      "name": "雛泉理子",
+      "role": "彩花の友人",
+      "icon": "assets/icons/izumi.png",
+      "background": "assets/backgrounds/izumi-selection-with-character.png",
+      "description": "彩花の友人。天童との面識はなく、ファンとの距離感について一般的な注意を伝えていた。",
+      "interactions": [
+        {
+          "id": "conv_riko_optional",
+          "title": "雛泉に状況を聞く",
+          "repeatable": true,
+          "startNodeId": "riko_start",
+          "nodes": [
+            {
+              "id": "riko_start",
+              "speakerId": "player",
+              "text": "彩花さんのことで、気になっていたことはありますか。",
+              "nextNodeId": "riko_answer"
+            },
+            {
+              "id": "riko_answer",
+              "speakerId": "riko",
+              "text": "彩花には、距離感を間違えるファンには気をつけてね、と一般的な話をしていました。でも、特定の人のことを知っていたわけではないし、天童さんとは会ったこともありません。",
+              "nextNodeId": "riko_clarify"
+            },
+            {
+              "id": "riko_clarify",
+              "speakerId": "player",
+              "text": "分かりました。あなたの話だけで特定の人物を疑うことはしません。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jinnai",
+      "name": "院内警部",
+      "role": "上司",
+      "icon": "assets/icons/jinnai.png",
+      "background": "assets/backgrounds/jinnai-selection.png",
+      "description": "捜査方針と手続について相談できる。",
+      "interactions": [
+        {
+          "id": "conv_jinnai_initial",
+          "title": "捜査の始め方を相談する",
+          "repeatable": true,
+          "startNodeId": "jinnai_initial_start",
+          "nodes": [
+            {
+              "id": "jinnai_initial_start",
+              "speakerId": "jinnai",
+              "text": "まず被害状況を聞き、端末とアカウントの記録を確認しろ。公開情報だけで犯人を決めつけるな。",
+              "nextNodeId": "jinnai_initial_end"
+            },
+            {
+              "id": "jinnai_initial_end",
+              "speakerId": "player",
+              "text": "分かりました。記録と時刻を照らし合わせます。"
+            }
+          ]
+        },
+        {
+          "id": "conv_jinnai_search_consult",
+          "title": "天童の端末捜索を相談する",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_tendo_initial_interview",
+            "operator": "exists"
+          },
+          "repeatable": false,
+          "startNodeId": "jinnai_search_start",
+          "nodes": [
+            {
+              "id": "jinnai_search_start",
+              "speakerId": "jinnai",
+              "text": "天童の回線契約者情報は得た。どの記録を合わせ、何を確認する捜索なのか説明してくれ。",
+              "choices": [
+                {
+                  "id": "jinnai_search_wrong_ip",
+                  "text": "契約者が天童なので、それだけで端末を捜索する",
+                  "nextNodeId": "jinnai_search_wrong_ip_reply"
+                },
+                {
+                  "id": "jinnai_search_wrong_public",
+                  "text": "公開投稿から住所を調べて本人だと判断する",
+                  "nextNodeId": "jinnai_search_wrong_public_reply"
+                },
+                {
+                  "id": "jinnai_search_correct",
+                  "text": "メール・ホスティング・SNSの各記録と時刻を照合し、犯行に関係する端末内記録を確認する",
+                  "nextNodeId": "jinnai_search_correct_reply"
+                }
+              ]
+            },
+            {
+              "id": "jinnai_search_wrong_ip_reply",
+              "speakerId": "jinnai",
+              "text": "契約者情報だけでは、実際に回線を使った人を特定できない。ほかの独立した記録と結び付けてくれ。",
+              "nextNodeId": "jinnai_search_start"
+            },
+            {
+              "id": "jinnai_search_wrong_public_reply",
+              "speakerId": "jinnai",
+              "text": "公開情報から住所などを特定する捜査にはしない。公開情報の限界を理解し、正式な記録照会と証拠に基づいて進めろ。",
+              "nextNodeId": "jinnai_search_start"
+            },
+            {
+              "id": "jinnai_search_correct_reply",
+              "speakerId": "jinnai",
+              "text": "目的と対象は整理できている。必要な法的手続を確認し、許可された範囲で進めろ。",
+              "completionEventId": "event_jinnai_search_approved",
+              "nextNodeId": "jinnai_search_end"
+            },
+            {
+              "id": "jinnai_search_end",
+              "speakerId": "player",
+              "text": "手続と対象を確認して捜索を進めます。"
+            }
+          ]
+        },
+        {
+          "id": "conv_search_tendo",
+          "title": "天童に関係する場所を捜索する",
+          "requires": {
+            "type": "event",
+            "targetId": "event_jinnai_search_approved",
+            "operator": "completed"
+          },
+          "repeatable": false,
+          "startNodeId": "search_tendo_start",
+          "nodes": [
+            {
+              "id": "search_tendo_start",
+              "speakerId": "narrator",
+              "text": "必要な手続を経て、対象と範囲を確認した上で捜索を実施した。天童が使用するスマートフォンを証拠品として取得する。",
+              "completionEventId": "event_search_tendo",
+              "nextNodeId": "search_tendo_end"
+            },
+            {
+              "id": "search_tendo_end",
+              "speakerId": "player",
+              "text": "端末の記録を一つずつ確認します。"
+            }
+          ]
+        },
+        {
+          "id": "conv_mailia_inquiry",
+          "title": "Mailiaへ照会する",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_mail_sender_identified",
+            "operator": "exists"
+          },
+          "repeatable": false,
+          "startNodeId": "mailia_start",
+          "nodes": [
+            {
+              "id": "mailia_start",
+              "speakerId": "player",
+              "text": "メールヘッダから送信元アカウントと送信時刻を整理した。記録の保有者であるMailiaへ必要な照会を行う。",
+              "nextNodeId": "mailia_reply"
+            },
+            {
+              "id": "mailia_reply",
+              "speakerId": "narrator",
+              "text": "Mailiaから、偽名で登録された送信アカウントと、フィッシングサイトのURLに関係する記録が回答された。登録情報だけでは操作した人物を確定できない。",
+              "completionEventId": "event_inquiry_mailia",
+              "nextNodeId": "mailia_end"
+            },
+            {
+              "id": "mailia_end",
+              "speakerId": "player",
+              "text": "サイトを運用していたホスティング事業者を調べます。"
+            }
+          ]
+        },
+        {
+          "id": "conv_nexhost_inquiry",
+          "title": "NexHostへ照会する",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_hosting_provider",
+            "operator": "exists"
+          },
+          "repeatable": false,
+          "startNodeId": "nexhost_start",
+          "nodes": [
+            {
+              "id": "nexhost_start",
+              "speakerId": "player",
+              "text": "フィッシングサイトを設置していたNexHostへ、対象URLと時刻を示して記録を照会する。",
+              "nextNodeId": "nexhost_reply"
+            },
+            {
+              "id": "nexhost_reply",
+              "speakerId": "narrator",
+              "text": "NexHostから、ログイン画面への接続記録と、サイト管理画面へのアクセス記録が回答された。",
+              "completionEventId": "event_inquiry_nexhost",
+              "nextNodeId": "nexhost_end"
+            },
+            {
+              "id": "nexhost_end",
+              "speakerId": "player",
+              "text": "アクセス元と時刻を照合し、回線の記録を確認します。"
+            }
+          ]
+        },
+        {
+          "id": "conv_brightnet_inquiry",
+          "title": "BrightNetへ照会する",
+          "requires": {
+            "type": "fact",
+            "targetId": "fact_hosting_access_ip",
+            "operator": "exists"
+          },
+          "repeatable": false,
+          "startNodeId": "brightnet_start",
+          "nodes": [
+            {
+              "id": "brightnet_start",
+              "speakerId": "player",
+              "text": "NexHostの記録にある接続元IPと時刻を示し、割当記録を保有するBrightNetへ照会する。",
+              "nextNodeId": "brightnet_reply"
+            },
+            {
+              "id": "brightnet_reply",
+              "speakerId": "narrator",
+              "text": "BrightNetの回答では、対象時刻の回線契約者は天童拓海だった。これは捜査上の手掛かりであり、契約者だけで操作した本人とは断定できない。",
+              "completionEventId": "event_inquiry_brightnet",
+              "nextNodeId": "brightnet_end"
+            },
+            {
+              "id": "brightnet_end",
+              "speakerId": "player",
+              "text": "他の記録と照らし合わせ、必要な手続を相談します。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "asano",
+      "name": "麻布優子",
+      "role": "捜査員",
+      "icon": "assets/icons/asano.png",
+      "background": "assets/backgrounds/asano-selection-with-character.png",
+      "description": "ログや事業者記録の読み方を助言する。",
+      "interactions": [
+        {
+          "id": "conv_asano_general",
+          "title": "記録の見方を相談する",
+          "repeatable": true,
+          "startNodeId": "asano_general_start",
+          "nodes": [
+            {
+              "id": "asano_general_start",
+              "speakerId": "asano",
+              "text": "ログは時刻、操作、接続元を並べて読みましょう。IPアドレスは利用者そのものではありません。誰がどの記録を持つかを確かめ、適切な照会を重ねることが大切です。",
+              "nextNodeId": "asano_general_end"
+            },
+            {
+              "id": "asano_general_end",
+              "speakerId": "player",
+              "text": "複数の記録を照合して確認します。"
+            }
+          ]
+        },
+        {
+          "id": "conv_asano_osint",
+          "title": "公開情報の限界を確認する",
+          "requires": {
+            "type": "evidence",
+            "targetId": "ev_public_posts",
+            "operator": "exists"
+          },
+          "repeatable": true,
+          "startNodeId": "asano_osint_start",
+          "nodes": [
+            {
+              "id": "asano_osint_start",
+              "speakerId": "asano",
+              "text": "公開投稿から活動予定や、交際相手がいる可能性を読み取れることはあります。ただし、誰が見たか、誰が投稿を操作したかまでは分かりません。公開情報は背景の理解に使い、人物の特定はログや端末、事業者記録で裏付けましょう。"
+            }
+          ]
+        },
+        {
+          "id": "conv_asano_osint_hint",
+          "title": "画像の調べ方を相談する",
+          "requires": {
+            "type": "evidence",
+            "targetId": "ev_wait_location_image",
+            "operator": "exists"
+          },
+          "repeatable": true,
+          "startNodeId": "asano_osint_start",
+          "nodes": [
+            {
+              "id": "asano_osint_start",
+              "speakerId": "asano",
+              "text": "まずは画像そのものから確認しましょう。画面に写った景色だけで場所を断定せず、ファイルに付いた情報も見ます。",
+              "nextNodeId": "asano_osint_meta"
+            },
+            {
+              "id": "asano_osint_meta",
+              "speakerId": "player",
+              "text": "画像ファイルに付いた情報とは？",
+              "nextNodeId": "asano_osint_exif"
+            },
+            {
+              "id": "asano_osint_exif",
+              "speakerId": "asano",
+              "text": "Exifなどのメタデータです。撮影時刻や位置情報が残ることがあります。ただし撮影場所を示す手掛かりであって、投稿者や実際の行動を単独で証明するものではありません。",
+              "nextNodeId": "asano_osint_limit"
+            },
+            {
+              "id": "asano_osint_limit",
+              "speakerId": "player",
+              "text": "分かりました。画像の調査を進めます。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_ayaka_phone",
+      "name": "土崎彩花のスマートフォン",
+      "icon": "assets/icons/evidence.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "不審なメール、リンク先の閲覧履歴、認証情報を入力した時刻を確認する。",
+      "startNodeId": "phone_menu",
+      "nodes": [
+        {
+          "id": "phone_menu",
+          "speakerId": "narrator",
+          "text": "端末に残る記録を確認する。",
+          "choices": [
+            {
+              "id": "phone_choice_email",
+              "text": "運営を装ったメールを見る",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_suspicious_email",
+                "operator": "notExists"
+              },
+              "nextNodeId": "phone_email"
+            },
+            {
+              "id": "phone_choice_browser",
+              "text": "リンク先の閲覧履歴を見る",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_phishing_site",
+                "operator": "notExists"
+              },
+              "nextNodeId": "phone_browser"
+            },
+            {
+              "id": "phone_choice_credentials",
+              "text": "認証情報を入力した痕跡を見る",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_credentials_entered",
+                "operator": "notExists"
+              },
+              "nextNodeId": "phone_credentials"
+            },
+            {
+              "id": "phone_choice_end",
+              "text": "調査を終了する",
+              "nextNodeId": "phone_end"
+            }
+          ]
+        },
+        {
+          "id": "phone_email",
+          "speakerId": "player",
+          "text": "Fromの表示名はSNS運営に似せてあるが、実際の送信元はMailiaのアカウントらしい。メールヘッダを別資料として確認できる。",
+          "completionEventId": "event_phone_email",
+          "nextNodeId": "phone_menu"
+        },
+        {
+          "id": "phone_browser",
+          "speakerId": "player",
+          "text": "閲覧履歴に、SNSの正規ドメインとは異なるログイン画面が残っている。アクセス時刻はメール受信の直後だった。",
+          "completionEventId": "event_phone_browser",
+          "nextNodeId": "phone_menu"
+        },
+        {
+          "id": "phone_credentials",
+          "speakerId": "player",
+          "text": "本人の説明と端末時刻を照合すると、偽サイトに認証情報を入力した後にアカウントへ入れなくなった。入力した事実だけで、投稿者は分からない。",
+          "completionEventId": "event_phone_credentials",
+          "nextNodeId": "phone_menu"
+        },
+        {
+          "id": "phone_end",
+          "speakerId": "narrator",
+          "text": "端末の調査を終えた。"
+        }
+      ],
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_osint_location",
+        "operator": "exists"
+      }
+    },
+    {
+      "id": "ev_public_posts",
+      "name": "彩花の公開投稿と活動情報",
+      "icon": "assets/icons/evidence.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "一般に公開されていた活動告知や投稿。動機や情報の公開範囲を考える補助資料。",
+      "startNodeId": "public_start",
+      "nodes": [
+        {
+          "id": "public_start",
+          "speakerId": "narrator",
+          "text": "公開アカウントにはライブ予定や活動写真が掲載されていた。過去の投稿から、交際相手がいる可能性を推測できる表現も確認できる。",
+          "nextNodeId": "public_limit"
+        },
+        {
+          "id": "public_limit",
+          "speakerId": "player",
+          "text": "これらは誰でも閲覧できた情報だが、閲覧者や投稿者を特定する記録ではない。個人の住所などを探す課題にはせず、他の証拠と分けて整理する。",
+          "completionEventId": "event_public_posts_reviewed"
+        }
+      ]
+    },
+    {
+      "id": "ev_mailia_response",
+      "name": "Mailia照会回答書",
+      "icon": "assets/icons/evidence.png",
+      "description": "フィッシングメールの送信アカウントに関する回答。",
+      "startNodeId": "mailia_response_start",
+      "nodes": [
+        {
+          "id": "mailia_response_start",
+          "speakerId": "narrator",
+          "text": "Mailiaの登録名は偽名だった。回答には、送信時刻とフィッシングサイトのURLに関連する記録が含まれている。登録名そのものは本人確認にならない。",
+          "completionEventId": "event_read_mailia_response"
+        }
+      ]
+    },
+    {
+      "id": "ev_nexhost_response",
+      "name": "NexHost照会回答書",
+      "icon": "assets/icons/evidence.png",
+      "description": "フィッシングサイトのホスティングとアクセス記録に関する回答。",
+      "startNodeId": "nexhost_response_start",
+      "nodes": [
+        {
+          "id": "nexhost_response_start",
+          "speakerId": "narrator",
+          "text": "NexHostの記録には、被害者のアクセスとサイト管理画面への接続が別々に残っている。該当時刻の管理アクセス元を確認する。",
+          "completionEventId": "event_read_nexhost_response"
+        }
+      ]
+    },
+    {
+      "id": "ev_brightnet_response",
+      "name": "BrightNet照会回答書",
+      "icon": "assets/icons/evidence.png",
+      "description": "NexHostの記録にあるIPアドレスと時刻に対応する回線契約情報。",
+      "startNodeId": "brightnet_response_start",
+      "nodes": [
+        {
+          "id": "brightnet_response_start",
+          "speakerId": "narrator",
+          "text": "回答に記された契約者は天童拓海。契約者情報だけでは、実際の利用者や操作内容は確定しない。SNSログや端末資料と照合する。",
+          "completionEventId": "event_read_brightnet_response"
+        }
+      ]
+    },
+    {
+      "id": "ev_tendo_phone",
+      "name": "天童拓海のスマートフォン",
+      "icon": "assets/icons/evidence.png",
+      "background": "assets/backgrounds/default-investigation.png",
+      "description": "捜索で取得した端末。閲覧履歴、送信記録、認証情報、計画メモを確認する。",
+      "startNodeId": "tendo_phone_menu",
+      "nodes": [
+        {
+          "id": "tendo_phone_menu",
+          "speakerId": "narrator",
+          "text": "天童の端末に残る記録を確認する。",
+          "choices": [
+            {
+              "id": "tendo_phone_choice_browser",
+              "text": "ブラウザの閲覧履歴を見る",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_tendo_browser",
+                "operator": "notExists"
+              },
+              "nextNodeId": "tendo_phone_browser"
+            },
+            {
+              "id": "tendo_phone_choice_mail",
+              "text": "メールの送信履歴を見る",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_tendo_mail",
+                "operator": "notExists"
+              },
+              "nextNodeId": "tendo_phone_mail"
+            },
+            {
+              "id": "tendo_phone_choice_credentials",
+              "text": "認証情報のメモを見る",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_tendo_credentials",
+                "operator": "notExists"
+              },
+              "nextNodeId": "tendo_phone_credentials"
+            },
+            {
+              "id": "tendo_phone_choice_motive",
+              "text": "投稿計画のメモを見る",
+              "requires": {
+                "type": "fact",
+                "targetId": "fact_tendo_motive",
+                "operator": "notExists"
+              },
+              "nextNodeId": "tendo_phone_motive"
+            },
+            {
+              "id": "tendo_phone_choice_end",
+              "text": "調査を終了する",
+              "nextNodeId": "tendo_phone_end"
+            }
+          ]
+        },
+        {
+          "id": "tendo_phone_browser",
+          "speakerId": "player",
+          "text": "ブラウザには、事件に使われたフィッシングサイトと管理画面を確認した履歴が残っている。NexHostの記録と時刻・URLが一致する。",
+          "completionEventId": "event_tendo_browser",
+          "nextNodeId": "tendo_phone_menu"
+        },
+        {
+          "id": "tendo_phone_mail",
+          "speakerId": "player",
+          "text": "送信履歴には、彩花へ届いた偽のアカウント確認メールと一致する送信記録がある。Mailiaの回答と照合できる。",
+          "completionEventId": "event_tendo_mail",
+          "nextNodeId": "tendo_phone_menu"
+        },
+        {
+          "id": "tendo_phone_credentials",
+          "speakerId": "player",
+          "text": "メモには彩花のSNSアカウントに関係する認証情報が記録されている。取得経緯と他の記録を合わせて評価する。",
+          "completionEventId": "event_tendo_credentials",
+          "nextNodeId": "tendo_phone_menu"
+        },
+        {
+          "id": "tendo_phone_motive",
+          "speakerId": "player",
+          "text": "計画メモには、ライブや公開情報から彼氏の存在を知ったこと、二人を別れさせるため彩花本人らしい投稿を行う考えが記されている。関係を壊す投稿が、彩花を困らせ活動上の信用を傷つける意図も含んでいた。",
+          "completionEventId": "event_tendo_motive",
+          "nextNodeId": "tendo_phone_menu"
+        },
+        {
+          "id": "tendo_phone_end",
+          "speakerId": "narrator",
+          "text": "端末の調査を終えた。"
+        }
+      ]
+    },
+    {
+      "id": "ev_wait_location_image",
+      "name": "待ち伏せを示す投稿画像",
+      "icon": "assets/icons/evidence.png",
+      "description": "Chirpに公開された画像。彩花から相談時に提出された、端末に残っていた加工前の元画像データ。撮影時のメタデータを調べられる。",
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_post_image",
+        "operator": "exists"
+      },
+      "startNodeId": "osint_start",
+      "nodes": [
+        {
+          "id": "osint_start",
+          "speakerId": "player",
+          "text": "相談者の安全のために警戒する必要があるな。場所を特定しよう。",
+          "nextNodeId": "osint_visual_question"
+        },
+        {
+          "id": "osint_visual_question",
+          "speakerId": "player",
+          "text": "画像を見てみたけど、やはり不鮮明で、見た目だけでは場所は分からないなぁ・・・\n次に何を確認する？",
+          "choices": [
+            {
+              "id": "osint_visual_wrong1",
+              "text": "画像の雰囲気だけで場所を断定する",
+              "nextNodeId": "osint_visual_explain1"
+            },
+            {
+              "id": "osint_visual_wrong2",
+              "text": "投稿者のアカウント情報の住所を撮影場所とみなす",
+              "nextNodeId": "osint_visual_explain2"
+            },
+            {
+              "id": "osint_visual_correct",
+              "text": "画像のファイル情報を調べる",
+              "nextNodeId": "osint_metadata"
+            }
+          ]
+        },
+        {
+          "id": "osint_visual_explain1",
+          "speakerId": "narrator",
+          "text": "見た目だけでは似た場所を区別できない。画像に残った別の手掛かりを調べよう。",
+          "nextNodeId": "osint_visual_question"
+        },
+        {
+          "id": "osint_visual_explain2",
+          "speakerId": "narrator",
+          "text": "アカウント情報自体は撮影場所を示さない。画像ファイルそのものから確認できる情報を探そう。",
+          "nextNodeId": "osint_visual_question"
+        },
+        {
+          "id": "osint_metadata",
+          "speakerId": "player",
+          "text": "よし、画像ファイルに残っている情報から場所を特定しよう！\n・・・Exif(エグジフ)情報って言うんだな。麻布さんから聞いておいてよかった。",
+          "nextNodeId": "osint_metadata_question"
+        },
+        {
+          "id": "osint_metadata_question",
+          "speakerId": "narrator",
+          "text": "撮影時刻と位置情報を含むExif情報が残っていた。",
+          "choices": [
+            {
+              "id": "osint_meta_wrong1",
+              "text": "投稿時刻と撮影時刻は必ず同じだと考える",
+              "nextNodeId": "osint_meta_explain1"
+            },
+            {
+              "id": "osint_meta_wrong2",
+              "text": "位置情報だけで投稿者を確定する",
+              "nextNodeId": "osint_meta_explain2"
+            },
+            {
+              "id": "osint_meta_correct",
+              "text": "座標を地図上の地点と照合する",
+              "nextNodeId": "osint_map"
+            }
+          ]
+        },
+        {
+          "id": "osint_meta_explain1",
+          "speakerId": "narrator",
+          "text": "撮影と投稿の時刻は異なる場合がある。ここでは撮影時の情報として扱う。",
+          "nextNodeId": "osint_metadata_question"
+        },
+        {
+          "id": "osint_meta_explain2",
+          "speakerId": "narrator",
+          "text": "Exifの位置情報は撮影端末(カメラやスマートフォンなど)の記録で、投稿者の身元を単独で証明しない。",
+          "nextNodeId": "osint_metadata_question"
+        },
+        {
+          "id": "osint_map",
+          "speakerId": "player",
+          "text": "座標情報がある、これを実際の位置と照らし合わせよう。",
+          "nextNodeId": "osint_map_question"
+        },
+        {
+          "id": "osint_map_question",
+          "speakerId": "narrator",
+          "text": "座標を確認すると、その場所は・・・\n※実際には実画像のExifを見てもらう。",
+          "input": {
+            "match": "contains",
+            "acceptedAnswers": [
+              "交番"
+            ],
+            "ignoreCase": true,
+            "ignoreWhitespace": true,
+            "incorrectText": "・・・いや、その場所ではないな。少し座標が違う"
+          },
+          "nextNodeId": "osint_unlock"
+        },
+        {
+          "id": "osint_map_explain1",
+          "speakerId": "player",
+          "text": "・・・いや、その場所ではないな。少し座標が違う",
+          "nextNodeId": "osint_map_question"
+        },
+        {
+          "id": "osint_unlock",
+          "speakerId": "player",
+          "text": "ふむ、待ち伏せ場所は大手交番か。地域警察官に連絡しておくか。\nさて、次は不正アクセスされたSNSの調査だな",
+          "completionEventId": "event_osint_complete"
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "id": "log_sns_access",
+      "name": "Chirpログイン・投稿ログ",
+      "description": "SNSアカウントへのログインと投稿時刻。",
+      "rows": [
+        {
+          "id": "row_sns_normal",
+          "time": "16:40:12",
+          "text": "192.0.2.10  土崎彩花の通常ログイン",
+          "important": true,
+          "result": "過去の通常利用は彩花の自宅回線から行われている。"
+        },
+        {
+          "id": "row_sns_tor",
+          "time": "17:20:37",
+          "text": "198.51.100.90  ログイン成功（Tor出口ノード）",
+          "important": true,
+          "result": "普段と異なるログインが投稿前に発生している。Tor出口IPは通信経路の情報であり、操作した人の名前や住所を直接示さない。",
+          "completionEventId": "event_inspect_sns_tor"
+        },
+        {
+          "id": "row_sns_post",
+          "time": "17:25:45",
+          "text": "198.51.100.90  本人らしくない投稿を作成",
+          "important": true,
+          "result": "不審なログインの後に問題の投稿が作成された。これは操作時刻を示すが、投稿者の身元は別の記録で裏付ける必要がある。",
+          "completionEventId": "event_inspect_sns_post"
+        }
+      ],
+      "requires": {
+        "type": "fact",
+        "targetId": "fact_osint_location",
+        "operator": "exists"
+      }
+    },
+    {
+      "id": "log_mail_headers",
+      "name": "フィッシングメールのヘッダ",
+      "description": "彩花の端末に残っていたメールの送信経路。",
+      "rows": [
+        {
+          "id": "row_mail_header",
+          "time": "16:52:08",
+          "text": "From: account-check@chirp.example\nReturn-Path: verify-session@mailia.example\nReceived: from relay-17.mailia.example",
+          "important": true,
+          "result": "表示上の差出人と送信経路が異なる。送信アカウントと記録を保有するMailiaを照会先として整理する。",
+          "completionEventId": "event_inspect_mail_header"
+        }
+      ]
+    },
+    {
+      "id": "log_hosting_access",
+      "name": "NexHostサイトアクセスログ",
+      "description": "フィッシングサイトへのアクセス記録。",
+      "requires": {
+        "type": "evidence",
+        "targetId": "ev_nexhost_response",
+        "operator": "exists"
+      },
+      "rows": [
+        {
+          "id": "row_host_victim",
+          "time": "17:02:11",
+          "text": "192.0.2.10  /login  200",
+          "important": true,
+          "result": "被害者の回線からログイン画面へアクセスした記録。",
+          "completionEventId": "event_inspect_host_victim"
+        },
+        {
+          "id": "row_host_admin",
+          "time": "16:10:44",
+          "text": "192.0.2.30  /admin  200",
+          "important": true,
+          "result": "サイト管理画面へのアクセスが記録されている。時刻とIPアドレスを回線割当記録の照会に使う。",
+          "completionEventId": "event_inspect_host_admin"
+        }
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact_post_image",
+      "name": "待ち伏せを示す投稿画像がある",
+      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。",
+      "sortOrder": 5
+    },
+    {
+      "id": "fact_osint_location",
+      "name": "待ち伏せ場所は大手交番",
+      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。",
+      "sortOrder": 6
+    },
+    {
+      "id": "fact_victim_report",
+      "name": "彩花のアカウントが不正利用された",
+      "description": "彩花はアカウントに入れなくなり、本人らしくない投稿が行われたと申告した。",
+      "sortOrder": 20
+    },
+    {
+      "id": "fact_suspicious_email",
+      "name": "運営を装ったメールを受信していた",
+      "description": "彩花の端末にアカウント確認を装うメールが残っている。",
+      "sortOrder": 30
+    },
+    {
+      "id": "fact_phishing_site",
+      "name": "偽のログイン画面が使われた",
+      "description": "メールのリンク先は正規SNSとは異なるログイン画面だった。",
+      "sortOrder": 40
+    },
+    {
+      "id": "fact_credentials_entered",
+      "name": "彩花が偽サイトに認証情報を入力した",
+      "description": "本人の説明と端末時刻から、偽サイトへ認証情報を入力した経緯が確認された。",
+      "sortOrder": 50
+    },
+    {
+      "id": "fact_tor_login",
+      "name": "Tor経由の不審ログインがあった",
+      "description": "投稿前にTor出口IPからログインした記録がある。IPだけでは利用者を特定できない。",
+      "sortOrder": 60
+    },
+    {
+      "id": "fact_suspicious_post",
+      "name": "不審ログイン後に投稿が行われた",
+      "description": "SNSログには不審ログインの後に問題の投稿を作成した時刻が記録されている。",
+      "sortOrder": 70
+    },
+    {
+      "id": "fact_mail_sender_identified",
+      "name": "メール送信元を照会できる",
+      "description": "メールヘッダからMailiaが保有する送信アカウントの記録を照会できる。",
+      "sortOrder": 80
+    },
+    {
+      "id": "fact_public_context",
+      "name": "公開情報から交際相手の存在を推測できる",
+      "description": "公開投稿には交際相手の存在を推測できる表現がある。ただし閲覧者や犯人の特定には使えない。",
+      "sortOrder": 90
+    },
+    {
+      "id": "fact_mailia_account",
+      "name": "Mailiaの送信アカウントが判明した",
+      "description": "Mailiaから偽名登録の送信アカウントと関連URLの記録を得た。登録情報だけで実際の操作者は確定しない。",
+      "sortOrder": 100
+    },
+    {
+      "id": "fact_hosting_provider",
+      "name": "フィッシングサイトのホスティング先が判明した",
+      "description": "Mailiaの回答からサイトとNexHostの関連を確認した。",
+      "sortOrder": 110
+    },
+    {
+      "id": "fact_hosting_access_ip",
+      "name": "管理画面アクセスのIPと時刻が判明した",
+      "description": "NexHostのアクセスログに管理画面への接続元IPと時刻が残っている。",
+      "sortOrder": 120
+    },
+    {
+      "id": "fact_host_victim_access",
+      "name": "被害者のサイトアクセス記録を確認した",
+      "description": "彩花の回線からフィッシングサイトへアクセスした記録が確認できた。",
+      "sortOrder": 130
+    },
+    {
+      "id": "fact_subscriber_tendo",
+      "name": "該当回線の契約者は天童拓海",
+      "description": "BrightNetの回答による契約者情報。回線利用者を単独で確定する証拠ではない。",
+      "sortOrder": 140
+    },
+    {
+      "id": "fact_tendo_initial_interview",
+      "name": "天童は彩花のファンだった",
+      "description": "天童はライブや握手会に参加していたが、彩花との私的なつながりはないと話した。",
+      "sortOrder": 150
+    },
+    {
+      "id": "fact_tendo_browser",
+      "name": "天童端末にサイト閲覧記録がある",
+      "description": "フィッシングサイトと管理画面の閲覧履歴がNexHostの記録と一致する。",
+      "sortOrder": 160
+    },
+    {
+      "id": "fact_tendo_mail",
+      "name": "天童端末にメール送信記録がある",
+      "description": "端末の送信履歴が彩花の受信メールおよびMailiaの記録と一致する。",
+      "sortOrder": 170
+    },
+    {
+      "id": "fact_tendo_credentials",
+      "name": "天童端末に認証情報の記録がある",
+      "description": "彩花のアカウントに関係する認証情報が端末内で確認された。",
+      "sortOrder": 180
+    },
+    {
+      "id": "fact_tendo_motive",
+      "name": "天童が関係を壊す投稿を計画していた",
+      "description": "端末のメモに彼氏への嫉妬と、投稿で二人の関係を壊そうとする意図が記されていた。",
+      "sortOrder": 190
+    },
+    {
+      "id": "fact_tendo_confession",
+      "name": "天童が犯行を認めた",
+      "description": "追及に対し、天童はアカウントを不正利用して投稿したと認めた。供述は他の証拠と照合して記録した。",
+      "sortOrder": 200
+    }
+  ],
+  "events": [
+    {
+      "id": "event_ayaka_first",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_victim_report"
+        },
+        {
+          "type": "add",
+          "target": "evidence.ev_ayaka_phone"
+        },
+        {
+          "type": "add",
+          "target": "evidence.ev_public_posts"
+        }
+      ]
+    },
+    {
+      "id": "event_ayaka_followup",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_credentials_entered"
+        }
+      ]
+    },
+    {
+      "id": "event_phone_email",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_suspicious_email"
+        },
+        {
+          "type": "add",
+          "target": "logs.log_mail_headers"
+        }
+      ]
+    },
+    {
+      "id": "event_phone_browser",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_phishing_site"
+        },
+        {
+          "type": "add",
+          "target": "logs.log_sns_access"
+        }
+      ]
+    },
+    {
+      "id": "event_phone_credentials",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_credentials_entered"
+        }
+      ]
+    },
+    {
+      "id": "event_public_posts_reviewed",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_public_context"
+        }
+      ]
+    },
+    {
+      "id": "event_inspect_sns_tor",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tor_login"
+        }
+      ]
+    },
+    {
+      "id": "event_inspect_sns_post",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_suspicious_post"
+        }
+      ]
+    },
+    {
+      "id": "event_inspect_mail_header",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_mail_sender_identified"
+        }
+      ]
+    },
+    {
+      "id": "event_inquiry_mailia",
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_mailia_response"
+        }
+      ]
+    },
+    {
+      "id": "event_read_mailia_response",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_mailia_account"
+        },
+        {
+          "type": "add",
+          "target": "facts.fact_hosting_provider"
+        }
+      ]
+    },
+    {
+      "id": "event_inquiry_nexhost",
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_nexhost_response"
+        }
+      ]
+    },
+    {
+      "id": "event_read_nexhost_response",
+      "effects": []
+    },
+    {
+      "id": "event_inspect_host_victim",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_host_victim_access"
+        }
+      ]
+    },
+    {
+      "id": "event_inspect_host_admin",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_hosting_access_ip"
+        }
+      ]
+    },
+    {
+      "id": "event_inquiry_brightnet",
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_brightnet_response"
+        }
+      ]
+    },
+    {
+      "id": "event_read_brightnet_response",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_subscriber_tendo"
+        }
+      ]
+    },
+    {
+      "id": "event_tendo_first",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tendo_initial_interview"
+        }
+      ]
+    },
+    {
+      "id": "event_jinnai_search_approved",
+      "effects": []
+    },
+    {
+      "id": "event_search_tendo",
+      "effects": [
+        {
+          "type": "add",
+          "target": "evidence.ev_tendo_phone"
+        }
+      ]
+    },
+    {
+      "id": "event_tendo_browser",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tendo_browser"
+        }
+      ]
+    },
+    {
+      "id": "event_tendo_mail",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tendo_mail"
+        }
+      ]
+    },
+    {
+      "id": "event_tendo_credentials",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tendo_credentials"
+        }
+      ]
+    },
+    {
+      "id": "event_tendo_motive",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tendo_motive"
+        }
+      ]
+    },
+    {
+      "id": "event_tendo_confession",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_tendo_confession"
+        },
+        {
+          "type": "set",
+          "target": "cleared",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "event_ayaka_first_image",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_post_image"
+        },
+        {
+          "type": "add",
+          "target": "evidence.ev_wait_location_image"
+        }
+      ]
+    },
+    {
+      "id": "event_osint_complete",
+      "effects": [
+        {
+          "type": "add",
+          "target": "facts.fact_osint_location"
+        }
+      ]
+    }
+  ],
+  "hints": []
+}

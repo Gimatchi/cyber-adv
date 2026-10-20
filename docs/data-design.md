@@ -270,7 +270,7 @@ Exifに記録された座標は撮影位置の手がかりとして扱い、投�
 }
 ```
 
-`id`、`name`は必須。`description`、`sortOrder`は任意。Factは調査によって判明した情報で、証拠そのものではない。`sortOrder`は一覧の表示順を決め、取得順には使わない。
+`id`、`name`は必須。`description`、`sortOrder`は任意。Factは調査によって判明した情報で、証拠そのものではない。Factの取得順・取得日時は記録しない。`sortOrder`は一覧の表示順を決め、取得順には使わない。取得済みFactはPlayerStateの`facts`に保持する。
 
 ### Condition
 

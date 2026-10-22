@@ -913,7 +913,7 @@
       "id": "ev_wait_location_image",
       "name": "待ち伏せを示す投稿画像",
       "icon": "assets/icons/evidence.png",
-      "description": "Chirpに公開された画像。加工前の元画像が彩花の端末に残っている。撮影時のメタデータを調べられる。",
+      "description": "Chirpに公開された画像。画像が不鮮明であり、見ただけでは場所がわからない。",
       "requires": {
         "type": "fact",
         "targetId": "fact_post_image",

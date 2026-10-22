@@ -4,7 +4,7 @@
 
 ## Run
 
-Node.js 20以降が必要です。リポジトリのルートで実行します。
+Node.js 22以降が必要です。リポジトリのルートで実行します。
 
 ```powershell
 node prototype/server.mjs

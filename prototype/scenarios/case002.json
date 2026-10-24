@@ -5,7 +5,8 @@
   "defaults": {
     "background": "assets/backgrounds/default-investigation.png",
     "characterIcon": "assets/icons/ayaka.png",
-    "evidenceIcon": "assets/icons/evidence.png"
+    "evidenceIcon": "assets/icons/evidence.png",
+    "logIcon": "assets/icons/log.png"
   },
   "prologue": {
     "background": "assets/backgrounds/ayaka-selection.png",

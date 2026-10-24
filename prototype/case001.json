@@ -411,32 +411,27 @@
     {
       "id": "fact_aizawa_interest",
       "name": "藤崎は相沢から一方的な好意を寄せられていた",
-      "description": "彩花は大学時代の知人である相沢拓海から一方的に好意を寄せられていた。",
-      "sortOrder": 10
+      "description": "彩花は大学時代の知人である相沢拓海から一方的に好意を寄せられていた。"
     },
     {
       "id": "fact_defamation_post",
       "name": "藤崎のChirpアカウントに名誉棄損の投稿があった",
-      "description": "彩花のChirpアカウントから、本人や周囲の人を傷つける投稿が行われた。",
-      "sortOrder": 20
+      "description": "彩花のChirpアカウントから、本人や周囲の人を傷つける投稿が行われた。"
     },
     {
       "id": "fact_suspicious_ip",
       "name": "Chirpへの不正ログイン元IPアドレス",
-      "description": "Chirpのログから、不正なログインに使われたIPアドレスが分かった。",
-      "sortOrder": 30
+      "description": "Chirpのログから、不正なログインに使われたIPアドレスが分かった。"
     },
     {
       "id": "fact_brightnet",
       "name": "不正ログイン元IPアドレスの契約者は相沢だった",
-      "description": "BrightNetへの照会で、対象時刻の回線契約者が相沢拓海だと分かった。",
-      "sortOrder": 40
+      "description": "BrightNetへの照会で、対象時刻の回線契約者が相沢拓海だと分かった。"
     },
     {
       "id": "fact_confession",
       "name": "相沢がChirpアカウントの乗っ取りを認めた",
-      "description": "相沢がChirpのアカウント乗っ取りを認めた。",
-      "sortOrder": 50
+      "description": "相沢がChirpのアカウント乗っ取りを認めた。"
     }
   ],
   "events": [
@@ -520,6 +515,5 @@
       "id": "event_jinai_interest_discussed",
       "effects": []
     }
-  ],
-  "hints": []
+  ]
 }

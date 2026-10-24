@@ -1388,118 +1388,99 @@
   ],
   "facts": [
     {
+      "id": "fact_credentials_entered",
+      "description": "土崎彩花は大学時代からの同級生である「黒田恒一」と交際している。\n社会人になった今でも交際は続いているようだ",
+      "name": "土崎彩花は黒田恒一と交際している"
+    },
+    {
       "id": "fact_post_image",
       "name": "待ち伏せを示す投稿画像がある",
-      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。",
-      "sortOrder": 10
+      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。"
     },
     {
       "id": "fact_osint_location",
       "name": "待ち伏せ場所は大手交番",
-      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。",
-      "sortOrder": 20
+      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。"
     },
     {
       "id": "fact_suspicious_email",
       "name": "不審なメールを受信していた",
-      "description": "彩花はChirp運営を装うメールを受信していた。",
-      "sortOrder": 30
+      "description": "彩花はChirp運営を装うメールを受信していた。"
     },
     {
       "id": "fact_phishing_site",
       "name": "フィッシングサイトへアクセスしていた",
-      "description": "彩花の端末に偽のログイン画面へのアクセス履歴がある。",
-      "sortOrder": 40
-    },
-    {
-      "id": "fact_credentials_entered",
-      "description": "土崎彩花は大学時代からの同級生である「黒田恒一」と交際している。\n社会人になった今でも交際は続いているようだ",
-      "name": "土崎彩花は黒田恒一と交際している",
-      "sortOrder": 9
+      "description": "彩花の端末に偽のログイン画面へのアクセス履歴がある。"
     },
     {
       "id": "fact_tor_access",
       "name": "不正アクセスのIPアドレスはTor出口ノード",
-      "description": "投稿直前にTor出口ノードのIPアドレスからChirpへのログインが記録されている。\nこのIPアドレスだけでは個人を特定できない。",
-      "sortOrder": 60
+      "description": "投稿直前にTor出口ノードのIPアドレスからChirpへのログインが記録されている。\nこのIPアドレスだけでは個人を特定できない。"
     },
     {
       "id": "fact_mail_sender_identified",
       "name": "メールの送信アカウントを照会できる",
-      "description": "メールヘッダーからMailiaのアカウントを照会対象として確認した。",
-      "sortOrder": 70
+      "description": "メールヘッダーからMailiaのアカウントを照会対象として確認した。"
     },
     {
       "id": "fact_mailia_response",
       "name": "Mailiaの回答を得た",
-      "description": "対象アカウントの登録情報と送信記録を取得した。",
-      "sortOrder": 80
+      "description": "対象アカウントの登録情報と送信記録を取得した。"
     },
     {
       "id": "fact_fake_account",
       "name": "偽装された送信アカウントが判明した",
-      "description": "Mailiaの登録名と送信履歴を確認した。登録情報だけでは利用者は確定しない。",
-      "sortOrder": 90
+      "description": "Mailiaの登録名と送信履歴を確認した。登録情報だけでは利用者は確定しない。"
     },
     {
       "id": "fact_hosting_provider",
       "name": "偽サイトのホスティング先が判明した",
-      "description": "サイト情報からNexHostがアクセス記録を保有すると分かった。",
-      "sortOrder": 100
+      "description": "サイト情報からNexHostがアクセス記録を保有すると分かった。"
     },
     {
       "id": "fact_hosting_access_ip",
       "name": "サイト管理接続元IPが判明した",
-      "description": "NexHostの記録に対象時刻の192.0.2.30がある。",
-      "sortOrder": 110
+      "description": "NexHostの記録に対象時刻の192.0.2.30がある。"
     },
     {
       "id": "fact_subscriber_aizawa",
       "name": "対象回線の契約者は天童拓海",
-      "description": "BrightNetの記録では契約者が天童拓海。契約者情報だけでは犯人と断定できない。",
-      "sortOrder": 120
+      "description": "BrightNetの記録では契約者が天童拓海。契約者情報だけでは犯人と断定できない。"
     },
     {
       "id": "fact_aizawa_first_interview",
       "name": "天童は関与を否定した",
-      "description": "初回聞き込みで天童は事件への関与を否定した。",
-      "sortOrder": 130
+      "description": "初回聞き込みで天童は事件への関与を否定した。"
     },
     {
       "id": "fact_aizawa_browser",
       "name": "天童端末にサイト閲覧履歴があった",
-      "description": "天童の端末にフィッシングサイトの管理画面を確認した記録があった。",
-      "sortOrder": 140
+      "description": "天童の端末にフィッシングサイトの管理画面を確認した記録があった。"
     },
     {
       "id": "fact_aizawa_sent_mail",
       "name": "天童端末にメール送信記録があった",
-      "description": "彩花宛てのフィッシングメール送信記録が見つかった。",
-      "sortOrder": 150
+      "description": "彩花宛てのフィッシングメール送信記録が見つかった。"
     },
     {
       "id": "fact_aizawa_credentials",
       "name": "天童端末に彩花の認証情報があった",
-      "description": "彩花のChirp認証情報を記したメモが見つかった。",
-      "sortOrder": 160
+      "description": "彩花のChirp認証情報を記したメモが見つかった。"
     },
     {
       "id": "fact_aizawa_plan",
       "name": "天童端末に犯行計画と動機の記録があった",
-      "description": "端末のメモに犯行の手順と動機が記録されていた。",
-      "sortOrder": 170
+      "description": "端末のメモに犯行の手順と動機が記録されていた。"
     },
     {
       "id": "fact_aizawa_evidence_complete",
       "name": "天童の犯行を裏付ける資料がそろった",
-      "description": "サイト確認、メール送信、認証情報、不正アクセスの記録を合わせて確認した。",
-      "sortOrder": 180
+      "description": "サイト確認、メール送信、認証情報、不正アクセスの記録を合わせて確認した。"
     },
     {
       "id": "fact_aizawa_confession",
       "name": "天童が犯行を認めた",
-      "description": "天童はフィッシングと不正アクセス、投稿を行ったと認めた。",
-      "sortOrder": 190
+      "description": "天童はフィッシングと不正アクセス、投稿を行ったと認めた。"
     }
   ],
   "events": [
@@ -1845,6 +1826,5 @@
         }
       ]
     }
-  ],
-  "hints": []
+  ]
 }

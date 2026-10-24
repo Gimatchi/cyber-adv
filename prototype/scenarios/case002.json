@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "case002",
-  "title": "事件001 SNS乗っ取り",
+  "title": "SNSを乗っ取られた地下アイドル",
   "defaults": {
     "background": "assets/backgrounds/default-investigation.png",
     "characterIcon": "assets/icons/ayaka.png",
@@ -772,139 +772,824 @@
       "background": "assets/backgrounds/asano-selection-with-character.png",
       "description": "あなたの同僚で、サイバー捜査の知識を持つ捜査員。\nサイバー捜査に関する捜査手法や用語を説明してくれる。",
       "interactions": [
-        {
-          "id": "azabu_first",
-          "startNodeId": "node_001",
-          "nodes": [
-            {
-              "id": "node_001",
-              "speakerId": "asano",
-              "text": "一緒に捜査を頑張ろう！何を聞きたい？",
-              "choices": [
+  {
+    "id": "conv_asano_consult",
+    "title": "捜査の相談",
+    "repeatable": true,
+    "startNodeId": "asano_menu",
+    "nodes": [
+      {
+        "id": "asano_menu",
+        "speakerId": "asano",
+        "text": "声をかけてくれてありがとう。今の捜査について、一緒に整理しよう。何を聞きたい？",
+        "choices": [
+          {
+            "id": "asano_menu_facts",
+            "text": "現時点で分かっていること",
+            "nextNodeId": "asano_fact_route"
+          },
+          {
+            "id": "asano_menu_advice",
+            "text": "サイバー捜査の助言",
+            "nextNodeId": "asano_advice_route"
+          },
+          {
+            "id": "asano_menu_terms",
+            "text": "用語を聞く",
+            "nextNodeId": "asano_glossary"
+          },
+          {
+            "id": "asano_menu_bye",
+            "text": "もう大丈夫",
+            "nextNodeId": "asano_goodbye"
+          }
+        ]
+      },
+      {
+        "id": "asano_fact_route",
+        "speakerId": "asano",
+        "text": "",
+        "routes": [
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_aizawa_confession",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_facts_confession"
+          },
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_aizawa_evidence_complete",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_facts_evidence_complete"
+          },
+          {
+            "requires": {
+              "type": "and",
+              "conditions": [
                 {
-                  "id": "choice_node_001_1",
-                  "text": "捜査手法について",
-                  "nextConversationId": "interaction_asano_4"
+                  "type": "fact",
+                  "targetId": "fact_subscriber_aizawa",
+                  "operator": "exists"
                 },
                 {
-                  "id": "choice_node_001_2",
-                  "text": "用語について"
+                  "type": "fact",
+                  "targetId": "fact_aizawa_first_interview",
+                  "operator": "exists"
                 }
               ]
-            }
-          ],
-          "title": "最初",
-          "repeatable": true
-        },
-        {
-          "id": "interaction_asano_4",
-          "title": "まずは画像を確認",
-          "startNodeId": "node_001",
-          "nodes": [
-            {
-              "id": "node_001",
-              "speakerId": "asano",
-              "text": "まずは相談者に話を聞こう。そうしないと、何が起こってるのか分からないよ。"
-            }
-          ],
-          "repeatable": true,
-          "requires": {
-            "type": "evidence",
-            "targetId": "ev_wait_location_image",
-            "operator": "notExists"
+            },
+            "nextNodeId": "asano_facts_aizawa_link"
+          },
+          {
+            "requires": {
+              "type": "and",
+              "conditions": [
+                {
+                  "type": "fact",
+                  "targetId": "fact_hosting_access_ip",
+                  "operator": "exists"
+                },
+                {
+                  "type": "fact",
+                  "targetId": "fact_mailia_response",
+                  "operator": "exists"
+                }
+              ]
+            },
+            "nextNodeId": "asano_facts_provider_records"
+          },
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_tor_access",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_facts_tor"
+          },
+          {
+            "requires": {
+              "type": "and",
+              "conditions": [
+                {
+                  "type": "fact",
+                  "targetId": "fact_suspicious_email",
+                  "operator": "exists"
+                },
+                {
+                  "type": "fact",
+                  "targetId": "fact_phishing_site",
+                  "operator": "exists"
+                }
+              ]
+            },
+            "nextNodeId": "asano_facts_phishing"
+          },
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_osint_location",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_facts_location"
+          },
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_post_image",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_facts_post_image"
+          },
+          {
+            "nextNodeId": "asano_facts_beginning"
           }
-        },
-        {
-          "id": "conv_asano_inquiry_hint",
-          "title": "照会先を相談する",
-          "requires": {
-            "type": "fact",
-            "targetId": "fact_mail_sender_identified",
-            "operator": "exists"
+        ]
+      },
+      {
+        "id": "asano_facts_beginning",
+        "speakerId": "asano",
+        "text": "今はまだ、事件の流れを組み立てるための材料が少ないね。まずは彩花さんから話を聞いて、何が起きたのかを確かめよう。手元に資料が届いたら、画像や端末の記録を一つずつ調べていけば大丈夫。",
+        "choices": [
+          {
+            "id": "asano_facts_beginning_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_post_image",
+        "speakerId": "asano",
+        "text": "彩花さんのChirpには、待ち伏せを示す文章と画像が投稿されていた。画像の元データも端末に残っているね。投稿の内容だけで誰が投稿したかまでは分からないから、まず画像の撮影場所など、確認できる手掛かりを調べよう。",
+        "choices": [
+          {
+            "id": "asano_facts_post_image_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_location",
+        "speakerId": "asano",
+        "text": "投稿画像のExif座標を地図と照合して、撮影地点が大手交番だと分かった。これは画像がどこで撮影されたかを示す手掛かりで、誰が投稿したかや、実際に待ち伏せしたことを単独で証明するものではないよ。次は彩花さんの端末やChirpの記録から、アカウントがどう使われたかを確認しよう。",
+        "choices": [
+          {
+            "id": "asano_facts_location_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_phishing",
+        "speakerId": "asano",
+        "text": "彩花さんにはChirp運営を装うメールが届き、端末には偽のログイン画面へのアクセス履歴がある。メールで偽サイトへ誘導し、そこで入力された認証情報を使ってアカウントへ不正アクセスした、という流れが考えられる。ただし、誰が操作したのかはまだ別の記録で確かめる必要があるね。",
+        "choices": [
+          {
+            "id": "asano_facts_phishing_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_tor",
+        "speakerId": "asano",
+        "text": "不審なメールと偽のログイン画面へのアクセスがあり、投稿直前にはTorの出口ノードからChirpへログインした記録がある。認証情報を盗んでログインし、投稿した可能性が高まったね。ただしTorの出口IPだけでは利用者を特定できない。メールや偽サイト、回線など、それぞれの記録を持つ事業者への照会をつないでいこう。",
+        "choices": [
+          {
+            "id": "asano_facts_tor_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_provider_records",
+        "speakerId": "asano",
+        "text": "メール事業者やホスティング事業者から、対象アカウントやサイトの記録が得られている。捜査では、メール送信、偽サイトの管理接続、Chirpへのログインという別々の記録を、時刻や接続元を手掛かりに結び付けていくんだ。IPアドレスや登録情報一つだけで、操作した人を決めつけないようにしよう。",
+        "choices": [
+          {
+            "id": "asano_facts_provider_records_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_aizawa_link",
+        "speakerId": "asano",
+        "text": "照会で対象回線の契約者が天童拓海だと分かり、本人は最初の聞き込みで関与を否定している。契約者と実際に回線を使った人が同じとは限らないから、この段階で犯人と決めつけてはいけないよ。天童さんの端末に、偽サイトやメール、認証情報に関する裏付けがあるかを照合しよう。",
+        "choices": [
+          {
+            "id": "asano_facts_aizawa_link_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_evidence_complete",
+        "speakerId": "asano",
+        "text": "天童さんの端末から、偽サイトの閲覧、彩花さん宛てのメール送信、認証情報、犯行計画に関する記録が見つかり、Chirp側の不正アクセス記録ともつながった。複数の独立した資料が、フィッシングからアカウント乗っ取り、投稿に至る流れを裏付けているね。個々の資料の意味と、資料同士のつながりを分けて説明できるよう整理しておこう。",
+        "choices": [
+          {
+            "id": "asano_facts_evidence_complete_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_facts_confession",
+        "speakerId": "asano",
+        "text": "現時点では、偽メールで偽サイトへ誘導し、認証情報を使ってChirpへ不正アクセスしたうえで、待ち伏せを示す投稿を行った流れが確認できている。天童さんの端末に残る複数の記録が捜査資料とつながり、本人も犯行を認めた。画像の撮影地点、事業者の記録、端末の記録、本人の供述がどう積み重なったかを順に振り返ると、事件の全体像が見えるよ。",
+        "choices": [
+          {
+            "id": "asano_facts_confession_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_route",
+        "speakerId": "asano",
+        "text": "",
+        "routes": [
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_aizawa_confession",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_advice_complete"
           },
-          "repeatable": true,
-          "startNodeId": "asano_inquiry_start",
-          "nodes": [
-            {
-              "id": "asano_inquiry_start",
-              "speakerId": "asano",
-              "text": "照会先は、今ある記録を誰が保有しているかで考えます。メール送信アカウントの情報はメール事業者、サイトのアクセス記録はホスティング事業者、回線契約者は通信事業者が持っています。",
-              "nextNodeId": "asano_inquiry_next"
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_aizawa_evidence_complete",
+              "operator": "exists"
             },
-            {
-              "id": "asano_inquiry_next",
-              "speakerId": "player",
-              "text": "一つのIPだけで決めつけず、記録を順につなげます。"
-            }
-          ]
-        },
-        {
-          "id": "conv_asano_tor_hint",
-          "title": "ログの読み方を相談する",
-          "requires": {
-            "type": "evidence",
-            "targetId": "ev_chirp_log",
-            "operator": "exists"
+            "nextNodeId": "asano_advice_evidence"
           },
-          "repeatable": true,
-          "startNodeId": "asano_tor_start",
-          "nodes": [
-            {
-              "id": "asano_tor_start",
-              "speakerId": "asano",
-              "text": "ログは時刻、操作、接続元を並べて見ると流れがつかみやすいです。普段と異なる記録を探してみてください。",
-              "nextNodeId": "asano_tor_ip"
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_subscriber_aizawa",
+              "operator": "exists"
             },
-            {
-              "id": "asano_tor_ip",
-              "speakerId": "player",
-              "text": "Torの出口IPが見つかったら、利用者を特定できますか。",
-              "nextNodeId": "asano_tor_answer"
-            },
-            {
-              "id": "asano_tor_answer",
-              "speakerId": "asano",
-              "text": "それだけでは個人を特定できません。出口IPはTorネットワークから接続した手掛かりです。メールや偽サイトなど、別の記録を保有する事業者へ順に照会しましょう。"
-            }
-          ]
-        },
-        {
-          "id": "conv_asano_osint_hint",
-          "title": "画像の調べ方を相談する",
-          "requires": {
-            "type": "evidence",
-            "targetId": "ev_wait_location_image",
-            "operator": "exists"
+            "nextNodeId": "asano_advice_subscriber"
           },
-          "repeatable": true,
-          "startNodeId": "asano_osint_start",
-          "nodes": [
-            {
-              "id": "asano_osint_start",
-              "speakerId": "asano",
-              "text": "まずは画像そのものから確認しましょう。画面に写った景色だけで場所を断定せず、ファイルに付いた情報も見ます。",
-              "nextNodeId": "asano_osint_meta"
+          {
+            "requires": {
+              "type": "and",
+              "conditions": [
+                {
+                  "type": "fact",
+                  "targetId": "fact_hosting_provider",
+                  "operator": "exists"
+                },
+                {
+                  "type": "fact",
+                  "targetId": "fact_mail_sender_identified",
+                  "operator": "exists"
+                }
+              ]
             },
-            {
-              "id": "asano_osint_meta",
-              "speakerId": "player",
-              "text": "画像ファイルに付いた情報とは？",
-              "nextNodeId": "asano_osint_exif"
+            "nextNodeId": "asano_advice_provider"
+          },
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_tor_access",
+              "operator": "exists"
             },
-            {
-              "id": "asano_osint_exif",
-              "speakerId": "asano",
-              "text": "Exifなどのメタデータです。撮影時刻や位置情報が残ることがあります。ただし撮影場所を示す手掛かりであって、投稿者や実際の行動を単独で証明するものではありません。",
-              "nextNodeId": "asano_osint_limit"
+            "nextNodeId": "asano_advice_tor"
+          },
+          {
+            "requires": {
+              "type": "and",
+              "conditions": [
+                {
+                  "type": "fact",
+                  "targetId": "fact_suspicious_email",
+                  "operator": "exists"
+                },
+                {
+                  "type": "fact",
+                  "targetId": "fact_phishing_site",
+                  "operator": "exists"
+                }
+              ]
             },
-            {
-              "id": "asano_osint_limit",
-              "speakerId": "player",
-              "text": "分かりました。画像の調査を進めます。"
+            "nextNodeId": "asano_advice_phishing"
+          },
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_osint_location",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_advice_location"
+          },
+          {
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_post_image",
+              "operator": "exists"
+            },
+            "nextNodeId": "asano_advice_image"
+          },
+          {
+            "nextNodeId": "asano_advice_beginning"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_beginning",
+        "speakerId": "asano",
+        "text": "まだ手掛かりが少ない段階だね。まずは被害者の話を聞き、届いた資料や端末を確認しよう。何をされたか、いつ起きたかを押さえると、次に必要な記録が見えてくるよ。",
+        "choices": [
+          {
+            "id": "asano_advice_beginning_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_beginning_deeper_node"
+          },
+          {
+            "id": "asano_advice_beginning_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_beginning_deeper_node",
+        "speakerId": "asano",
+        "text": "資料を調べるときは、画面に見える内容だけでなく、元ファイルやログに残る時刻・接続元・操作も確認してね。分かったことを一つずつ整理すれば、照会先や次に調べる資料を選びやすくなる。",
+        "choices": [
+          {
+            "id": "asano_advice_beginning_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_image",
+        "speakerId": "asano",
+        "text": "投稿画像が見つかっているね。まず画像に写った内容と、元ファイルに残る情報を分けて確認しよう。場所が分かっても投稿者まで分かったことにはならないから、画像の調査とアカウントの記録の調査を並行して進めよう。",
+        "choices": [
+          {
+            "id": "asano_advice_image_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_image_deeper_node"
+          },
+          {
+            "id": "asano_advice_image_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_image_deeper_node",
+        "speakerId": "asano",
+        "text": "画像の見た目から場所を推測したら、地図上の特徴と照らし合わせる。ファイルにExifがあれば座標や時刻も確認する。ただし、再保存や加工で情報が変わることもあるし、位置情報は撮影地点の手掛かりだよ。投稿者や待ち伏せを直接証明するものとして扱わないでね。",
+        "choices": [
+          {
+            "id": "asano_advice_image_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_location",
+        "speakerId": "asano",
+        "text": "撮影地点の手掛かりまで得られたね。そこから投稿者を決めつけず、彩花さんの端末やChirpのログで、不審なログインと投稿がいつ行われたかを追おう。",
+        "choices": [
+          {
+            "id": "asano_advice_location_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_location_deeper_node"
+          },
+          {
+            "id": "asano_advice_location_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_location_deeper_node",
+        "speakerId": "asano",
+        "text": "投稿時間の前後でログイン記録を確認し、通常と違う接続元がないか見てみよう。見つけたIPアドレスは時刻やサービスの記録とセットで扱う。次に、その記録を保有するChirpや事業者がどこかを確認すると、照会の順番を考えやすいよ。",
+        "choices": [
+          {
+            "id": "asano_advice_location_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_phishing",
+        "speakerId": "asano",
+        "text": "偽メールと偽のログイン画面へのアクセスが見えてきたね。メールの送信記録、偽サイトの運営記録、Chirpのログイン記録をそれぞれ確認しよう。次は、各記録を持っているサービスや事業者を特定して、記録をつなぐことが大切だよ。",
+        "choices": [
+          {
+            "id": "asano_advice_phishing_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_phishing_deeper_node"
+          },
+          {
+            "id": "asano_advice_phishing_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_phishing_deeper_node",
+        "speakerId": "asano",
+        "text": "メールはヘッダーや送信履歴からアカウントを調べ、偽サイトはドメインやホスティング情報からサーバーの管理記録を持つ事業者を探す。サービス上のログイン記録も含め、対象時間と接続元を照合していこう。一つの記録だけで犯人と断定しないことが大事。",
+        "choices": [
+          {
+            "id": "asano_advice_phishing_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_tor",
+        "speakerId": "asano",
+        "text": "Chirpへ不審なログインがあったね。接続元がTorの出口ノードでも、それだけで利用者は分からない。ログの時刻を押さえたうえで、メールや偽サイト側に残る記録を調べ、別の手掛かりと結び付けよう。",
+        "choices": [
+          {
+            "id": "asano_advice_tor_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_tor_deeper_node"
+          },
+          {
+            "id": "asano_advice_tor_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_tor_deeper_node",
+        "speakerId": "asano",
+        "text": "Torは接続元を見えにくくする仕組みで、ログに出る出口IPはTorネットワークの出口を示すものだよ。出口IPから利用者の氏名や契約者を照会するのではなく、事件に関係するメールアカウントや偽サイトの管理記録など、別の記録を保有する事業者を順に調べるのがポイント。",
+        "choices": [
+          {
+            "id": "asano_advice_tor_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_provider",
+        "speakerId": "asano",
+        "text": "照会先の候補が見えてきたね。今までに確認したメールや偽サイトの情報をもとに、該当する記録を保有する事業者へ照会しよう。回答が来たら登録情報だけで判断せず、記録の時刻や接続元を他の資料と照合してね。",
+        "choices": [
+          {
+            "id": "asano_advice_provider_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_provider_deeper_node"
+          },
+          {
+            "id": "asano_advice_provider_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_provider_deeper_node",
+        "speakerId": "asano",
+        "text": "照会では、何の記録が必要なのか、対象アカウントや時間帯を明確にしよう。回答に出てくるIPアドレスは、時刻とサービスをそろえて比較する。メール、サイト管理、SNSログインなど別々の記録が同じ流れを示すかを見ると、推測と裏付けを区別しやすいよ。",
+        "choices": [
+          {
+            "id": "asano_advice_provider_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_subscriber",
+        "speakerId": "asano",
+        "text": "回線の契約者が分かった段階だね。ただ、契約者と実際の利用者は同一とは限らない。天童さんの端末や供述に、フィッシングや不正アクセスを示す資料があるかを確かめよう。",
+        "choices": [
+          {
+            "id": "asano_advice_subscriber_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_subscriber_deeper_node"
+          },
+          {
+            "id": "asano_advice_subscriber_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_subscriber_deeper_node",
+        "speakerId": "asano",
+        "text": "契約者情報は「その回線が誰の名義か」を示す資料。事件時に誰が端末を操作したかは別に立証する必要があるよ。サーバーやSNSの記録、端末の利用履歴、メール送信の痕跡などを照らし合わせて、複数の独立した裏付けを集めよう。",
+        "choices": [
+          {
+            "id": "asano_advice_subscriber_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_evidence",
+        "speakerId": "asano",
+        "text": "端末の記録と事業者の記録がつながってきたね。ここからは各資料が何を直接示すのかを整理して、別の資料で裏付けられるか確認しよう。時系列に並べると、メールから投稿までの流れを説明しやすくなるよ。",
+        "choices": [
+          {
+            "id": "asano_advice_evidence_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_evidence_deeper_node"
+          },
+          {
+            "id": "asano_advice_evidence_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_evidence_deeper_node",
+        "speakerId": "asano",
+        "text": "「この記録がある」ことと「誰が操作したか」は分けて説明しよう。資料の取得元、記録の時刻、対象アカウントや端末を示し、別々の資料が同じ人物・行為・時間帯を指しているかを確認する。最後に、裏付けが足りない部分が残っていないか見直そう。",
+        "choices": [
+          {
+            "id": "asano_advice_evidence_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_complete",
+        "speakerId": "asano",
+        "text": "捜査資料と供述がそろったね。報告するときは、画像の撮影地点、フィッシングの痕跡、事業者の記録、端末の記録、供述を時系列でつなげると伝わりやすいよ。",
+        "choices": [
+          {
+            "id": "asano_advice_complete_deeper",
+            "text": "もう少し詳しく聞く",
+            "nextNodeId": "asano_advice_complete_deeper_node"
+          },
+          {
+            "id": "asano_advice_complete_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_advice_complete_deeper_node",
+        "speakerId": "asano",
+        "text": "各資料が直接証明する内容と、資料を組み合わせて導いた推認を分けて書こう。例えば、画像の座標は撮影地点、ログはサービス上の操作、端末記録は端末内の痕跡を示す。それぞれの限界も添えると、捜査の根拠が明確になるよ。",
+        "choices": [
+          {
+            "id": "asano_advice_complete_deeper_back",
+            "text": "分かったよ",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_glossary",
+        "speakerId": "asano",
+        "text": "聞きたい用語を選んでね。捜査で確認できた内容に応じて、ここに表示される用語が増えるよ。",
+        "choices": [
+          {
+            "id": "asano_term_osint",
+            "text": "OSINT",
+            "nextNodeId": "asano_term_osint_node",
+            "requires": {
+              "type": "evidence",
+              "targetId": "ev_wait_location_image",
+              "operator": "exists"
             }
-          ]
-        }
-      ],
+          },
+          {
+            "id": "asano_term_exif",
+            "text": "Exif・メタデータ",
+            "nextNodeId": "asano_term_exif_node",
+            "requires": {
+              "type": "evidence",
+              "targetId": "ev_wait_location_image",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_term_phishing",
+            "text": "フィッシング",
+            "nextNodeId": "asano_term_phishing_node",
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_suspicious_email",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_term_header",
+            "text": "メールヘッダー",
+            "nextNodeId": "asano_term_header_node",
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_mail_sender_identified",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_term_ip",
+            "text": "IPアドレス",
+            "nextNodeId": "asano_term_ip_node",
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_tor_access",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_term_tor",
+            "text": "Tor・出口ノード",
+            "nextNodeId": "asano_term_tor_node",
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_tor_access",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_term_log",
+            "text": "アクセスログ",
+            "nextNodeId": "asano_term_log_node",
+            "requires": {
+              "type": "evidence",
+              "targetId": "ev_chirp_log",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_term_hosting",
+            "text": "ホスティング事業者",
+            "nextNodeId": "asano_term_hosting_node",
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_hosting_provider",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_term_subscriber",
+            "text": "回線の契約者情報",
+            "nextNodeId": "asano_term_subscriber_node",
+            "requires": {
+              "type": "fact",
+              "targetId": "fact_subscriber_aizawa",
+              "operator": "exists"
+            }
+          },
+          {
+            "id": "asano_glossary_back",
+            "text": "相談メニューに戻る",
+            "nextNodeId": "asano_menu"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_osint_node",
+        "speakerId": "asano",
+        "text": "OSINTは、一般に公開されている情報を集めて分析すること。公開投稿やウェブサイトの記載などを手掛かりにできるけれど、見つけた情報が正しいか、事件とどう関係するかを確かめて使うよ。",
+        "choices": [
+          {
+            "id": "asano_term_osint_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_exif_node",
+        "speakerId": "asano",
+        "text": "Exifは、写真などの画像ファイルに記録される撮影情報の一種。撮影日時や位置情報が残っていることがあるよ。加工や再保存で消えたり変わったりする場合があり、記録が示すのは撮影に関する手掛かりで、投稿者や行動そのものではない。",
+        "choices": [
+          {
+            "id": "asano_term_exif_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_phishing_node",
+        "speakerId": "asano",
+        "text": "フィッシングは、本物のサービスや組織を装って偽のメールやウェブサイトへ誘導し、認証情報などを入力させようとする手口。メールの見た目だけで判断せず、リンク先や端末のアクセス記録も確認するよ。",
+        "choices": [
+          {
+            "id": "asano_term_phishing_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_header_node",
+        "speakerId": "asano",
+        "text": "メールヘッダーは、送信元・宛先・経由サーバー・時刻など、メール配送に関する情報。表示上の差出人だけでは送信者を確定できないので、ヘッダーや事業者側の記録を合わせて確認する。",
+        "choices": [
+          {
+            "id": "asano_term_header_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_ip_node",
+        "speakerId": "asano",
+        "text": "IPアドレスは、ネットワーク上で通信先や接続元を識別するための番号。記録されたIPから分かるのは通信に使われた接続先の手掛かりで、通常それだけで操作した個人まで特定できるわけではないよ。",
+        "choices": [
+          {
+            "id": "asano_term_ip_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_tor_node",
+        "speakerId": "asano",
+        "text": "Torは通信経路を複数の中継点に通し、利用者の接続元を分かりにくくするネットワーク。サービスのログに残る出口ノードのIPアドレスはTorの出口を示すので、そのIPから利用者本人を直接割り出すことはできない。",
+        "choices": [
+          {
+            "id": "asano_term_tor_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_log_node",
+        "speakerId": "asano",
+        "text": "アクセスログは、サービスやサーバーが通信・操作の記録として残すデータ。時刻、接続元IP、操作内容などを確認できる場合があるよ。記録の時刻の基準や、何が記録されるかはサービスごとに異なる。",
+        "choices": [
+          {
+            "id": "asano_term_log_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_hosting_node",
+        "speakerId": "asano",
+        "text": "ホスティング事業者は、ウェブサイトやサーバーをインターネット上で動かすための設備・サービスを提供する事業者。サイトのアクセス記録や管理接続記録を保有している場合があるので、サイトの運営元とは別に確認することがある。",
+        "choices": [
+          {
+            "id": "asano_term_hosting_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_term_subscriber_node",
+        "speakerId": "asano",
+        "text": "回線の契約者情報は、通信サービスを契約した名義人を示す資料。実際にその時刻に回線や端末を使った人と契約者が同一とは限らないため、他の記録と照合して判断する。",
+        "choices": [
+          {
+            "id": "asano_term_subscriber_back",
+            "text": "用語一覧に戻る",
+            "nextNodeId": "asano_glossary"
+          }
+        ]
+      },
+      {
+        "id": "asano_goodbye",
+        "speakerId": "asano",
+        "text": "分かった。また必要になったら、いつでも声をかけてね。捜査に戻ろう。"
+      }
+    ]
+  }
+],
       "role": "同僚"
     }
   ],
@@ -1173,6 +1858,90 @@
       ]
     },
     {
+      "id": "ev_chirp_log",
+      "name": "Chirpログイン・投稿ログ",
+      "icon": "assets/icons/evidence.png",
+      "description": "アカウントへのログインと投稿の記録。",
+      "nodes": [
+        {
+          "id": "node_001",
+          "speakerId": "player",
+          "text": "Chirp(SNS事業者)から、ログインログ兼投稿ログを差し押さえた。これを見れば、不正にアクセスをして悪質な投稿をした犯人が分かるかもしれない。",
+          "completionEventId": "event_chirp_log"
+        }
+      ],
+      "startNodeId": "node_001"
+    },
+    {
+      "id": "ev_mailia_response",
+      "name": "Mailiaの照会回答書",
+      "icon": "assets/icons/evidence.png",
+      "description": "メール送信アカウントの登録情報と送信記録。",
+      "requires": {
+        "type": "evidence",
+        "targetId": "ev_mailia_response",
+        "operator": "exists"
+      },
+      "startNodeId": "mailia_response_start",
+      "nodes": [
+        {
+          "id": "mailia_response_start",
+          "speakerId": "narrator",
+          "text": "回答書には、送信アカウントの登録情報と対象時刻の送信記録がある。登録名だけでは利用者を確定できない。",
+          "nextNodeId": "mailia_response_end",
+          "completionEventId": "event_inquiry_mailia2"
+        },
+        {
+          "id": "mailia_response_end",
+          "speakerId": "player",
+          "text": "フィッシングサイトの情報と合わせて、サイトの記録を保有する事業者を確認する。",
+          "completionEventId": "event_read_mailia_response"
+        }
+      ]
+    },
+    {
+      "id": "ev_nexhost_response",
+      "name": "NexHostの照会回答書",
+      "icon": "assets/icons/evidence.png",
+      "description": "フィッシングサイトの管理接続とアクセス記録。",
+      "nodes": [
+        {
+          "id": "node_001",
+          "speakerId": "narrator",
+          "completionEventId": "event_inquiry_nexhost2",
+          "text": "テスト"
+        }
+      ],
+      "startNodeId": "node_001"
+    },
+    {
+      "id": "ev_brightnet_response",
+      "name": "BrightNetの照会回答書",
+      "icon": "assets/icons/evidence.png",
+      "description": "対象IPアドレスと時刻に対応する回線契約者情報。利用者の特定は他の証拠と合わせて判断する。",
+      "requires": {
+        "type": "evidence",
+        "targetId": "ev_brightnet_response",
+        "operator": "exists"
+      },
+      "startNodeId": "brightnet_response_start",
+      "nodes": [
+        {
+          "id": "brightnet_response_start",
+          "speakerId": "narrator",
+          "text": "回答書では、対象時刻に192.0.2.30を利用していた回線の契約者が天童拓海と記録されている。契約者情報だけで実際の利用者や犯人と断定することはできない。",
+          "nextNodeId": "brightnet_response_end",
+          "completionEventId": "event_inquiry_brightnet2"
+        },
+        {
+          "id": "brightnet_response_end",
+          "speakerId": "player",
+          "text": "他の記録との関連を確認し、天童本人に事情を聞く。",
+          "completionEventId": "event_read_brightnet_response"
+        }
+      ]
+    },
+    {
       "id": "ev_aizawa_phone",
       "name": "天童拓海のスマートフォン",
       "icon": "assets/icons/evidence.png",
@@ -1298,90 +2067,6 @@
           "completionEventId": "event_aizawa_phone_exam_complete"
         }
       ]
-    },
-    {
-      "id": "ev_chirp_log",
-      "name": "Chirpログイン・投稿ログ",
-      "icon": "assets/icons/evidence.png",
-      "description": "アカウントへのログインと投稿の記録。",
-      "nodes": [
-        {
-          "id": "node_001",
-          "speakerId": "player",
-          "text": "Chirp(SNS事業者)から、ログインログ兼投稿ログを差し押さえた。これを見れば、不正にアクセスをして悪質な投稿をした犯人が分かるかもしれない。",
-          "completionEventId": "event_chirp_log"
-        }
-      ],
-      "startNodeId": "node_001"
-    },
-    {
-      "id": "ev_mailia_response",
-      "name": "Mailiaの照会回答書",
-      "icon": "assets/icons/evidence.png",
-      "description": "メール送信アカウントの登録情報と送信記録。",
-      "requires": {
-        "type": "evidence",
-        "targetId": "ev_mailia_response",
-        "operator": "exists"
-      },
-      "startNodeId": "mailia_response_start",
-      "nodes": [
-        {
-          "id": "mailia_response_start",
-          "speakerId": "narrator",
-          "text": "回答書には、送信アカウントの登録情報と対象時刻の送信記録がある。登録名だけでは利用者を確定できない。",
-          "nextNodeId": "mailia_response_end",
-          "completionEventId": "event_inquiry_mailia2"
-        },
-        {
-          "id": "mailia_response_end",
-          "speakerId": "player",
-          "text": "フィッシングサイトの情報と合わせて、サイトの記録を保有する事業者を確認する。",
-          "completionEventId": "event_read_mailia_response"
-        }
-      ]
-    },
-    {
-      "id": "ev_nexhost_response",
-      "name": "NexHostの照会回答書",
-      "icon": "assets/icons/evidence.png",
-      "description": "フィッシングサイトの管理接続とアクセス記録。",
-      "nodes": [
-        {
-          "id": "node_001",
-          "speakerId": "narrator",
-          "completionEventId": "event_inquiry_nexhost2",
-          "text": "テスト"
-        }
-      ],
-      "startNodeId": "node_001"
-    },
-    {
-      "id": "ev_brightnet_response",
-      "name": "BrightNetの照会回答書",
-      "icon": "assets/icons/evidence.png",
-      "description": "対象IPアドレスと時刻に対応する回線契約者情報。利用者の特定は他の証拠と合わせて判断する。",
-      "requires": {
-        "type": "evidence",
-        "targetId": "ev_brightnet_response",
-        "operator": "exists"
-      },
-      "startNodeId": "brightnet_response_start",
-      "nodes": [
-        {
-          "id": "brightnet_response_start",
-          "speakerId": "narrator",
-          "text": "回答書では、対象時刻に192.0.2.30を利用していた回線の契約者が天童拓海と記録されている。契約者情報だけで実際の利用者や犯人と断定することはできない。",
-          "nextNodeId": "brightnet_response_end",
-          "completionEventId": "event_inquiry_brightnet2"
-        },
-        {
-          "id": "brightnet_response_end",
-          "speakerId": "player",
-          "text": "他の記録との関連を確認し、天童本人に事情を聞く。",
-          "completionEventId": "event_read_brightnet_response"
-        }
-      ]
     }
   ],
   "logs": [
@@ -1475,118 +2160,99 @@
   ],
   "facts": [
     {
+      "id": "fact_credentials_entered",
+      "description": "土崎彩花は大学時代からの同級生である「黒田恒一」と交際している。\n社会人になった今でも交際は続いているようだ",
+      "name": "土崎彩花は黒田恒一と交際している"
+    },
+    {
       "id": "fact_post_image",
       "name": "待ち伏せを示す投稿画像がある",
-      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。",
-      "sortOrder": 10
+      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。"
     },
     {
       "id": "fact_osint_location",
       "name": "待ち伏せ場所は大手交番",
-      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。",
-      "sortOrder": 20
+      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。"
     },
     {
       "id": "fact_suspicious_email",
       "name": "不審なメールを受信していた",
-      "description": "彩花はChirp運営を装うメールを受信していた。",
-      "sortOrder": 30
+      "description": "彩花はChirp運営を装うメールを受信していた。"
     },
     {
       "id": "fact_phishing_site",
       "name": "フィッシングサイトへアクセスしていた",
-      "description": "彩花の端末に偽のログイン画面へのアクセス履歴がある。",
-      "sortOrder": 40
-    },
-    {
-      "id": "fact_credentials_entered",
-      "description": "土崎彩花は大学時代からの同級生である「黒田恒一」と交際している。\n社会人になった今でも交際は続いているようだ",
-      "name": "土崎彩花は黒田恒一と交際している",
-      "sortOrder": 9
+      "description": "彩花の端末に偽のログイン画面へのアクセス履歴がある。"
     },
     {
       "id": "fact_tor_access",
       "name": "不正アクセスのIPアドレスはTor出口ノード",
-      "description": "投稿直前にTor出口ノードのIPアドレスからChirpへのログインが記録されている。\nこのIPアドレスだけでは個人を特定できない。",
-      "sortOrder": 60
+      "description": "投稿直前にTor出口ノードのIPアドレスからChirpへのログインが記録されている。\nこのIPアドレスだけでは個人を特定できない。"
     },
     {
       "id": "fact_mail_sender_identified",
       "name": "メールの送信アカウントを照会できる",
-      "description": "メールヘッダーからMailiaのアカウントを照会対象として確認した。",
-      "sortOrder": 70
+      "description": "メールヘッダーからMailiaのアカウントを照会対象として確認した。"
     },
     {
       "id": "fact_mailia_response",
       "name": "Mailiaの回答を得た",
-      "description": "対象アカウントの登録情報と送信記録を取得した。",
-      "sortOrder": 80
+      "description": "対象アカウントの登録情報と送信記録を取得した。"
     },
     {
       "id": "fact_fake_account",
       "name": "偽装された送信アカウントが判明した",
-      "description": "Mailiaの登録名と送信履歴を確認した。登録情報だけでは利用者は確定しない。",
-      "sortOrder": 90
+      "description": "Mailiaの登録名と送信履歴を確認した。登録情報だけでは利用者は確定しない。"
     },
     {
       "id": "fact_hosting_provider",
       "name": "偽サイトのホスティング先が判明した",
-      "description": "サイト情報からNexHostがアクセス記録を保有すると分かった。",
-      "sortOrder": 100
+      "description": "サイト情報からNexHostがアクセス記録を保有すると分かった。"
     },
     {
       "id": "fact_hosting_access_ip",
       "name": "サイト管理接続元IPが判明した",
-      "description": "NexHostの記録に対象時刻の192.0.2.30がある。",
-      "sortOrder": 110
+      "description": "NexHostの記録に対象時刻の192.0.2.30がある。"
     },
     {
       "id": "fact_subscriber_aizawa",
       "name": "対象回線の契約者は天童拓海",
-      "description": "BrightNetの記録では契約者が天童拓海。契約者情報だけでは犯人と断定できない。",
-      "sortOrder": 120
+      "description": "BrightNetの記録では契約者が天童拓海。契約者情報だけでは犯人と断定できない。"
     },
     {
       "id": "fact_aizawa_first_interview",
       "name": "天童は関与を否定した",
-      "description": "初回聞き込みで天童は事件への関与を否定した。",
-      "sortOrder": 130
+      "description": "初回聞き込みで天童は事件への関与を否定した。"
     },
     {
       "id": "fact_aizawa_browser",
       "name": "天童端末にサイト閲覧履歴があった",
-      "description": "天童の端末にフィッシングサイトの管理画面を確認した記録があった。",
-      "sortOrder": 140
+      "description": "天童の端末にフィッシングサイトの管理画面を確認した記録があった。"
     },
     {
       "id": "fact_aizawa_sent_mail",
       "name": "天童端末にメール送信記録があった",
-      "description": "彩花宛てのフィッシングメール送信記録が見つかった。",
-      "sortOrder": 150
+      "description": "彩花宛てのフィッシングメール送信記録が見つかった。"
     },
     {
       "id": "fact_aizawa_credentials",
       "name": "天童端末に彩花の認証情報があった",
-      "description": "彩花のChirp認証情報を記したメモが見つかった。",
-      "sortOrder": 160
+      "description": "彩花のChirp認証情報を記したメモが見つかった。"
     },
     {
       "id": "fact_aizawa_plan",
       "name": "天童端末に犯行計画と動機の記録があった",
-      "description": "端末のメモに犯行の手順と動機が記録されていた。",
-      "sortOrder": 170
+      "description": "端末のメモに犯行の手順と動機が記録されていた。"
     },
     {
       "id": "fact_aizawa_evidence_complete",
       "name": "天童の犯行を裏付ける資料がそろった",
-      "description": "サイト確認、メール送信、認証情報、不正アクセスの記録を合わせて確認した。",
-      "sortOrder": 180
+      "description": "サイト確認、メール送信、認証情報、不正アクセスの記録を合わせて確認した。"
     },
     {
       "id": "fact_aizawa_confession",
       "name": "天童が犯行を認めた",
-      "description": "天童はフィッシングと不正アクセス、投稿を行ったと認めた。",
-      "sortOrder": 190
+      "description": "天童はフィッシングと不正アクセス、投稿を行ったと認めた。"
     }
   ],
   "events": [
@@ -1932,6 +2598,5 @@
         }
       ]
     }
-  ],
-  "hints": []
+  ]
 }

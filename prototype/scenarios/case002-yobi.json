@@ -1051,128 +1051,107 @@
     {
       "id": "fact_post_image",
       "name": "待ち伏せを示す投稿画像がある",
-      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。",
-      "sortOrder": 5
+      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。"
     },
     {
       "id": "fact_osint_location",
       "name": "待ち伏せ場所は大手交番",
-      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。",
-      "sortOrder": 6
+      "description": "画像のExif座標を地図と照合し、撮影地点が大手交番と一致した。ただし、撮影場所の手掛かりであり、待ち伏せの実行や投稿者を単独で証明しない。"
     },
     {
       "id": "fact_victim_report",
       "name": "彩花のアカウントが不正利用された",
-      "description": "彩花はアカウントに入れなくなり、本人らしくない投稿が行われたと申告した。",
-      "sortOrder": 20
+      "description": "彩花はアカウントに入れなくなり、本人らしくない投稿が行われたと申告した。"
     },
     {
       "id": "fact_suspicious_email",
       "name": "運営を装ったメールを受信していた",
-      "description": "彩花の端末にアカウント確認を装うメールが残っている。",
-      "sortOrder": 30
+      "description": "彩花の端末にアカウント確認を装うメールが残っている。"
     },
     {
       "id": "fact_phishing_site",
       "name": "偽のログイン画面が使われた",
-      "description": "メールのリンク先は正規SNSとは異なるログイン画面だった。",
-      "sortOrder": 40
+      "description": "メールのリンク先は正規SNSとは異なるログイン画面だった。"
     },
     {
       "id": "fact_credentials_entered",
       "name": "彩花が偽サイトに認証情報を入力した",
-      "description": "本人の説明と端末時刻から、偽サイトへ認証情報を入力した経緯が確認された。",
-      "sortOrder": 50
+      "description": "本人の説明と端末時刻から、偽サイトへ認証情報を入力した経緯が確認された。"
     },
     {
       "id": "fact_tor_login",
       "name": "Tor経由の不審ログインがあった",
-      "description": "投稿前にTor出口IPからログインした記録がある。IPだけでは利用者を特定できない。",
-      "sortOrder": 60
+      "description": "投稿前にTor出口IPからログインした記録がある。IPだけでは利用者を特定できない。"
     },
     {
       "id": "fact_suspicious_post",
       "name": "不審ログイン後に投稿が行われた",
-      "description": "SNSログには不審ログインの後に問題の投稿を作成した時刻が記録されている。",
-      "sortOrder": 70
+      "description": "SNSログには不審ログインの後に問題の投稿を作成した時刻が記録されている。"
     },
     {
       "id": "fact_mail_sender_identified",
       "name": "メール送信元を照会できる",
-      "description": "メールヘッダからMailiaが保有する送信アカウントの記録を照会できる。",
-      "sortOrder": 80
+      "description": "メールヘッダからMailiaが保有する送信アカウントの記録を照会できる。"
     },
     {
       "id": "fact_public_context",
       "name": "公開情報から交際相手の存在を推測できる",
-      "description": "公開投稿には交際相手の存在を推測できる表現がある。ただし閲覧者や犯人の特定には使えない。",
-      "sortOrder": 90
+      "description": "公開投稿には交際相手の存在を推測できる表現がある。ただし閲覧者や犯人の特定には使えない。"
     },
     {
       "id": "fact_mailia_account",
       "name": "Mailiaの送信アカウントが判明した",
-      "description": "Mailiaから偽名登録の送信アカウントと関連URLの記録を得た。登録情報だけで実際の操作者は確定しない。",
-      "sortOrder": 100
+      "description": "Mailiaから偽名登録の送信アカウントと関連URLの記録を得た。登録情報だけで実際の操作者は確定しない。"
     },
     {
       "id": "fact_hosting_provider",
       "name": "フィッシングサイトのホスティング先が判明した",
-      "description": "Mailiaの回答からサイトとNexHostの関連を確認した。",
-      "sortOrder": 110
+      "description": "Mailiaの回答からサイトとNexHostの関連を確認した。"
     },
     {
       "id": "fact_hosting_access_ip",
       "name": "管理画面アクセスのIPと時刻が判明した",
-      "description": "NexHostのアクセスログに管理画面への接続元IPと時刻が残っている。",
-      "sortOrder": 120
+      "description": "NexHostのアクセスログに管理画面への接続元IPと時刻が残っている。"
     },
     {
       "id": "fact_host_victim_access",
       "name": "被害者のサイトアクセス記録を確認した",
-      "description": "彩花の回線からフィッシングサイトへアクセスした記録が確認できた。",
-      "sortOrder": 130
+      "description": "彩花の回線からフィッシングサイトへアクセスした記録が確認できた。"
     },
     {
       "id": "fact_subscriber_tendo",
       "name": "該当回線の契約者は天童拓海",
-      "description": "BrightNetの回答による契約者情報。回線利用者を単独で確定する証拠ではない。",
-      "sortOrder": 140
+      "description": "BrightNetの回答による契約者情報。回線利用者を単独で確定する証拠ではない。"
     },
     {
       "id": "fact_tendo_initial_interview",
       "name": "天童は彩花のファンだった",
-      "description": "天童はライブや握手会に参加していたが、彩花との私的なつながりはないと話した。",
-      "sortOrder": 150
+      "description": "天童はライブや握手会に参加していたが、彩花との私的なつながりはないと話した。"
     },
     {
       "id": "fact_tendo_browser",
       "name": "天童端末にサイト閲覧記録がある",
-      "description": "フィッシングサイトと管理画面の閲覧履歴がNexHostの記録と一致する。",
-      "sortOrder": 160
+      "description": "フィッシングサイトと管理画面の閲覧履歴がNexHostの記録と一致する。"
     },
     {
       "id": "fact_tendo_mail",
       "name": "天童端末にメール送信記録がある",
-      "description": "端末の送信履歴が彩花の受信メールおよびMailiaの記録と一致する。",
-      "sortOrder": 170
+      "description": "端末の送信履歴が彩花の受信メールおよびMailiaの記録と一致する。"
     },
     {
       "id": "fact_tendo_credentials",
       "name": "天童端末に認証情報の記録がある",
-      "description": "彩花のアカウントに関係する認証情報が端末内で確認された。",
-      "sortOrder": 180
+      "description": "彩花のアカウントに関係する認証情報が端末内で確認された。"
     },
     {
       "id": "fact_tendo_motive",
       "name": "天童が関係を壊す投稿を計画していた",
-      "description": "端末のメモに彼氏への嫉妬と、投稿で二人の関係を壊そうとする意図が記されていた。",
-      "sortOrder": 190
+      "description": "端末のメモに彼氏への嫉妬と、投稿で二人の関係を壊そうとする意図が記されていた。"
     },
     {
       "id": "fact_tendo_confession",
       "name": "天童が犯行を認めた",
-      "description": "追及に対し、天童はアカウントを不正利用して投稿したと認めた。供述は他の証拠と照合して記録した。",
-      "sortOrder": 200
+      "description": "追及に対し、天童はアカウントを不正利用して投稿したと認めた。供述は他の証拠と照合して記録した。"
     }
   ],
   "events": [
@@ -1438,6 +1417,5 @@
         }
       ]
     }
-  ],
-  "hints": []
+  ]
 }

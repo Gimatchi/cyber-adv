@@ -11,10 +11,12 @@
   </head>
   <body>
     <header class="topbar">
-      <a class="wordmark" href="./" aria-label="捜査画面トップ">
+      <!--<a class="wordmark" href="./" aria-label="捜査画面トップ"> 狩環境でこれを押すとシナリオが切り替わってしまうので、わざとコメントアウトしてある。代わりにdiv要素を入れている-->
+      <div class="wordmark">
         <span class="wordmark-icon">C</span>
         <span>CYBER CASE FILES</span>
-      </a>
+      </div>
+      <!--</a>-->
       <div class="case-heading">
         <h1 id="case-title">SNS乗っ取り</h1>
       </div>
@@ -65,8 +67,10 @@
       </nav>
 
       <section class="main-panel" aria-live="polite">
-        <div id="detail-view" class="detail-view"></div>
-        <section id="dialogue-choices" class="dialogue-choices" hidden aria-label="選択肢"></section>
+        <div class="main-content-layer">
+          <div id="detail-view" class="detail-view"></div>
+          <section id="dialogue-choices" class="dialogue-choices" hidden aria-label="選択肢"></section>
+        </div>
         <section id="dialogue-pane" class="dialogue-pane" aria-live="polite">
           <div class="dialogue-label">DIALOGUE / 会話</div>
           <div class="dialogue-speaker-row"><span id="dialogue-icon" class="dialogue-icon"></span><div><span id="dialogue-speaker" class="dialogue-speaker"></span><h2 id="dialogue-title"></h2></div></div>

@@ -2218,7 +2218,8 @@
     {
       "id": "fact_post_image",
       "name": "待ち伏せを示す投稿画像がある",
-      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。"
+      "description": "彩花のChirpに待ち伏せを示す文と画像が公開され、元画像が端末に残っている。",
+      "progressWeight": 0
     },
     {
       "id": "fact_osint_location",

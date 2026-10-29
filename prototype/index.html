@@ -19,6 +19,11 @@
       <!--</a>-->
       <div class="case-heading">
         <h1 id="case-title">SNS乗っ取り</h1>
+        <div class="case-progress-row">
+          <span id="case-chapter" class="case-chapter" hidden></span>
+          <progress id="case-progress" class="case-progress" max="100" value="0" aria-label="事件の進捗"></progress>
+          <span id="case-progress-value" class="case-progress-value">0%</span>
+        </div>
       </div>
       <div class="top-actions">
         <details class="developer-menu">
@@ -82,7 +87,7 @@
             <div class="dialogue-answer-row"><input id="dialogue-answer" name="answer" type="text" autocomplete="off"><button class="action-button" type="submit">回答する</button></div>
             <p id="dialogue-answer-feedback" class="dialogue-answer-feedback" role="status" aria-live="polite"></p>
           </form>
-          <div id="dialogue-controls" class="dialogue-controls"><button id="dialogue-next" class="action-button" type="button" hidden>次へ</button><button id="dialogue-history-toggle" class="action-button secondary" type="button" hidden aria-pressed="false">履歴</button><button id="dialogue-close" class="reset-button" type="button" hidden>やめる</button><button id="log-analysis-close" class="reset-button" type="button" hidden>解析を終了する</button></div>
+          <div id="dialogue-controls" class="dialogue-controls"><button id="dialogue-size-toggle" class="action-button secondary dialogue-size-toggle" type="button" hidden>広げる</button><button id="dialogue-next" class="action-button" type="button" hidden>次へ</button><button id="dialogue-history-toggle" class="action-button secondary" type="button" hidden aria-pressed="false">履歴</button><button id="dialogue-close" class="reset-button" type="button" hidden>やめる</button><button id="log-analysis-close" class="reset-button" type="button" hidden>解析を終了する</button></div>
         </section>
      </section>
 
